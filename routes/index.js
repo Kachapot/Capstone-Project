@@ -4,21 +4,35 @@ const {useragent,moment,jwt} = require('../module/index')
 const db = require('../database/connect')
 
 router.get('/',authorization,(req,res)=>{
-    console.log('req.admin',req.admin);
-    if(req.admin){
-        res.render('index',req.admin)
+    // console.log('cookie',req);
+    if(req.cookies?.access_token){
+      res.redirect('/main')
+    }else{
+      res.render('login')
     }
+})
+
+router.get('/main',authorization,async(req,res)=>{
+  try {
+    let data = {status:true,msg:"welcome",username:req.admin}
+    res.render('index',data)
+  } catch (error) {
+    console.log(error);
+    return res.status(401)
+  }
 })
 
 router.post('/login',async (req,res)=>{
     try {
         console.log('login');
         const body = req.body
-        const getadmin = await db('admin').select('*').where({ username: body.username,password:body.password }).first()
+        console.log('username',body.username);
+        console.log('password',body.password);
+        const getadmin = await db('admin').select('*').first()
         console.log('getadmin',getadmin);
         if (!getadmin || getadmin?.status != 1) {
-            let data = ({ status: 400, message: "บัญขีถูกระงับ", data: {} });
-            return res.render('login',data)
+            let data = ({ status: 400, message: "บัญขีถูกระงับ"});
+            return res.redirect('/')
         }
         //   const compare = await bcrypt.compare(
         //     body.password,
@@ -33,6 +47,7 @@ router.post('/login',async (req,res)=>{
               req.headers["cf-connecting-ip"] || req.connection.remoteAddress);
             const time = moment().format("YYYY-MM-DD hh:mm:ss");
             const secret = 'adminsystem';
+            console.log('getadmin.username',getadmin.username);
             const token = jwt.sign(
               {
                 username: getadmin.username,
@@ -59,14 +74,8 @@ router.post('/login',async (req,res)=>{
             };
     
             // res.setHeader('set-cookie', ['access_token=' + token + '; Domain=.magiccasino.bet; Path=/; HttpOnly',]);
-            data = ({ status: 200, message: "เข้าสู่ระบบสำเร็จ", data: payload });
-            return res
-            .cookie("access_token", token, {
-              httpOnly: true,
-              secure: process.env.NODE_ENV === "production",
-              domain:process.env.NODE_ENV === "production" ? '.longtests.com':"localhost",
-            })
-            .render('index',data)
+            // data = ({ status: 200, message: "เข้าสู่ระบบสำเร็จ", data: getadmin.username });
+            return res.cookie("access_token", token).redirect('/main')
             
         //   } else {
         //     return res.json({
