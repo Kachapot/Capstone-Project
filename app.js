@@ -3,6 +3,7 @@ const app = express()
 var exphbs = require('express-handlebars')
 const bodyParser = require('body-parser')
 const mysql = require('mysql')
+const cookieParser = require('cookie-parser')
 require('dotenv').config();
 
 
@@ -13,6 +14,8 @@ app.use(bodyParser.json())
 
 // Static Files
 app.use(express.static('public'))
+app.use(express.json())
+app.use(cookieParser())
 
 app.engine('hbs',exphbs.engine({extname:'.hbs'}))
 app.set('view engine','hbs');
