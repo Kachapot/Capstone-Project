@@ -97,5 +97,13 @@ router.post('/login',async (req,res)=>{
     }
 })
 
+router.get('/logout',authorization,async(req,res)=>{
+    try {
+        return res.clearCookie("access_token").redirect('/')
+    } catch (error) {
+        console.log(error);
+    }
+})
+
 
 module.exports = router

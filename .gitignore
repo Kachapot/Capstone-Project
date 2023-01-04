@@ -1,3 +1,4 @@
-node_modules/
+node_modules/*
+package-lock.json
 database/connect.js
 database/connect.js
