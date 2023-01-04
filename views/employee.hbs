@@ -1,63 +1,63 @@
 <div class="container pt-5 mt-5">
-    <div class="row d-flex flex-row">
-        <div class="col-6">
-            <h3 class="text-start">รายชื่อพนักงาน</h3>
-        </div>
-        <div class="col-6">
-            <h3 class="text-end">จำนวน 0 คน</h3>
-        </div>
-    </div>
-    <table class="table table-hover">
-  <thead>
-    <tr>
-      <th scope="col">#</th>
-      <th scope="col">First</th>
-      <th scope="col">Last</th>
-      <th scope="col">Handle</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th scope="row">1</th>
-      <td>Mark</td>
-      <td>Otto</td>
-      <td>@mdo</td>
-    </tr>
-    <tr>
-      <th scope="row">2</th>
-      <td>Jacob</td>
-      <td>Thornton</td>
-      <td>@fat</td>
-    </tr>
-    <tr>
-      <th scope="row">3</th>
-      <td colspan="2">Larry the Bird</td>
-      <td>@twitter</td>
-    </tr>
-  </tbody>
-</table>
-
-{{!-- Pagination --}}
-<div class="row d-flex flex-row">
-  <div class="col-12 text-end">
-    <nav aria-label="Page navigation example">
-    <ul class="pagination">
-      <li class="page-item">
-        <a class="page-link" href="#" aria-label="Previous">
-          <span aria-hidden="true">&laquo;</span>
-        </a>
-      </li>
-      <li class="page-item"><a class="page-link" href="#">1</a></li>
-      <li class="page-item"><a class="page-link" href="#">2</a></li>
-      <li class="page-item"><a class="page-link" href="#">3</a></li>
-      <li class="page-item">
-        <a class="page-link" href="#" aria-label="Next">
-          <span aria-hidden="true">&raquo;</span>
-        </a>
-      </li>
-    </ul>
-    </nav>
+  <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+    <button class="btn btn-primary" type="button">Button</button>
   </div>
-</div>
+  <div class="row d-flex flex-row">
+    <div class="col-6">
+      <h3 class="text-start">รายชื่อพนักงาน</h3>
+    </div>
+    <div class="col-6">
+      <h3 class="text-end">จำนวน 0 คน</h3>
+    </div>
+  </div>
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th scope="col">รหัสพนักงาน</th>
+        <th scope="col">ชื่อ</th>
+        <th scope="col">ตำแหน่ง</th>
+        <th scope="col">สถานะ</th>
+        <th scope="col" class="text-end">ฟังชั่น</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each payload}}
+      <tr>
+        <th scope="row">{{emp_id}}</th>
+        <td>{{emp_name}}</td>
+        <td>{{role}}</td>
+        <td>{{status}}</td>
+        <td class="text-end">
+          <a href="#" type="button" class="btn btn-light btn-small"><i class="bi bi-eye"> ดูข้อมูล</i></a>
+          <a href="#" type="button" class="btn btn-light btn-small"><i class="bi bi-pencil"> แก้ไข</i></a>
+          <a href="#" type="button" class="btn btn-light btn-small"><i class="bi bi-person-x"> ลบ</i></a>
+        </td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
 
-</div> 
+  {{!-- Pagination --}}
+  <div class="row d-flex flex-row">
+    <div class="col-12 text-end">
+      <nav aria-label="Page navigation example">
+        <ul class="pagination">
+          <li class="page-item">
+            <a class="page-link" href="#" aria-label="Previous">
+              <span aria-hidden="true">&laquo;</span>
+            </a>
+          </li>
+          <li class="page-item"><a class="page-link" href="#">1</a></li>
+          <li class="page-item"><a class="page-link" href="#">2</a></li>
+          <li class="page-item"><a class="page-link" href="#">3</a></li>
+          <li class="page-item">
+            <a class="page-link" href="#" aria-label="Next">
+              <span aria-hidden="true">&raquo;</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+
+</div>

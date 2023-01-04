@@ -3,6 +3,8 @@ const {authorization,login} = require('../function/index')
 const {useragent,moment,jwt} = require('../module/index')
 const db = require('../database/connect')
 
+router.get('/employee',authorization,require('./employee'))
+
 router.get('/',authorization,(req,res)=>{
     // console.log('cookie',req);
     if(req.cookies?.access_token){
@@ -24,12 +26,14 @@ router.get('/main',authorization,async(req,res)=>{
 
 router.post('/login',async (req,res)=>{
     try {
-        console.log('login');
+        // console.log('login');
         const body = req.body
-        console.log('username',body.username);
-        console.log('password',body.password);
-        const getadmin = await db('admin').select('*').first()
-        console.log('getadmin',getadmin);
+        // console.log('username',body.username);
+        // console.log('password',body.password);
+        const getadmin = await db('admin').select('*')
+        .where({username:body.username,password:body.password})
+        .first()
+        // console.log('getadmin',getadmin);
         if (!getadmin || getadmin?.status != 1) {
             let data = ({ status: 400, message: "บัญขีถูกระงับ"});
             return res.redirect('/')
