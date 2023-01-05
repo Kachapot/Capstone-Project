@@ -3,7 +3,7 @@ const {authorization,login} = require('../function/index')
 const {useragent,moment,jwt} = require('../module/index')
 const db = require('../database/connect')
 
-router.get('/employee',authorization,require('./employee'))
+router.use('/employee',authorization,require('./employee'))
 
 router.get('/',authorization,(req,res)=>{
     // console.log('cookie',req);
@@ -51,7 +51,7 @@ router.post('/login',async (req,res)=>{
               req.headers["cf-connecting-ip"] || req.connection.remoteAddress);
             const time = moment().format("YYYY-MM-DD hh:mm:ss");
             const secret = 'adminsystem';
-            console.log('getadmin.username',getadmin.username);
+            // console.log('getadmin.username',getadmin.username);
             const token = jwt.sign(
               {
                 username: getadmin.username,
@@ -79,7 +79,7 @@ router.post('/login',async (req,res)=>{
     
             // res.setHeader('set-cookie', ['access_token=' + token + '; Domain=.magiccasino.bet; Path=/; HttpOnly',]);
             // data = ({ status: 200, message: "เข้าสู่ระบบสำเร็จ", data: getadmin.username });
-            return res.cookie("access_token", token).redirect('/main')
+            return res.status(200).cookie("access_token", token).redirect('/main')
             
         //   } else {
         //     return res.json({

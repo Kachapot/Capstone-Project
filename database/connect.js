@@ -6,7 +6,7 @@ const knex = require("knex").default({
     host: 'localhost',
     user: 'root',
     password: '',
-    database: 'db_adminsystem',
+    database: 'db_adminsytem',
     timezone: "asia/bangkok",
     supportBigNumbers:true,
     bigNumberStrings:true,

@@ -1,0 +1,60 @@
+<div class="container pt-5 mt-5 px-4">
+    <div class="row">
+        <h2>เพิ่มพนักงาน</h2>
+    </div>
+    <hr>
+    <form>
+        <div class="row py-1">
+            <div class="col-10">
+                <div class="input-group">
+                <span class="input-group-text">ชื่อ-สกุล</span>
+                <input type="text" aria-label="First name" class="form-control" autofocus>
+                <input type="text" aria-label="Last name" class="form-control">
+                </div>
+            </div>
+        </div>
+        <div class="row py-1">
+            <div class="col">
+                <label for="gender">เพศ</label>
+                <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
+                    <option selected>เลือกเพศ</option>
+                    <option value="1">ชาย</option>
+                    <option value="2">หญิง</option>
+                    <option value="3">เพศทางเลือกอื่นๆ</option>
+                </select>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <label for="exampleFormControlInput1">อีเมล</label>
+                    <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@mail.com">
+                </div>
+            </div>
+        </div>
+        <div class="row py-1">
+                {{!-- <label for="birthdate">วันเกิด</label> --}}
+            <div class="col-6">
+                <label for="datepicker">วันเกิด</label>
+                <input id="datepicker" aria-label="First name" class="form-control text-primary" value="10/10/2022"></input>
+            </div>
+        </div>
+        
+        
+        <hr>
+        <div class="row">
+            <div class="col text-end">
+                <a class="btn btn-light" href="/employee">
+                    <i class="bi bi-arrow-bar-left"></i> กลับ
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-save-fill"></i> บันทึก
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+    $('#datepicker').datepicker({
+        inline:true,
+        dateFormat: "yyyy-mm-dd"
+    });
+</script>

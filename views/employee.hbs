@@ -1,15 +1,16 @@
 <div class="container pt-5 mt-5">
-  <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-    <button class="btn btn-primary" type="button">Button</button>
+  <div class="d-grid gap-2 d-md-flex justify-content-md-end pb-3">
+    <a class="btn btn-primary" href="employee/create">เพิ่มพนักงาน</a>
   </div>
   <div class="row d-flex flex-row">
     <div class="col-6">
       <h3 class="text-start">รายชื่อพนักงาน</h3>
     </div>
     <div class="col-6">
-      <h3 class="text-end">จำนวน 0 คน</h3>
+      <h3 class="text-end">จำนวน {{count}} คน</h3>
     </div>
   </div>
+  <hr>
   <table class="table table-hover">
     <thead>
       <tr>
@@ -17,20 +18,22 @@
         <th scope="col">ชื่อ</th>
         <th scope="col">ตำแหน่ง</th>
         <th scope="col">สถานะ</th>
+        <th scope="col">วันที่ลงทะเบียน</th>
         <th scope="col" class="text-end">ฟังชั่น</th>
       </tr>
     </thead>
     <tbody>
       {{#each payload}}
       <tr>
-        <th scope="row">{{emp_id}}</th>
-        <td>{{emp_name}}</td>
-        <td>{{role}}</td>
+        <th scope="row">{{code}}</th>
+        <td>{{name}}</td>
+        <td>{{position}}</td>
         <td>{{status}}</td>
+        <td>{{create_date}}</td>
         <td class="text-end">
-          <a href="#" type="button" class="btn btn-light btn-small"><i class="bi bi-eye"> ดูข้อมูล</i></a>
-          <a href="#" type="button" class="btn btn-light btn-small"><i class="bi bi-pencil"> แก้ไข</i></a>
-          <a href="#" type="button" class="btn btn-light btn-small"><i class="bi bi-person-x"> ลบ</i></a>
+          <a href="#" type="button" class="btn btn-success btn-small"><i class="bi bi-eye"> ดูข้อมูล</i></a>
+          <a href="#" type="button" class="btn btn-warning text-white btn-small"><i class="bi bi-pencil"> แก้ไข</i></a>
+          <a href="#" type="button" class="btn btn-danger btn-small"><i class="bi bi-person-x"> ลบ</i></a>
         </td>
       </tr>
       {{/each}}

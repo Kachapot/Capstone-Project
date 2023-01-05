@@ -1,19 +1,32 @@
-const router = require('express').Router();
-const {authorization,login} = require('../function/index')
-const {useragent,moment,jwt} = require('../module/index')
+const router = require("express").Router();
+const db = require("../database/connect");
 
-router.post('/',async (req,res)=>{
-    try {
-        const body = req.body
-        let payload = []
-        const getEmp = await db('admin').select('*').where({type:'employee'})
-        if(!getEmp) return payload = []
-        payload = getEmp
-        return res.render('employee',payload)
-    } catch (error) {
-        console.log(error);
-    }
-})
+router.get("/", async (req, res) => {
+  try {
+    const getEmp = await db("admin")
+      .select("*")
+      .where({ type: "employee" })
+      .orderBy("id", "desc");
+    if (getEmp?.length == 0) return (payload = []);
+    let count = getEmp.length;
+    username = req.admin;
+    return res.render("employee", {
+      payload: getEmp,
+      username: username,
+      count: count,
+      status: true,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+});
 
+router.get("/create", async (req, res) => {
+  try {
+    res.render('create-emp',{username:req.admin,status:true})
+  } catch (error) {
+    console.log(error);
+  }
+});
 
-module.exports = router
+module.exports = router;

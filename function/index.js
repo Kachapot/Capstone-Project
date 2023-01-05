@@ -13,13 +13,12 @@ module.exports.authorization = async (req,res,next)=>{
     const getlog = await db.select('iat').from('Log_Login').where({username:data.username}).orderBy('id','desc').limit(1)
     if (getlog[0].iat != data.iat) {
       let data = {status:true,message:"token not valide",data:""}
-      return res.render('login',data)
+      return res.clearCookie("access_token").render('login',data)
         // .status(401)
-        .clearCookie("access_token")
         // .json({ status: 400, message: "Token Timeout", data: {} });
         
     }
-    console.log('token passed!');
+    // console.log('token passed!');
     req.admin = data.username;
     return next();
   } catch (err) {
