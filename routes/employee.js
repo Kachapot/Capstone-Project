@@ -6,7 +6,7 @@ router.post('/',async (req,res)=>{
     try {
         const body = req.body
         let payload = []
-        const getEmp = await db('employee').select('*')
+        const getEmp = await db('admin').select('*').where({type:'employee'})
         if(!getEmp) return payload = []
         payload = getEmp
         return res.render('employee',payload)
