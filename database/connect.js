@@ -1,12 +1,11 @@
 const { dotenv } = require("../module");
-
 const knex = require("knex").default({
-  client: "mysql",
+  client: "mysql2",
   connection: {
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'db_adminsytem',
+    host: process.env.db_host,
+    user: process.env.db_username,
+    password: process.env.db_password,
+    database: process.env.db_name,
     timezone: "asia/bangkok",
     supportBigNumbers:true,
     bigNumberStrings:true,

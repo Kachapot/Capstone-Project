@@ -26,14 +26,10 @@ router.get('/main',authorization,async(req,res)=>{
 
 router.post('/login',async (req,res)=>{
     try {
-        // console.log('login');
         const body = req.body
-        // console.log('username',body.username);
-        // console.log('password',body.password);
-        const getadmin = await db('admin').select('*')
+        const getadmin = await db('tb_employee').select('*')
         .where({username:body.username,password:body.password})
         .first()
-        // console.log('getadmin',getadmin);
         if (!getadmin || getadmin?.status != 1) {
             let data = ({ status: 400, message: "บัญขีถูกระงับ"});
             return res.redirect('/')
@@ -69,7 +65,7 @@ router.post('/login',async (req,res)=>{
               browser: browser
             };
     
-            const createLogLogin = await db.insert(data).into('Log_Login')
+            const createLogLogin = await db.insert(data).into('tb_log_login')
             if (!createLogLogin) {
               return res.json({ status: 400, message: "เกิดข้อผิดพลาดระบบ โปรดติดต่อแอดมิน", data: {} })
             }

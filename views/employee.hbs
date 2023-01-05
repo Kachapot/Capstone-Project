@@ -25,14 +25,14 @@
     <tbody>
       {{#each payload}}
       <tr>
-        <th scope="row">{{code}}</th>
-        <td>{{name}}</td>
-        <td>{{position}}</td>
-        <td>{{status}}</td>
+        <th scope="row">{{emp_id}}</th>
+        <td>{{emp_name}}</td>
+        <td>{{emp_position}}</td>
+        <td>{{emp_status}}</td>
         <td>{{create_date}}</td>
         <td class="text-end">
           <a href="#" type="button" class="btn btn-success btn-small"><i class="bi bi-eye"> ดูข้อมูล</i></a>
-          <a href="#" type="button" class="btn btn-warning text-white btn-small"><i class="bi bi-pencil"> แก้ไข</i></a>
+          <a href="/employee/edit/{{emp_id}}" type="button" class="btn btn-warning text-white btn-small"><i class="bi bi-pencil"> แก้ไข</i></a>
           <a href="#" type="button" class="btn btn-danger btn-small"><i class="bi bi-person-x"> ลบ</i></a>
         </td>
       </tr>

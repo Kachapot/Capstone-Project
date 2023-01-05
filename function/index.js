@@ -10,7 +10,7 @@ module.exports.authorization = async (req,res,next)=>{
   }
   try {
     const data = jwt.verify(token,'adminsystem');
-    const getlog = await db.select('iat').from('Log_Login').where({username:data.username}).orderBy('id','desc').limit(1)
+    const getlog = await db.select('iat').from('tb_log_login').where({username:data.username}).orderBy('id','desc').limit(1)
     if (getlog[0].iat != data.iat) {
       let data = {status:true,message:"token not valide",data:""}
       return res.clearCookie("access_token").render('login',data)
