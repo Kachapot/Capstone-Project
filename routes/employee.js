@@ -8,7 +8,8 @@ router.get("/", async (req, res) => {
     const getEmp = await db("tb_employee")
       .select(
         'emp_id',
-        'emp_name',
+        'emp_fname',
+        'emp_lname',
         'emp_position',
         'emp_status',
         db.raw("DATE_FORMAT(create_date,'%d-%m-%Y %H:%i:%s') as create_date")
@@ -72,7 +73,14 @@ router.get('/edit/:id',async(req,res)=>{
   try {
      const body = req.params 
     //  console.log('body',body);
-     const getUser = await db('tb_employee').select('*').where({emp_id:body.id})
+     const getUser = await db('tb_employee').select(
+      'emp_id',
+      'emp_fname',
+      'emp_lname',
+      'username',
+      'password',
+      ''
+     ).where({emp_id:body.id})
     //  console.log('getUser',getUser);
      return res.render('edit-emp',{payload:getUser,status:true})
   } catch (error) {

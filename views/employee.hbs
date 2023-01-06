@@ -16,17 +16,19 @@
       <tr>
         <th scope="col">รหัสพนักงาน</th>
         <th scope="col">ชื่อ</th>
+        <th scope="col">สกุล</th>
         <th scope="col">ตำแหน่ง</th>
         <th scope="col">สถานะ</th>
         <th scope="col">วันที่ลงทะเบียน</th>
-        <th scope="col" class="text-end">ฟังชั่น</th>
+        <th scope="col" class="text-end">action</th>
       </tr>
     </thead>
     <tbody>
       {{#each payload}}
       <tr>
         <th scope="row">{{emp_id}}</th>
-        <td>{{emp_name}}</td>
+        <td>{{emp_fname}}</td>
+        <td>{{emp_lname}}</td>
         <td>{{emp_position}}</td>
         <td>{{emp_status}}</td>
         <td>{{create_date}}</td>
@@ -40,27 +42,27 @@
     </tbody>
   </table>
 
-  {{!-- Pagination --}}
-  <div class="row d-flex flex-row">
-    <div class="col-12 text-end">
-      <nav aria-label="Page navigation example">
-        <ul class="pagination">
-          <li class="page-item">
-            <a class="page-link" href="#" aria-label="Previous">
-              <span aria-hidden="true">&laquo;</span>
-            </a>
-          </li>
-          <li class="page-item"><a class="page-link" href="#">1</a></li>
-          <li class="page-item"><a class="page-link" href="#">2</a></li>
-          <li class="page-item"><a class="page-link" href="#">3</a></li>
-          <li class="page-item">
-            <a class="page-link" href="#" aria-label="Next">
-              <span aria-hidden="true">&raquo;</span>
-            </a>
-          </li>
-        </ul>
-      </nav>
-    </div>
+{{!-- Pagination --}}
+<div class="row d-flex flex-row">
+  <div class="col-12 text-end">
+    <nav aria-label="Page navigation example">
+      <ul class="pagination">
+        <li class="page-item">
+          <a class="page-link" href="#" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+        <li class="page-item"><a class="page-link" href="#">1</a></li>
+        <li class="page-item"><a class="page-link" href="#">2</a></li>
+        <li class="page-item"><a class="page-link" href="#">3</a></li>
+        <li class="page-item">
+          <a class="page-link" href="#" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
   </div>
+</div>
 
 </div>

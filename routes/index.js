@@ -16,7 +16,8 @@ router.get('/',authorization,(req,res)=>{
 
 router.get('/main',authorization,async(req,res)=>{
   try {
-    let data = {status:true,msg:"welcome",username:req.admin}
+    // console.log('main');
+    let data = {status:true,msg:"ยินดีต้อนรับ",username:req.admin}
     res.render('index',data)
   } catch (error) {
     console.log(error);
@@ -27,10 +28,13 @@ router.get('/main',authorization,async(req,res)=>{
 router.post('/login',async (req,res)=>{
     try {
         const body = req.body
+        // console.log('login');
+        // console.log('body',body);
         const getadmin = await db('tb_employee').select('*')
         .where({username:body.username,password:body.password})
         .first()
-        if (!getadmin || getadmin?.status != 1) {
+        // console.log('getadmin',getadmin);
+        if (!getadmin || getadmin?.emp_status != 1) {
             let data = ({ status: 400, message: "บัญขีถูกระงับ"});
             return res.redirect('/')
         }
@@ -72,7 +76,7 @@ router.post('/login',async (req,res)=>{
             let payload = {
               username: getadmin.username,
             };
-    
+            console.log('login all passed');
             // res.setHeader('set-cookie', ['access_token=' + token + '; Domain=.magiccasino.bet; Path=/; HttpOnly',]);
             // data = ({ status: 200, message: "เข้าสู่ระบบสำเร็จ", data: getadmin.username });
             return res.status(200).cookie("access_token", token).redirect('/main')
