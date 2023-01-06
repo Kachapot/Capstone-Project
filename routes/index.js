@@ -4,6 +4,7 @@ const {useragent,moment,jwt} = require('../module/index')
 const db = require('../database/connect')
 
 router.use('/employee',authorization,require('./employee'))
+router.use('/customer',authorization,require('./customer'))
 
 router.get('/',authorization,(req,res)=>{
     // console.log('cookie',req);

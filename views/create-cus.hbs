@@ -27,18 +27,14 @@
 </div>
 {{/if}}
     <div class="row">
-        <h2>แก้ไขข้อมูลพนักงาน</h2>
+        <h2>เพิ่มพนักงาน</h2>
     </div>
     <hr>
-{{#each payload}}
-    <form method="post" action="/employee/edit/update">
-        <div class="col ">
-            รหัสพนักงาน : <input readonly type="text" name="id" value="{{emp_id}}" style="border: none;">
-        </div>
+    <form method="post" action="/employee/create/insert">
         <div class="row py-1">
             <div class="col">
                 <label for="username">username</label>
-                <input type="text" name="username" class="form-control form-control-sm" value="{{username}}" >
+                <input type="text" name="username" class="form-control form-control-sm" autofocus>
             </div>
             <div class="col">
                 <label for="password">password</label>
@@ -49,8 +45,8 @@
             <div class="col">
                 <div class="input-group">
                 <span class="input-group-text">ชื่อ-สกุล</span>
-                <input type="text" name="fname" aria-label="First name" class="form-control form-control-sm" value="{{emp_fname}}">
-                <input type="text" name="lname" aria-label="Last name" class="form-control form-control-sm" value="{{emp_lname}}">
+                <input type="text" name="fname" aria-label="First name" class="form-control form-control-sm"  >
+                <input type="text" name="lname" aria-label="Last name" class="form-control form-control-sm">
                 </div>
             </div>
         </div>
@@ -58,7 +54,7 @@
             <div class="col">
                 <label for="gender">เพศ</label>
                 <select class="form-select form-select-sm" name="gender" id="floatingSelect" aria-label="Floating label select example">
-                    <option selected>{{emp_gender}}</option>
+                    <option selected>เลือกเพศ</option>
                     <option value="ชาย">ชาย</option>
                     <option value="หญิง">หญิง</option>
                     <option value="เพศทางเลือกอื่นๆ">เพศทางเลือกอื่นๆ</option>
@@ -68,8 +64,7 @@
                 <div class="col">
                 <label for="position">ตำแห่นง</label>
                 <select class="form-select form-select-sm" name="position" id="floatingSelect" aria-label="Floating label select example">
-                    <option>{{emp_position}}</option>
-                    <option value="พนักงานทั่วไป">พนักงานทั่วไป</option>
+                    <option value="พนักงานทั่วไป" selected>พนักงานทั่วไป</option>
                     <option value="พนักงานขนส่ง">พนักงานขนส่ง</option>
                     <option value="พนักงานคิดเงิน">พนักงานคิดเงิน</option>
                 </select>
@@ -78,31 +73,30 @@
             <div class="col">
                 <div class="form-group">
                     <label for="exampleFormControlInput1">อีเมล</label>
-                    <input type="email" name="email" class="form-control form-control-sm" id="exampleFormControlInput1" placeholder="name@mail.com" value="{{emp_email}}">
+                    <input type="email" name="email" class="form-control form-control-sm" id="exampleFormControlInput1" placeholder="name@mail.com">
                 </div>
             </div>
         </div>
         <div class="row py-1">
             <div class="col-6">
                 <label for="phone">เบอร์โทรศัพท์</label>
-                <input type="text" name="phone" class="form-control form-control-sm" value="{{emp_phone}}">
+                <input type="text" name="phone" class="form-control form-control-sm">
             </div>
             <div class="col-6">
                 <label for="datepicker">วันเกิด</label>
-                <input id="datepicker" name="birthdate" class="form-control form-control-sm text-primary" value="{{emp_birthday}}"></input>
+                <input id="datepicker" name="birthdate" class="form-control form-control-sm text-primary" value=""></input>
             </div>
             
         </div>
         <div class="row">
             <div class="form-group">
             <label for="exampleFormControlTextarea1">ที่อยู่</label>
-            <textarea class="form-control " name="address" id="exampleFormControlTextarea1" rows="5" >{{emp_address}}</textarea>
+            <textarea class="form-control " name="address" id="exampleFormControlTextarea1" rows="5"></textarea>
         </div>
         </div>
         
         <hr>
         <div class="row">
-            
             <div class="col text-end">
                 <a class="btn btn-light" href="/employee">
                     <i class="bi bi-arrow-bar-left"></i> กลับ
@@ -110,14 +104,9 @@
                 <button type="submit" class="btn btn-primary">
                     <i class="bi bi-save-fill"></i> บันทึก
                 </button>
-                
-                {{!-- <button type="submit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                Launch demo modal
-                </button> --}}
             </div>
         </div>
     </form>
-{{/each}}
 </div>
 
 <script>

@@ -5,25 +5,30 @@ const db = require("../database/connect");
 
 router.get("/", async (req, res) => {
   try {
-    // console.log('tb_employee');
-    const getEmp = await db("tb_employee")
+    console.log('customer');
+    username = req.admin;
+    const getcus = await db("tb_customer")
       .select(
-        'emp_id',
-        'emp_fname',
-        'emp_lname',
-        'emp_position',
-        'emp_status',
+        'cus_id',
+        'cus_fname',
+        'cus_lname',
+        'cus_gender',
+        'cus_phone',
         db.raw("DATE_FORMAT(create_date,'%d-%m-%Y %H:%i:%s') as create_date")
       )
-      .whereRaw("level > 1")
       .orderBy("id", "desc");
-    if (getEmp?.length == 0) return (payload = []);
-    let count = getEmp.length;
-    username = req.admin;
-    return res.render("employee", {
-      payload: getEmp,
+      console.log('getcus',getcus);
+    if (getcus?.length == 0) return res.render('customer',{
+        payload: [],
+        username: username,
+        count: getcus.length,
+        status: true,
+      })
+    
+    return res.render("customer", {
+      payload: getcus,
       username: username,
-      count: count,
+      count: getcus.length,
       status: true,
     });
   } catch (error) {
@@ -33,7 +38,7 @@ router.get("/", async (req, res) => {
 
 router.get("/create", async (req, res) => {
   try {
-    res.render('create-emp',{username:req.admin,status:true})
+    res.render('create-cus',{username:req.admin,status:true})
   } catch (error) {
     console.log(error);
   }
