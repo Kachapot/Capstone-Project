@@ -15,6 +15,14 @@ router.get('/',authorization,(req,res)=>{
     }
 })
 
+router.get('/map',async(req,res)=>{
+  try {
+    return res.render('map',{status:false})
+  } catch (error) {
+    console.log(error);
+  }
+})
+
 router.get('/main',authorization,async(req,res)=>{
   try {
     // console.log('main');

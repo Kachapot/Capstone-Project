@@ -27,20 +27,10 @@
 </div>
 {{/if}}
     <div class="row">
-        <h2>เพิ่มพนักงาน</h2>
+        <h2>เพิ่มข้อมูลลูกค้า</h2>
     </div>
     <hr>
-    <form method="post" action="/employee/create/insert">
-        <div class="row py-1">
-            <div class="col">
-                <label for="username">username</label>
-                <input type="text" name="username" class="form-control form-control-sm" autofocus>
-            </div>
-            <div class="col">
-                <label for="password">password</label>
-                <input type="password" name="password" class="form-control form-control-sm">
-            </div>
-        </div>
+    <form method="post" action="/customer/create/insert">
         <div class="row py-1">
             <div class="col">
                 <div class="input-group">
@@ -61,16 +51,6 @@
                 </select>
             </div>
             <div class="col">
-                <div class="col">
-                <label for="position">ตำแห่นง</label>
-                <select class="form-select form-select-sm" name="position" id="floatingSelect" aria-label="Floating label select example">
-                    <option value="พนักงานทั่วไป" selected>พนักงานทั่วไป</option>
-                    <option value="พนักงานขนส่ง">พนักงานขนส่ง</option>
-                    <option value="พนักงานคิดเงิน">พนักงานคิดเงิน</option>
-                </select>
-            </div>
-            </div>
-            <div class="col">
                 <div class="form-group">
                     <label for="exampleFormControlInput1">อีเมล</label>
                     <input type="email" name="email" class="form-control form-control-sm" id="exampleFormControlInput1" placeholder="name@mail.com">
@@ -82,11 +62,20 @@
                 <label for="phone">เบอร์โทรศัพท์</label>
                 <input type="text" name="phone" class="form-control form-control-sm">
             </div>
-            <div class="col-6">
-                <label for="datepicker">วันเกิด</label>
-                <input id="datepicker" name="birthdate" class="form-control form-control-sm text-primary" value=""></input>
-            </div>
-            
+        <div class="row">
+                <div id="map"></div>
+
+    <!-- 
+     The `defer` attribute causes the callback to execute after the full HTML
+     document has been parsed. For non-blocking uses, avoiding race conditions,
+     and consistent behavior across browsers, consider loading using Promises
+     with https://www.npmjs.com/package/@googlemaps/js-api-loader.
+    -->
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg&callback=initMap&v=weekly"
+      defer
+    ></script>
+        </div>
         </div>
         <div class="row">
             <div class="form-group">
