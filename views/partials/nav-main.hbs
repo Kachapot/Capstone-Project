@@ -1,0 +1,48 @@
+<nav class="navbar bg-primary fixed-top">
+      <div class="container-fluid" >
+        <button class="navbar-toggler border-0 text-white" type="button"
+          data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
+          aria-controls="offcanvasNavbar">
+          <i class="bi bi-list" style="color: aliceblue;"></i>
+        </button>
+        <div class="dropdown px-5">
+          <a class="btn dropdown-toggle text-white" href="#" role="button"
+            id="dropdownMenuLink" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            <i class="bi bi-person-circle fa-9x " style="color: aliceblue;"></i> {{username}}
+          </a>
+
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+            <li><a class="dropdown-item" href="#">ดูข้อมูล</a></li>
+            <li><a class="dropdown-item" href="/logout">ออกจากระบบ</a></li>
+          </ul>
+        </div>
+        {{!-- <button class="btn"></button> --}}
+        <div class="offcanvas offcanvas-start" tabindex="-1"
+          id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+          <div class="offcanvas-header">
+            <h1 class="offcanvas-title" id="offcanvasNavbarLabel">เมนู</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+              <li class="nav-item">
+                <a class="nav-link" href="/main"><h4>รายการสั่งซื้อ</h4></a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/employee"><h4>รายชื่อพนักงาน</h4></a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/customer"><h4>รายชื่อลูกค้า</h4></a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/product"><h4>รายการสินค้าคงคลัง</h4></a>
+              </li>
+              {{!-- <li class="nav-item">
+                <a class="nav-link" href="/map"><h4>แผนที่</h4></a>
+              </li> --}}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </nav>

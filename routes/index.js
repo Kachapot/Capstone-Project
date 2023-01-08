@@ -5,6 +5,7 @@ const db = require('../database/connect')
 
 router.use('/employee',authorization,require('./employee'))
 router.use('/customer',authorization,require('./customer'))
+router.use('/product',authorization,require('./product'))
 
 router.get('/',authorization,(req,res)=>{
     // console.log('cookie',req);

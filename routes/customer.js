@@ -5,7 +5,7 @@ const db = require("../database/connect");
 
 router.get("/", async (req, res) => {
   try {
-    console.log('customer');
+    // console.log('customer');
     username = req.admin;
     const getcus = await db("tb_customer")
       .select(
@@ -17,7 +17,7 @@ router.get("/", async (req, res) => {
         db.raw("DATE_FORMAT(create_date,'%d-%m-%Y %H:%i:%s') as create_date")
       )
       .orderBy("id", "desc");
-      console.log('getcus',getcus);
+      // console.log('getcus',getcus);
     if (getcus?.length == 0) return res.render('customer',{
         payload: [],
         username: username,
@@ -47,29 +47,30 @@ router.get("/create", async (req, res) => {
 router.post('/create/insert',async(req,res)=>{
   try {
     const body = req.body
-    console.log('body',body);
-    const checkEmp = await db('tb_employee')
+    // console.log('body',body);
+    const checkEmp = await db('tb_customer')
     .select('*')
-    .whereRaw(`username = '${body.username}'`).first()
-    if(checkEmp) return res.render('create-emp',{error:true,msg:body.username+" มีผู้ใช้งานแล้ว",status:true}) 
-    const insertData = await db('tb_employee').insert({
-      emp_id:'emp_'+uid(3),
-      username: body.username,
-      password: body.password,
-      emp_fname : body.fname,
-      emp_lname: body.lname,
-      emp_position: body.position,
-      level: 3,
-      emp_status:1,
-      emp_gender : body.gender,
-      emp_birthday : body.birthdate,
-      emp_email: body.email,
-      emp_address: body.address,
-      emp_img : '',
-      emp_phone: body.phone
+    .whereRaw(`cus_fname = '${body.fname}' and cus_lname = '${body.lname}'`).first()
+    if(checkEmp) return res.render('create-cus',{error:true,msg:body.fname+" "+body.lname+' มีอยู่แล้วไม่สามารถสร้างซ้ำได้',status:true}) 
+    let address = {
+      ship_address:body.ship_address,
+      address2:body.address2,
+      locality:body.locality,
+      state : body.state,
+      postcode : body.postcode
+    }
+    const insertData = await db('tb_customer').insert({
+      cus_id:'cus_'+uid(3),
+      cus_fname : body.fname,
+      cus_lname: body.lname,
+      cus_gender:body.gender,
+      cus_phone : body.phone,
+      cus_email : body.email,
+      cus_address : JSON.stringify(address),
+      cus_location : ''
     })
-    if(!insertData) return render('create-emp',{error:true,msg:'เกิดข้อผิดพลาดบางอย่าง ไม่สามารถเพิ่มพนักงานได้',status:true})
-    return res.render('create-emp',{success:true,msg:'เพิ่มพนักงาน '+body.fname+' '+body.lname+' สำเร็จ',status:true})
+    if(!insertData) return render('create-cus',{error:true,msg:'เกิดข้อผิดพลาดบางอย่าง ไม่สามารถเพิ่มลูกค้าได้',status:true})
+    return res.render('create-cus',{success:true,msg:'เพิ่มลูกค้า '+body.fname+' '+body.lname+' สำเร็จ',status:true})
   } catch (error) {
     console.log(error);
   }
@@ -79,23 +80,33 @@ router.get('/edit/:id',async(req,res)=>{
   try {
      const body = req.params 
     //  console.log('body',body);
-     const getUser = await db('tb_employee').select(
-      'emp_id',
-      'emp_fname',
-      'emp_lname',
-      'username',
-      'password',
-      'emp_position',
-      'level',
-      'emp_status',
-      'emp_gender',
-      'emp_email',
-      'emp_address',
-      'emp_img',
-      'emp_phone',
-      db.raw("date_format(emp_birthday, '%d-%m-%Y') as emp_birthday")
-     ).where({emp_id:body.id})
-     return res.render('edit-emp',{payload:getUser,status:true})
+     const getUser = await db('tb_customer').select(
+      'cus_id',
+      'cus_fname',
+      'cus_lname',
+      'cus_gender',
+      'cus_email',
+      'cus_address',
+      'cus_phone',
+     ).where({cus_id:body.id}).first()
+    //  console.log('getUser',getUser);
+     if(getUser.cus_address.length>0) var userAddress = JSON.parse(getUser.cus_address);
+    //  return console.log('userAddress',userAddress);
+     let payload = {
+      cus_id:getUser.cus_id,
+      cus_fname:getUser.cus_fname,
+      cus_lname: getUser.cus_lname,
+      cus_gender: getUser.cus_gender,
+      cus_email: getUser.cus_email,
+      cus_phone: getUser.cus_phone,
+      ship_address:userAddress.ship_address,
+      address2: userAddress.address2,
+      locality : userAddress.locality,
+      state : userAddress.state,
+      postcode : userAddress.postcode
+     }
+    //  return console.log('payload',payload);
+     return res.render('edit-cus',{payload:payload,status:true})
   } catch (error) {
     console.log(error);
   }
@@ -105,23 +116,41 @@ router.post('/edit/update',async(req,res)=>{
   try {
     const body = req.body
     // return console.log('body',body);
-    const getUser = await db('tb_employee').select('*').where({emp_id : body.id}).first()
-    if(!getUser) return render('edit-emp',{error:true,msg:'ไม่พบ',status:true})
-    let update = {
-      username:body.username??getUser.username,
-      password:body.password??getUser.password,
-      emp_fname:body.fname??getUser.emp_fname,
-      emp_lname:body.lname??getUser.emp_lname,
-      emp_gender:body.gender??getUser.emp_gender,
-      emp_position:body.position??getUser.emp_position,
-      emp_phone : body.phone??getUser.emp_phone,
-      emp_email:body.email??getUser.emp_email,
-      emp_birthday:body.birthdate??getUser.emp_birthday,
-      emp_address:body.address??getUser.emp_address,
-      update_date:moment().format('yyyy-mm-dd')
+    const getUser = await db('tb_customer').select('*').where({cus_id : body.id}).first()
+    // console.log('getuser',getUser);
+    if(!getUser) return res.render('edit-cus',{error:true,msg:'ไม่พบ',status:true})
+    let address = {
+      ship_address:body.ship_address,
+      address2:body.address2,
+      locality:body.locality,
+      state : body.state,
+      postcode : body.postcode
     }
-    const updateData = await db('tb_employee').update(update).where({emp_id:body.id})
-    return res.render('edit-emp',{success:true,msg:'แก้ไขสำเร็จ',status:true,payload:[update]})
+    let update = {
+      cus_id:'cus_'+uid(3),
+      cus_fname : body.fname,
+      cus_lname: body.lname,
+      cus_gender:body.gender,
+      cus_phone : body.phone,
+      cus_email : body.email,
+      cus_address : JSON.stringify(address),
+      cus_location : ''
+    }
+    const updateData = await db('tb_customer').update(update).where({cus_id:body.id})
+    let payload = {
+      cus_id:body.id,
+      cus_fname:body.fname,
+      cus_lname: body.lname,
+      cus_gender: body.gender,
+      cus_email: body.email,
+      cus_phone : body.phone,
+      ship_address:body.ship_address,
+      address2: body.address2,
+      locality : body.locality,
+      state : body.state,
+      postcode : body.postcode
+     }
+    return res.render('edit-cus',{success:true,msg:'แก้ไขสำเร็จ',status:true,payload:payload})
   } catch (error) {
     console.log(error);
   }

@@ -1,0 +1,96 @@
+{{#if payload}}
+<form method="post" action="/product/addProduct/insert">
+    <div class="row py-1">
+        <div class="col-6">
+            <label for="productType">หมวดสินค้า</label>
+        <select class="form-select" aria-label="Default select example" name="prod_type_id" aria-readonly="true">
+            <option selected>{{payload.prod_type_name}}</option>
+        </select>
+        </div>
+        <div class="col">
+            <label for="prod_name"><span>ชื่อสินค้า</span></label>
+            <input type="text" class="form-control" name="prod_name" value="{{payload.prod_name}}">
+        </div>
+    </div>
+    <div class="row py-1">
+        <div class="col">
+            <label for="prod_price">ราคาสินค้าต่อหน่วย</label>
+            <input type="number" class="form-control" name="prod_price" value="{{payload.prod_price}}">
+        </div>
+        <div class="col">
+            <label for="prod_amount">จำนวน</label>
+            <input type="number" class="form-control" name="prod_amount" value="{{payload.prod_amount}}" readonly>
+        </div>
+        <div class="col">
+            <label for="formFile">รูปภาพสินค้า</label>
+            <input class="form-control" type="file" id="formFile" name="prod_img">
+        </div>
+    </div>
+    <div class="row py-1">
+        <div class="col">
+            <label >รายละเอียดสินค้า</label>
+            <textarea class="form-control" rows="5" name="prod_detail">{{payload.prod_detail}}</textarea>
+        </div>
+    </div>
+    <hr>
+    <div class="row py-1">
+        <div class="col text-end">
+            <a class="btn btn-light" href="/product">
+                <i class="bi bi-arrow-bar-left"></i> กลับ
+            </a>
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-save-fill"></i> บันทึก
+            </button>
+        </div>
+    </div>
+</form>
+{{else}}
+<form method="post" action="/product/addProduct/insert">
+    <div class="row py-1">
+        <div class="col-6">
+            <label for="productType">หมวดสินค้า</label>
+        <select class="form-select" aria-label="Default select example" name="prod_type_id">
+            <option selected>เลือกหมวดของสินค้า</option>
+            {{#each type}}
+            <option value="{{prod_type_id}}">{{prod_type_name}}</option>
+            {{/each}}
+        </select>
+        </div>
+        <div class="col">
+            <label for="prod_name"><span>ชื่อสินค้า</span></label>
+            <input type="text" class="form-control" name="prod_name">
+        </div>
+    </div>
+    <div class="row py-1">
+        <div class="col">
+            <label for="prod_price">ราคาสินค้าต่อหน่วย</label>
+            <input type="number" class="form-control" name="prod_price">
+        </div>
+        <div class="col">
+            <label for="prod_amount">จำนวน</label>
+            <input type="number" class="form-control" name="prod_amount">
+        </div>
+        <div class="col">
+            <label for="formFile">รูปภาพสินค้า</label>
+            <input class="form-control" type="file" id="formFile" name="prod_img">
+        </div>
+    </div>
+    <div class="row py-1">
+        <div class="col">
+            <label >รายละเอียดสินค้า</label>
+            <textarea class="form-control" rows="5" name="prod_detail"></textarea>
+        </div>
+    </div>
+    <hr>
+    <div class="row py-1">
+        <div class="col text-end">
+            <a class="btn btn-light" href="/product">
+                <i class="bi bi-arrow-bar-left"></i> กลับ
+            </a>
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-save-fill"></i> บันทึก
+            </button>
+        </div>
+    </div>
+</form>
+{{/if}}

@@ -1,0 +1,206 @@
+{{#if payload}}
+
+<form method="post" action="/customer/edit/update">
+        <div class="col ">
+            รหัสลูกค้า : <input readonly type="text" name="id" value="{{payload.cus_id}}" style="border: none;">
+        </div>
+        <div class="row py-1">
+            <div class="col">
+                <div class="input-group">
+                <span class="input-group-text">ชื่อ-สกุล</span>
+                <input type="text" name="fname" aria-label="First name" class="form-control form-control-sm" value="{{payload.cus_fname}}" >
+                <input type="text" name="lname" aria-label="Last name" class="form-control form-control-sm" value="{{payload.cus_lname}}">
+                </div>
+            </div>
+        </div>
+        <div class="row py-1">
+            <div class="col">
+                <label for="gender">เพศ</label>
+                <select class="form-select form-select-sm" name="gender" id="floatingSelect" aria-label="Floating label select example">
+                    <option value="{{payload.cus_gender}}">{{payload.cus_gender}}</option>
+                    <option value="ชาย">ชาย</option>
+                    <option value="หญิง">หญิง</option>
+                    <option value="เพศทางเลือกอื่นๆ">เพศทางเลือกอื่นๆ</option>
+                </select>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <label for="exampleFormControlInput1">อีเมล</label>
+                    <input type="email" name="email" class="form-control form-control-sm" id="exampleFormControlInput1" placeholder="name@mail.com" value="{{payload.cus_email}}">
+                </div>
+            </div>
+        </div>
+        <div class="row py-1">
+            <div class="col-6">
+                <label for="phone">เบอร์โทรศัพท์</label>
+                <input type="text" name="phone" class="form-control form-control-sm" value="{{payload.cus_phone}}">
+            </div>
+        </div>
+
+        {{!-- map input --}}
+        <div class="row py-1">
+            <div class="col-6">
+                {{!-- <form id="address-form" action="" method="get" autocomplete="off"> --}}
+                <div class="row">
+                    <label >
+                    <!-- Avoid the word "address" in id, name, or label text to avoid browser autofill from conflicting with Place Autocomplete. Star or comment bug https://crbug.com/587466 to request Chromium to honor autocomplete="off" attribute. -->
+                    <span>ส่งที่</span>
+                    <input
+                    id="ship_address"
+                    class="form-control form-control-sm" 
+                    name="ship_address"
+                    required
+                    autocomplete="off"
+                    value="{{payload.ship_address}}"
+                    />
+                </label>
+                </div>
+               <div class="row">
+                 <label >
+                    <span>อพาร์ทเม้น,ยูนิต,ขั้น,ห้อง</span>
+                    <input id="address2" name="address2" class="form-control form-control-sm" value="{{payload.address2}}" />
+                </label>
+               </div>
+                <div class="row">
+                    <label >
+                    <span>อำเภอ*</span>
+                    <input id="locality" name="locality" class="form-control form-control-sm" value="{{payload.locality}}" required  />
+                </label>
+                </div>
+                <div class="row">
+                    <label>
+                    <span>จังหวัด*</span>
+                    <input id="state" name="state" class="form-control form-control-sm" value="{{payload.state}}" required />
+                </label>
+                </div>
+                <div class="row">
+                    <label for="postal_code">
+                    <span>รหัสไปรษณี*</span>
+                    <input id="postcode" name="postcode" class="form-control form-control-sm" value="{{payload.postcode}}" required />
+                </label>
+                </div>
+            {{!-- </form> --}}
+            </div>
+            <div class="col d-flex align-items-center justify-content-center" style="background-color: gray;width:100%;">
+                <i class="bi bi-geo-alt-fill text-danger"></i>
+                <h3 class="text-white text-center">map</h3>
+            </div>
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg&callback=initAutocomplete&libraries=places&v=weekly"
+      defer
+    ></script>
+        </div>
+        
+        <hr>
+        <div class="row">
+            <div class="col text-end">
+                <a class="btn btn-light" href="/customer">
+                    <i class="bi bi-arrow-bar-left"></i> กลับ
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-save-fill"></i> บันทึก
+                </button>
+            </div>
+        </div>
+</form>
+{{else}}
+<form method="post" action="/customer/create/insert">
+        <div class="row py-1">
+            <div class="col">
+                <div class="input-group">
+                <span class="input-group-text">ชื่อ-สกุล</span>
+                <input type="text" name="fname" aria-label="First name" class="form-control form-control-sm" >
+                <input type="text" name="lname" aria-label="Last name" class="form-control form-control-sm">
+                </div>
+            </div>
+        </div>
+        <div class="row py-1">
+            <div class="col">
+                <label for="gender">เพศ</label>
+                <select class="form-select form-select-sm" name="gender" id="floatingSelect" aria-label="Floating label select example">
+                    <option selected>เลือกเพศ</option>
+                    <option value="ชาย">ชาย</option>
+                    <option value="หญิง">หญิง</option>
+                    <option value="เพศทางเลือกอื่นๆ">เพศทางเลือกอื่นๆ</option>
+                </select>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <label for="exampleFormControlInput1">อีเมล</label>
+                    <input type="email" name="email" class="form-control form-control-sm" id="exampleFormControlInput1" placeholder="name@mail.com">
+                </div>
+            </div>
+        </div>
+        <div class="row py-1">
+            <div class="col-6">
+                <label for="phone">เบอร์โทรศัพท์</label>
+                <input type="text" name="phone" class="form-control form-control-sm">
+            </div>
+        </div>
+
+        {{!-- map input --}}
+        <div class="row py-1">
+            <div class="col-6">
+                {{!-- <form id="address-form" action="" method="get" autocomplete="off"> --}}
+                <div class="row">
+                    <label >
+                    <!-- Avoid the word "address" in id, name, or label text to avoid browser autofill from conflicting with Place Autocomplete. Star or comment bug https://crbug.com/587466 to request Chromium to honor autocomplete="off" attribute. -->
+                    <span>ส่งที่</span>
+                    <input
+                    id="ship_address"
+                    class="form-control form-control-sm" 
+                    name="ship_address"
+                    required
+                    autocomplete="off"
+                    />
+                </label>
+                </div>
+               <div class="row">
+                 <label >
+                    <span>อพาร์ทเม้น,ยูนิต,ขั้น,ห้อง</span>
+                    <input id="address2" name="address2" class="form-control form-control-sm" />
+                </label>
+               </div>
+                <div class="row">
+                    <label >
+                    <span>อำเภอ*</span>
+                    <input id="locality" name="locality" class="form-control form-control-sm"  required  />
+                </label>
+                </div>
+                <div class="row">
+                    <label>
+                    <span>จังหวัด*</span>
+                    <input id="state" name="state" class="form-control form-control-sm"  required />
+                </label>
+                </div>
+                <div class="row">
+                    <label for="postal_code">
+                    <span>รหัสไปรษณี*</span>
+                    <input id="postcode" name="postcode" class="form-control form-control-sm"  required />
+                </label>
+                </div>
+            {{!-- </form> --}}
+            </div>
+            <div class="col d-flex align-items-center justify-content-center" style="background-color: gray;width:100%;">
+                <i class="bi bi-geo-alt-fill text-danger"></i>
+                <h3 class="text-white text-center">map</h3>
+            </div>
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg&callback=initAutocomplete&libraries=places&v=weekly"
+      defer
+    ></script>
+        </div>
+        
+        <hr>
+        <div class="row">
+            <div class="col text-end">
+                <a class="btn btn-light" href="/customer">
+                    <i class="bi bi-arrow-bar-left"></i> กลับ
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-save-fill"></i> บันทึก
+                </button>
+            </div>
+        </div>
+</form>
+{{/if}}

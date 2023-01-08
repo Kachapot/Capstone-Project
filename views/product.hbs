@@ -1,40 +1,47 @@
 <div class="container pt-5 mt-5">
-  <div class="d-grid gap-2 d-md-flex justify-content-md-end pb-3">
-    <a class="btn btn-primary" href="customer/create">เพิ่มข้อมูลลูกค้า</a>
+    <div class="d-flex flex-row bd-highlight mb-3 justify-content-end">
+        <div class="p-2 bd-highlight"><a class="btn btn-light " href="product/buy/create">สั่งซื้อสินค้าเข้า</a></div>
+        <div class="p-2 bd-highlight"><a class="btn btn-primary" href="product/addProduct">เพิ่มสินค้าใหม่</a></div>
+    </div>
+
+    {{!-- <div class="d-grid gap-2 d-flex justify-content-md-end pb-3">
+    
   </div>
+  <div class="d-grid gap-2 d-flex justify-content-md-end pb-3">
+    
+  </div> --}}
+  
   <div class="row d-flex flex-row">
     <div class="col-6">
-      <h3 class="text-start">รายชื่อลูกค้า</h3>
+      <h3 class="text-start">รายการสินค้าคงคลัง</h3>
     </div>
     <div class="col-6">
-      <h3 class="text-end">จำนวน {{count}} คน</h3>
+      <h3 class="text-end">สินค้าจำนวน {{count}} รายการ</h3>
     </div>
   </div>
   <hr>
   <table class="table table-hover">
     <thead>
       <tr>
-        <th scope="col">รหัสลูกค้า</th>
-        <th scope="col">ชื่อ</th>
-        <th scope="col">สกุล</th>
-        <th scope="col">เพศ</th>
-        <th scope="col">เบอร์โทรศัพท์</th>
-        <th scope="col">วันที่ลงทะเบียน</th>
+        <th scope="col">รหัสสินค้า</th>
+        <th scope="col">ชื่อสินค้า</th>
+        <th scope="col">ราคาต่อหน่วย</th>
+        <th scope="col">ภาพสินค้า</th>
+        <th scope="col">จำนวนที่เหลืออยู่</th>
         <th scope="col" class="text-end">action</th>
       </tr>
     </thead>
     <tbody>
       {{#each payload}}
       <tr>
-        <th scope="row">{{cus_id}}</th>
-        <td>{{cus_fname}}</td>
-        <td>{{cus_lname}}</td>
-        <td>{{cus_gender}}</td>
-        <td>{{cus_phone}}</td>
-        <td>{{create_date}}</td>
+        <th scope="row">{{prod_id}}</th>
+        <td>{{prod_name}}</td>
+        <td>{{prod_price}}</td>
+        <td>{{prod_img}}</td>
+        <td>{{prod_amount}}</td>
         <td class="text-end">
           <a href="#" type="button" class="btn btn-light btn-small"><i class="bi bi-eye"> ดูข้อมูล</i></a>
-          <a href="/customer/edit/{{cus_id}}" type="button" class="btn btn-light btn-small"><i class="bi bi-pencil"> แก้ไข</i></a>
+          <a href="/product/editProduct/{{prod_id}}" type="button" class="btn btn-light btn-small"><i class="bi bi-pencil"> แก้ไข</i></a>
           <a href="#" type="button" class="btn btn-danger btn-small"><i class="bi bi-person-x"> ลบ</i></a>
         </td>
       </tr>
