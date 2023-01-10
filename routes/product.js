@@ -11,7 +11,7 @@ router.get("/", async (req, res) => {
       .select(
         'prod_id',
         'prod_name',
-        'prod_price',
+        db.raw("format(prod_price,2) as prod_price"),
         'prod_img',
         'prod_amount',
       )
