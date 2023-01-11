@@ -1,6 +1,16 @@
 <div class="container pt-5 mt-5">
-  <div class="d-grid gap-2 d-md-flex justify-content-md-end pb-3">
+  <div class="row d-flex">
+    <div class="col">
     <a class="btn btn-primary" href="employee/create"><i class="bi bi-plus"></i> เพิ่มพนักงาน</a>
+  </div>
+    <div class="col">
+      <div class="d-grid gap-2 d-md-flex justify-content-md-end pb-3">
+      <form class="d-flex" method="post" action="employee/">
+          <input class="form-control me-2" type="search" name="search" placeholder="กรอกคำที่ต้องการค้นหา" aria-label="Search">
+          <button class="btn btn-success" type="submit">ค้นหา</button>
+        </form>
+      </div>
+    </div>
   </div>
   <div class="row d-flex flex-row">
     <div class="col-6">
@@ -43,7 +53,8 @@
   </table>
 
 {{!-- Pagination --}}
-<div class="row d-flex flex-row">
+
+<div class="row d-flex flex-row ">
   <div class="col-12 text-end">
     <nav aria-label="Page navigation example">
       <ul class="pagination">
