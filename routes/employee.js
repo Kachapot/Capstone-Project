@@ -6,6 +6,7 @@ const db = require("../database/connect");
 router.get("/", async (req, res) => {
   try {
     // console.log('tb_employee');
+    console.log('req.body',req.body);
     const getEmp = await db("tb_employee")
       .select(
         'emp_id',
@@ -30,6 +31,37 @@ router.get("/", async (req, res) => {
     console.log(error);
   }
 });
+
+router.post('/',async(req,res)=>{
+  try {
+    // console.log('tb_employee');
+    const body = req.body
+    let where = ` and emp_id like '${body.search}' or emp_fname like '${body.search}' or emp_lme like '${body.search}' or  emp_position like '${body.search}'`
+    const getEmp = await db("tb_employee")
+      .select(
+        'emp_id',
+        'emp_fname',
+        'emp_lname',
+        'emp_position',
+        'emp_status',
+        db.raw("DATE_FORMAT(create_date,'%d-%m-%Y %H:%i:%s') as create_date")
+      )
+      .whereRaw("level > 1"+where)
+      .orderBy("id", "desc");
+    if (getEmp?.length == 0) return (payload = []);
+    let count = getEmp.length;
+    username = req.admin;
+    return res.render("employee", {
+      payload: getEmp,
+      username: username,
+      count: count,
+      status: true,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+})
+
 
 router.get("/create", async (req, res) => {
   try {
