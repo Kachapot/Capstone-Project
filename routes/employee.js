@@ -1,12 +1,18 @@
 const router = require("express").Router();
 const { uid } = require("uid");
-const {moment} = require('../module/index')
+const {moment,paginate} = require('../module/index')
 const db = require("../database/connect");
 
 router.get("/", async (req, res) => {
   try {
     // console.log('tb_employee');
-    console.log('req.body',req.body);
+    const body = req.query
+    console.log('body',body);
+    const limit = 3
+    const page = 1
+    const offset = (page-1)*limit
+    let where = "level > 1 "
+    if(body.search) where += `and emp_id like '${body.search}' or emp_fname like '${body.search}' or emp_lname like '${body.search}' or  emp_position like '${body.search}'`
     const getEmp = await db("tb_employee")
       .select(
         'emp_id',
@@ -16,16 +22,25 @@ router.get("/", async (req, res) => {
         'emp_status',
         db.raw("DATE_FORMAT(create_date,'%d-%m-%Y %H:%i:%s') as create_date")
       )
-      .whereRaw("level > 1")
-      .orderBy("id", "desc");
-    if (getEmp?.length == 0) return (payload = []);
-    let count = getEmp.length;
+      .whereRaw(where)
+      .limit(limit)
+      .offset(offset)
+      .orderBy("id", "desc")??[]
     username = req.admin;
+    const countdata = await db('tb_employee').count('id as count').whereRaw(where).first()
+    
+    const pagination = {
+      page_item:page<= 3?[1,2,3]:[page-1,page,page+1],
+      page : page
+    }
+    // Handlebars.registerHelper('paginate', paginate);
+    
     return res.render("employee", {
       payload: getEmp,
       username: username,
-      count: count,
+      count: getEmp.length,
       status: true,
+      pagination:pagination
     });
   } catch (error) {
     console.log(error);

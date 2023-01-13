@@ -1,17 +1,5 @@
 <div class="container pt-5 mt-5">
-  <div class="row d-flex">
-    <div class="col">
-    <a class="btn btn-primary" href="employee/create"><i class="bi bi-plus"></i> เพิ่มพนักงาน</a>
-  </div>
-    <div class="col">
-      <div class="d-grid gap-2 d-md-flex justify-content-md-end pb-3">
-      <form class="d-flex" method="get" action="employee/">
-          <input class="form-control me-2" type="search" name="search" placeholder="กรอกคำที่ต้องการค้นหา" aria-label="Search">
-          <button class="btn btn-success" type="submit">ค้นหา</button>
-        </form>
-      </div>
-    </div>
-  </div>
+
   <div class="row d-flex flex-row">
     <div class="col-6">
       <h3 class="text-start">รายชื่อพนักงาน</h3>
@@ -20,6 +8,21 @@
       <h3 class="text-end">จำนวน {{count}} คน</h3>
     </div>
   </div>
+
+    <div class="row d-flex">
+    <div class="col">
+    <a class="btn btn-primary" href="employee/create"><i class="bi bi-plus"></i> เพิ่มพนักงาน</a>
+  </div>
+    <div class="col">
+      <div class="d-grid gap-2 d-md-flex justify-content-md-end ">
+      <form class="d-flex" method="get" >
+          <input class="form-control me-2" type="search" name="search" placeholder="กรอกคำที่ต้องการค้นหา" aria-label="Search">
+          <button class="btn btn-success" type="submit">ค้นหา</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <hr>
   <table class="table table-hover">
     <thead>
@@ -53,21 +56,23 @@
   </table>
 
 {{!-- Pagination --}}
-
 <div class="row d-flex flex-row ">
   <div class="col-12 text-end">
     <nav aria-label="Page navigation example">
       <ul class="pagination">
         <li class="page-item">
-          <a class="page-link" href="#" aria-label="Previous">
+          <a class="page-link" href="?page={{pagination.page}}&pageType=Previous" aria-label="Previous">
             <span aria-hidden="true">&laquo;</span>
           </a>
         </li>
-        <li class="page-item"><a class="page-link" href="#">1</a></li>
+        {{#each pagination.page_item}}
+          <li class="page-item"><a class="page-link" href="?page={{this}}">{{this}}</a></li>
+        {{/each}}
+        {{!-- <li class="page-item"><a class="page-link" href="#">1</a></li>
         <li class="page-item"><a class="page-link" href="#">2</a></li>
-        <li class="page-item"><a class="page-link" href="#">3</a></li>
+        <li class="page-item"><a class="page-link" href="#">3</a></li> --}}
         <li class="page-item">
-          <a class="page-link" href="#" aria-label="Next">
+          <a class="page-link" href="?page={{pagination.page}}&pageType=Next" aria-label="Next">
             <span aria-hidden="true">&raquo;</span>
           </a>
         </li>
@@ -76,4 +81,40 @@
   </div>
 </div>
 
+{{!-- <div class="pagination pagination-centered">
+  <ul>
+    {{#paginate pagination type="first"}}
+      <li {{#if disabled}}class="disabled"{{/if}}><a href="?p={{n}}">First</a></li>
+    {{/paginate}}
+    {{#paginate pagination type="previous"}}
+      <li {{#if disabled}}class="disabled"{{/if}}><a href="?p={{n}}">Prev</a></li>
+    {{/paginate}}
+    {{#paginate pagination type="middle" limit="5"}}
+      <li {{#if active}}class="active"{{/if}}><a href="?p={{n}}">{{n}}</a></li>
+    {{/paginate}}
+    {{#paginate pagination type="next"}}
+      <li {{#if disabled}}class="disabled"{{/if}}><a href="?p={{n}}">Next</a></li>
+    {{/paginate}}
+    {{#paginate pagination type="last"}}
+      <li {{#if disabled}}class="disabled"{{/if}}><a href="?p={{n}}">Last</a></li>
+    {{/paginate}}
+  </ul>
+</div> --}}
+
 </div>
+
+<script>
+$('#demo').pagination({
+  dataSource: {{payload}},
+  pageSize: 3,
+  showSizeChanger: true,
+  callback: function(data, pagination) {
+      // template method of yourself
+      var html = template(data);
+      dataContainer.html(html);
+  }
+})
+$('#pagination'){
+
+}
+</script>
