@@ -8,8 +8,8 @@ router.get("/", async (req, res) => {
     // console.log('tb_employee');
     const body = req.query
     console.log('body',body);
-    const limit = 3
-    const page = 1
+    const limit = 2
+    const page = body.page??1
     const offset = (page-1)*limit
     let where = "level > 1 "
     if(body.search) where += `and emp_id like '${body.search}' or emp_fname like '${body.search}' or emp_lname like '${body.search}' or  emp_position like '${body.search}'`
@@ -28,9 +28,21 @@ router.get("/", async (req, res) => {
       .orderBy("id", "desc")??[]
     username = req.admin;
     const countdata = await db('tb_employee').count('id as count').whereRaw(where).first()
-    
+    let all_page = Math.ceil(countdata.count/limit)
+    console.log('all_page',all_page);
+    let page_item = [1,2,3]
+    if(body.pageType){
+      if(body.pageType == 'Previous'){
+
+      }
+      if(body.pageType == 'Next'){
+
+      }
+    }else{
+      [+page-1,page,+page+1]
+    }
     const pagination = {
-      page_item:page<= 3?[1,2,3]:[page-1,page,page+1],
+      page_item:page_item,
       page : page
     }
     // Handlebars.registerHelper('paginate', paginate);
