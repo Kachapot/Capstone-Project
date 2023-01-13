@@ -1,1 +1,3 @@
-module.exports.pagination(page,type)
+module.exports.pagination(page,type)({
+    
+})
