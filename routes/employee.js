@@ -9,10 +9,17 @@ router.get("/", async (req, res) => {
     const body = req.query
     console.log('body',body);
     const limit = 2
-    const page = body.page??1
+    // console.log('body.page',body.page??1);
+    let page = Number(body.page??1)
+    if(body.pageType == 'Previous'){
+      page = page-1
+    }
+    if(body.pageType == 'Next'){
+      page = page+1
+    }
     const offset = (page-1)*limit
     let where = "level > 1 "
-    if(body.search) where += `and emp_id like '${body.search}' or emp_fname like '${body.search}' or emp_lname like '${body.search}' or  emp_position like '${body.search}'`
+    if(body.search) where += `and emp_id like '%${body.search}%' or emp_fname like '%${body.search}%' or emp_lname like '%${body.search}%' or  emp_position like '${body.search}'`
     const getEmp = await db("tb_employee")
       .select(
         'emp_id',
@@ -29,28 +36,44 @@ router.get("/", async (req, res) => {
     username = req.admin;
     const countdata = await db('tb_employee').count('id as count').whereRaw(where).first()
     let all_page = Math.ceil(countdata.count/limit)
-    console.log('all_page',all_page);
-    let page_item = [1,2,3]
-    if(body.pageType){
-      if(body.pageType == 'Previous'){
-
-      }
-      if(body.pageType == 'Next'){
-
-      }
+    // console.log('all_page',all_page);
+    
+    let previous = true
+    let next = true
+    let page_item = [{page:page-1,active:false},{page:page,active:true},{page:page+1,active:false}]
+    
+    if(page > 1 && page < all_page){
+      page_item = [{page:page-1,active:false},{page:page,active:true},{page:page+1,active:false}]
     }else{
-      [+page-1,page,+page+1]
+      if(page >= all_page){
+        page_item = [{page:page-2,active:false},{page:page-1,active:false},{page:page,active:true}]
+        next = false
+        page = all_page
+      }else if(page<=1){
+        previous = false
+        page = 1
+        page_item = [{page:1,active:true},{page:2,active:false},{page:3,active:false}]
+      }
+    }
+    if (all_page == 0) {
+      page_item = [{page:1,active:true}]
+      previous = false,
+      next = false
     }
     const pagination = {
       page_item:page_item,
-      page : page
+      page : page,
+      all_page: all_page,
+      previous:previous,
+      next : next
     }
     // Handlebars.registerHelper('paginate', paginate);
-    
+    // console.log('page before send',page);
+    // console.log('pagination before send',pagination);
     return res.render("employee", {
       payload: getEmp,
       username: username,
-      count: getEmp.length,
+      count: countdata.count,
       status: true,
       pagination:pagination
     });

@@ -56,65 +56,102 @@
   </table>
 
 {{!-- Pagination --}}
-<div class="row d-flex flex-row ">
+{{!-- <div class="row d-flex flex-row ">
   <div class="col-12 text-end">
     <nav aria-label="Page navigation example">
-      <ul class="pagination">
+      <ul class="pagination justify-content-end">
+        
+        {{#if pagination.previous}}
         <li class="page-item">
           <a class="page-link" href="?page={{pagination.page}}&pageType=Previous" aria-label="Previous">
             <span aria-hidden="true">&laquo;</span>
           </a>
         </li>
+        {{else}}
+        <li class="page-item disabled">
+          <a class="page-link" href="?page={{pagination.page}}&pageType=Previous" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+        {{/if}}
+
         {{#each pagination.page_item}}
-          <li class="page-item"><a class="page-link" href="?page={{this}}">{{this}}</a></li>
+          {{#if this.active}}
+          <li class="page-item acitve"><span class="page-link">{{this.page}}<span class="sr-only">(current)</span></span></li>
+          {{else}}
+          <li class="page-item"><a class="page-link" href="?page={{this.page}}">{{this.page}}</a></li>
+          {{/if}}
         {{/each}}
-        {{!-- <li class="page-item"><a class="page-link" href="#">1</a></li>
-        <li class="page-item"><a class="page-link" href="#">2</a></li>
-        <li class="page-item"><a class="page-link" href="#">3</a></li> --}}
+
+        {{#if pagination.next}}
         <li class="page-item">
           <a class="page-link" href="?page={{pagination.page}}&pageType=Next" aria-label="Next">
             <span aria-hidden="true">&raquo;</span>
           </a>
         </li>
+        {{else}}
+        <li class="page-item disabled">
+          <a class="page-link" href="?page={{pagination.page}}&pageType=Next" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+        {{/if}}
       </ul>
     </nav>
   </div>
-</div>
-
-{{!-- <div class="pagination pagination-centered">
-  <ul>
-    {{#paginate pagination type="first"}}
-      <li {{#if disabled}}class="disabled"{{/if}}><a href="?p={{n}}">First</a></li>
-    {{/paginate}}
-    {{#paginate pagination type="previous"}}
-      <li {{#if disabled}}class="disabled"{{/if}}><a href="?p={{n}}">Prev</a></li>
-    {{/paginate}}
-    {{#paginate pagination type="middle" limit="5"}}
-      <li {{#if active}}class="active"{{/if}}><a href="?p={{n}}">{{n}}</a></li>
-    {{/paginate}}
-    {{#paginate pagination type="next"}}
-      <li {{#if disabled}}class="disabled"{{/if}}><a href="?p={{n}}">Next</a></li>
-    {{/paginate}}
-    {{#paginate pagination type="last"}}
-      <li {{#if disabled}}class="disabled"{{/if}}><a href="?p={{n}}">Last</a></li>
-    {{/paginate}}
-  </ul>
 </div> --}}
 
+<nav aria-label="...">
+  <ul class="pagination justify-content-end">
+    {{#if pagination.previous}}
+        <li class="page-item">
+          <a class="page-link" href="?page={{pagination.page}}&pageType=Previous" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+        {{else}}
+        <li class="page-item disabled">
+          <a class="page-link" href="?page={{pagination.page}}&pageType=Previous" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+        {{/if}}
+
+    {{#each pagination.page_item}}
+      {{#if this.active}}
+        <li class="page-item active">
+          <span class="page-link">
+            {{this.page}}
+          </span>
+        </li>
+      {{else}}
+        <li class="page-item"><a class="page-link" href="?page={{this.page}}">{{this.page}}</a></li>
+      {{/if}}
+    {{/each}}
+
+    {{!-- <li class="page-item"><a class="page-link" href="#">1</a></li>
+    <li class="page-item active">
+      <span class="page-link">
+        2
+      </span>
+    </li>
+    <li class="page-item"><a class="page-link" href="#">3</a></li> --}}
+
+    {{#if pagination.next}}
+        <li class="page-item">
+          <a class="page-link" href="?page={{pagination.page}}&pageType=Next" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+        {{else}}
+        <li class="page-item disabled">
+          <a class="page-link" href="?page={{pagination.page}}&pageType=Next" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+        {{/if}}
+  </ul>
+</nav>
+
+
 </div>
-
-<script>
-$('#demo').pagination({
-  dataSource: {{payload}},
-  pageSize: 3,
-  showSizeChanger: true,
-  callback: function(data, pagination) {
-      // template method of yourself
-      var html = template(data);
-      dataContainer.html(html);
-  }
-})
-$('#pagination'){
-
-}
-</script>
