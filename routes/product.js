@@ -1,12 +1,18 @@
 const router = require("express").Router();
 const { uid } = require("uid");
 const {moment} = require('../module/index')
+const {paginate,page_PN} = require('./function')
 const db = require("../database/connect");
 
 router.get("/", async (req, res) => {
   try {
-    // console.log('product');
-    username = req.admin;
+    const body = req.query
+    const limit = 10
+    let page = page_PN(Number(body.page??1),body.pageType??'')
+    const offset = (page-1)*limit
+    let username = req.admin;
+    let where = ''
+    if(body.search) where = `prod_id like '%${body.search}%' or prod_name like '%${body.search}%'`
     const getproduct = await db("tb_product")
       .select(
         'prod_id',
@@ -15,20 +21,29 @@ router.get("/", async (req, res) => {
         'prod_img',
         'prod_amount',
       )
-      .orderBy("id", "asc");
-      // console.log('getcus',getcus);
+      .whereRaw(where)
+      .limit(limit)
+      .offset(offset)
+      .orderBy("id", "asc")??[]
+      const countdata = await db('tb_product').count('id as count').whereRaw(where).first()
+      let all_page = Math.ceil(countdata.count/limit)
+      let pagination = await paginate(page,all_page)
     if (getproduct?.length == 0) return res.render('product',{
         payload: [],
         username: username,
         count: getproduct.length,
         status: true,
+        item:countdata.count,
+        pagination:pagination
       })
     
     return res.render("product", {
-      payload: getproduct,
-      username: username,
-      count: getproduct.length,
-      status: true,
+        payload: getproduct,
+        username: username,
+        count: getproduct.length,
+        status: true,
+        item:countdata.count,
+        pagination:pagination
     });
   } catch (error) {
     console.log(error);

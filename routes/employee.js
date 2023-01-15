@@ -1,23 +1,16 @@
 const router = require("express").Router();
 const { uid } = require("uid");
-const {moment,paginate} = require('../module/index')
+const {moment} = require('../module/index')
+const {paginate,page_PN} = require('./function')
 const db = require("../database/connect");
 
 router.get("/", async (req, res) => {
   try {
-    // console.log('tb_employee');
     const body = req.query
-    console.log('body',body);
-    const limit = 2
-    // console.log('body.page',body.page??1);
-    let page = Number(body.page??1)
-    if(body.pageType == 'Previous'){
-      page = page-1
-    }
-    if(body.pageType == 'Next'){
-      page = page+1
-    }
+    const limit = 10
+    let page = page_PN(Number(body.page??1),body.pageType??'')
     const offset = (page-1)*limit
+    let username = req.admin;
     let where = "level > 1 "
     if(body.search) where += `and emp_id like '%${body.search}%' or emp_fname like '%${body.search}%' or emp_lname like '%${body.search}%' or  emp_position like '${body.search}'`
     const getEmp = await db("tb_employee")
@@ -33,46 +26,14 @@ router.get("/", async (req, res) => {
       .limit(limit)
       .offset(offset)
       .orderBy("id", "desc")??[]
-    username = req.admin;
     const countdata = await db('tb_employee').count('id as count').whereRaw(where).first()
     let all_page = Math.ceil(countdata.count/limit)
-    // console.log('all_page',all_page);
     
-    let previous = true
-    let next = true
-    let page_item = [{page:page-1,active:false},{page:page,active:true},{page:page+1,active:false}]
-    
-    if(page > 1 && page < all_page){
-      page_item = [{page:page-1,active:false},{page:page,active:true},{page:page+1,active:false}]
-    }else{
-      if(page >= all_page){
-        page_item = [{page:page-2,active:false},{page:page-1,active:false},{page:page,active:true}]
-        next = false
-        page = all_page
-      }else if(page<=1){
-        previous = false
-        page = 1
-        page_item = [{page:1,active:true},{page:2,active:false},{page:3,active:false}]
-      }
-    }
-    if (all_page == 0) {
-      page_item = [{page:1,active:true}]
-      previous = false,
-      next = false
-    }
-    const pagination = {
-      page_item:page_item,
-      page : page,
-      all_page: all_page,
-      previous:previous,
-      next : next
-    }
-    // Handlebars.registerHelper('paginate', paginate);
-    // console.log('page before send',page);
-    // console.log('pagination before send',pagination);
+    let pagination = await paginate(page,all_page)
     return res.render("employee", {
       payload: getEmp,
       username: username,
+      item:getEmp.length,
       count: countdata.count,
       status: true,
       pagination:pagination
@@ -81,37 +42,6 @@ router.get("/", async (req, res) => {
     console.log(error);
   }
 });
-
-router.post('/',async(req,res)=>{
-  try {
-    // console.log('tb_employee');
-    const body = req.body
-    let where = ` and emp_id like '${body.search}' or emp_fname like '${body.search}' or emp_lme like '${body.search}' or  emp_position like '${body.search}'`
-    const getEmp = await db("tb_employee")
-      .select(
-        'emp_id',
-        'emp_fname',
-        'emp_lname',
-        'emp_position',
-        'emp_status',
-        db.raw("DATE_FORMAT(create_date,'%d-%m-%Y %H:%i:%s') as create_date")
-      )
-      .whereRaw("level > 1"+where)
-      .orderBy("id", "desc");
-    if (getEmp?.length == 0) return (payload = []);
-    let count = getEmp.length;
-    username = req.admin;
-    return res.render("employee", {
-      payload: getEmp,
-      username: username,
-      count: count,
-      status: true,
-    });
-  } catch (error) {
-    console.log(error);
-  }
-})
-
 
 router.get("/create", async (req, res) => {
   try {
