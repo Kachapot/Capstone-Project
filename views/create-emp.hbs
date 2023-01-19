@@ -94,7 +94,20 @@
             <textarea class="form-control " name="address" id="exampleFormControlTextarea1" rows="5"></textarea>
         </div>
         </div>
-        
+        <div class="row py-5">
+            <div class="col-6">
+                <div class="mb-5">
+                <label for="Image" class="form-label">รูปภาพพนักงาน</label>
+                <input class="form-control" type="file" id="formFile" onchange="preview()">
+                </div>
+            </div>
+            <div class="col">
+                <div class="justify-content-md-center">
+                    <img id="frame" src="" class="img-fluid" />
+                    <button onclick="clearImage()" class="btn mt-3">x</button>
+                </div>
+            </div>
+        </div>
         <hr>
         <div class="row">
             <div class="col text-end">
@@ -118,10 +131,18 @@
         dateFormat: "yyyy-mm-dd"
     });
 
-var myModal = document.getElementById('myModal')
-var myInput = document.getElementById('myInput')
+    var myModal = document.getElementById('myModal')
+    var myInput = document.getElementById('myInput')
 
-myModal.addEventListener('shown.bs.modal', function () {
-  myInput.focus()
-})
+    myModal.addEventListener('shown.bs.modal', function () {
+    myInput.focus()
+    })
+
+    function preview() {
+        frame.src = URL.createObjectURL(event.target.files[0]);
+    }
+    function clearImage() {
+        document.getElementById('formFile').value = null;
+        frame.src = "";
+    }
 </script>

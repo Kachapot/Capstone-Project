@@ -1,5 +1,4 @@
 <div class="container pt-5 mt-5">
-  
   <div class="row d-flex flex-row">
     <div class="col-6">
       <h3 class="text-start">รายการใบสั่งซื้อสินค้า</h3>
@@ -8,6 +7,20 @@
       <h3 class="text-end">จำนวน {{count}} รายการ</h3>
     </div>
   </div>
+
+    <div class="row d-flex">
+    <div class="col-6">
+  </div>
+    <div class="col">
+      <div class="d-grid gap-2 d-md-flex justify-content-md-end ">
+      <form class="d-flex" method="get" >
+          <input class="form-control me-2" type="search" name="search" placeholder="กรอกคำที่ต้องการค้นหา" aria-label="Search">
+          <button class="btn btn-success" type="submit">ค้นหา</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <hr>
   <table class="table table-hover">
     <thead>
@@ -42,26 +55,54 @@
   </table>
 
 {{!-- Pagination --}}
-<div class="row d-flex flex-row">
-  <div class="col-12 text-end">
-    <nav aria-label="Page navigation example">
-      <ul class="pagination">
-        <li class="page-item">
-          <a class="page-link" href="#" aria-label="Previous">
-            <span aria-hidden="true">&laquo;</span>
-          </a>
-        </li>
-        <li class="page-item"><a class="page-link" href="#">1</a></li>
-        <li class="page-item"><a class="page-link" href="#">2</a></li>
-        <li class="page-item"><a class="page-link" href="#">3</a></li>
-        <li class="page-item">
-          <a class="page-link" href="#" aria-label="Next">
-            <span aria-hidden="true">&raquo;</span>
-          </a>
-        </li>
-      </ul>
-    </nav>
-  </div>
-</div>
+  <div class="row">
+    <div class="col justify-content-start">
+      <h5>{{item}} จาก {{count}} รายการ</h5>
+    </div>
+    <div class="col">
+    <nav aria-label="...">
+    <ul class="pagination justify-content-end">
+      {{#if pagination.previous}}
+          <li class="page-item">
+            <a class="page-link" href="?page={{pagination.page}}&pageType=Previous" aria-label="Previous">
+              <span aria-hidden="true">&laquo;</span>
+            </a>
+          </li>
+          {{else}}
+          <li class="page-item disabled">
+            <a class="page-link" href="?page={{pagination.page}}&pageType=Previous" aria-label="Previous">
+              <span aria-hidden="true">&laquo;</span>
+            </a>
+          </li>
+          {{/if}}
 
+      {{#each pagination.page_item}}
+        {{#if this.active}}
+          <li class="page-item active">
+            <span class="page-link">
+              {{this.page}}
+            </span>
+          </li>
+        {{else}}
+          <li class="page-item"><a class="page-link" href="?page={{this.page}}">{{this.page}}</a></li>
+        {{/if}}
+      {{/each}}
+
+      {{#if pagination.next}}
+          <li class="page-item">
+            <a class="page-link" href="?page={{pagination.page}}&pageType=Next" aria-label="Next">
+              <span aria-hidden="true">&raquo;</span>
+            </a>
+          </li>
+          {{else}}
+          <li class="page-item disabled">
+            <a class="page-link" href="?page={{pagination.page}}&pageType=Next" aria-label="Next">
+              <span aria-hidden="true">&raquo;</span>
+            </a>
+          </li>
+          {{/if}}
+    </ul>
+  </nav> 
+    </div>
+  </div>
 </div>
