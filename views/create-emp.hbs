@@ -98,18 +98,17 @@
             <div class="col-6">
                 <div class="mb-5">
                 <label for="Image" class="form-label">รูปภาพพนักงาน</label>
-                <input class="form-control" type="file" id="formFile" onchange="preview()">
+                <input class="form-control" name="profileimg" type="file" id="formFile" onchange="preview()">
                 </div>
             </div>
             <div class="col">
-                <div class="justify-content-md-center">
+                <div class="d-flex justify-content-md-center">
                     <img id="frame" src="" class="img-fluid" />
-                    <button onclick="clearImage()" class="btn mt-3">x</button>
                 </div>
             </div>
         </div>
         <hr>
-        <div class="row">
+        <div class="row py-5">
             <div class="col text-end">
                 <a class="btn btn-light" href="/employee">
                     <i class="bi bi-arrow-bar-left"></i> กลับ

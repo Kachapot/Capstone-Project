@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const { uid } = require("uid");
-const {moment} = require('../module/index')
+const {moment,fileUpload} = require('../module/index')
 const {paginate,page_PN} = require('./function')
 const db = require("../database/connect");
 
@@ -51,10 +51,11 @@ router.get("/create", async (req, res) => {
   }
 });
 
-router.post('/create/insert',async(req,res)=>{
+router.post('/create/insert',fileUpload(),async(req,res)=>{
   try {
     const body = req.body
-    console.log('body',body);
+    console.log('body',body)
+    console.log('file',req.files);
     const checkEmp = await db('tb_employee')
     .select('*')
     .whereRaw(`username = '${body.username}'`).first()
