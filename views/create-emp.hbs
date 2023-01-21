@@ -30,7 +30,7 @@
         <h2>เพิ่มพนักงาน</h2>
     </div>
     <hr>
-    <form method="post" action="/employee/create/insert">
+    <form method="post" enctype="multipart/form-data" action="/employee/create/insert">
         <div class="row py-1">
             <div class="col">
                 <label for="username">username</label>
@@ -130,12 +130,12 @@
         dateFormat: "yyyy-mm-dd"
     });
 
-    var myModal = document.getElementById('myModal')
+    {{!-- var myModal = document.getElementById('myModal') --}}
     var myInput = document.getElementById('myInput')
 
-    myModal.addEventListener('shown.bs.modal', function () {
+    {{!-- myModal.addEventListener('shown.bs.modal', function () {
     myInput.focus()
-    })
+    }) --}}
 
     function preview() {
         frame.src = URL.createObjectURL(event.target.files[0]);

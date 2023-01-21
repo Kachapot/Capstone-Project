@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const { uid } = require("uid");
-const {moment,fileUpload} = require('../module/index')
-const {paginate,page_PN} = require('./function')
+const {moment} = require('../module/index')
+const {paginate,page_PN,fileMiddle} = require('./function')
 const db = require("../database/connect");
 
 router.get("/", async (req, res) => {
@@ -51,14 +51,17 @@ router.get("/create", async (req, res) => {
   }
 });
 
-router.post('/create/insert',fileUpload(),async(req,res)=>{
+router.post('/create/insert',fileMiddle,async(req,res)=>{
   try {
     const body = req.body
     console.log('body',body)
-    console.log('file',req.files);
+    // console.log('file',req?.files?.profileimg);
     const checkEmp = await db('tb_employee')
     .select('*')
     .whereRaw(`username = '${body.username}'`).first()
+
+    let BannerFileName = 'uploads/image/'+req.files.profileimg.name
+    await req.files.profileimg.mv(BannerFileName,async(err)=>{})
     if(checkEmp) return res.render('create-emp',{error:true,msg:body.username+" มีผู้ใช้งานแล้ว",status:true}) 
     const insertData = await db('tb_employee').insert({
       emp_id:'emp_'+uid(3),
@@ -73,7 +76,7 @@ router.post('/create/insert',fileUpload(),async(req,res)=>{
       emp_birthday : body.birthdate,
       emp_email: body.email,
       emp_address: body.address,
-      emp_img : '',
+      emp_img :"",
       emp_phone: body.phone
     })
     if(!insertData) return render('create-emp',{error:true,msg:'เกิดข้อผิดพลาดบางอย่าง ไม่สามารถเพิ่มพนักงานได้',status:true})

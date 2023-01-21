@@ -1,3 +1,15 @@
+const fileUpload = require('express-fileupload')
+
+exports.fileMiddle = fileUpload({
+  limits: { fileSize: 5000_000 },// 5MB
+  useTempFiles: true,
+  tempFileDir: '../upload_tmp/',
+  createParentPath: true,
+  uriDecodeFileNames: true,
+  abortOnLimit: true,
+  responseOnLimit: 'ขนาดไฟล์เกิน 5MB'
+});
+
 exports.paginate = (page,all_page)=>{
     try {
         let previous = true

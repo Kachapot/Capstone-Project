@@ -1,5 +1,16 @@
 const jwt = require("jsonwebtoken");
 const db = require('../database/connect')
+const fileUpload = require('express-fileupload')
+
+exports.fileMiddle = fileUpload({
+  limits: { fileSize: 5000_000 },// 5MB
+  useTempFiles: true,
+  tempFileDir: '../upload_tmp/',
+  createParentPath: true,
+  uriDecodeFileNames: true,
+  abortOnLimit: true,
+  responseOnLimit: 'ขนาดไฟล์เกิน 5MB'
+});
 
 module.exports.authorization = async (req,res,next)=>{ 
   const token = req.cookies?.access_token;
@@ -16,7 +27,6 @@ module.exports.authorization = async (req,res,next)=>{
       return res.clearCookie("access_token").render('login',data)
         // .status(401)
         // .json({ status: 400, message: "Token Timeout", data: {} });
-        
     }
     // console.log('token passed!');
     req.admin = data.username;
@@ -27,6 +37,3 @@ module.exports.authorization = async (req,res,next)=>{
   }
 }
 
-module.exports.login = async(req,res,next)=>{
-    
-}
