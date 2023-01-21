@@ -54,7 +54,7 @@ router.get("/create", async (req, res) => {
 router.post('/create/insert',fileMiddle,async(req,res)=>{
   try {
     const body = req.body
-    console.log('body',body)
+    // console.log('body',body)
     // console.log('file',req?.files?.profileimg);
     const checkEmp = await db('tb_employee')
     .select('*')
@@ -76,7 +76,7 @@ router.post('/create/insert',fileMiddle,async(req,res)=>{
       emp_birthday : body.birthdate,
       emp_email: body.email,
       emp_address: body.address,
-      emp_img :"",
+      emp_img :BannerFileName,
       emp_phone: body.phone
     })
     if(!insertData) return render('create-emp',{error:true,msg:'เกิดข้อผิดพลาดบางอย่าง ไม่สามารถเพิ่มพนักงานได้',status:true})
@@ -133,6 +133,34 @@ router.post('/edit/update',async(req,res)=>{
     }
     const updateData = await db('tb_employee').update(update).where({emp_id:body.id})
     return res.render('edit-emp',{success:true,msg:'แก้ไขสำเร็จ',status:true,payload:[update]})
+  } catch (error) {
+    console.log(error);
+  }
+})
+
+router.get('/showdata/:id',async(req,res)=>{
+  try {
+    const body = req.params 
+    const getUser = await db('tb_employee').select(
+      'emp_id',
+      'emp_fname',
+      'emp_lname',
+      'username',
+      'emp_position',
+      'level',
+      'emp_status',
+      'emp_gender',
+      'emp_email',
+      'emp_address',
+      'emp_img',
+      'emp_phone',
+      db.raw("date_format(emp_birthday, '%d-%m-%Y') as emp_birthday")
+     ).where({emp_id:body.id})
+     return res.render('showdata-emp',{
+      username:req.username,
+      status:true,
+      payload:getUser
+     })
   } catch (error) {
     console.log(error);
   }
