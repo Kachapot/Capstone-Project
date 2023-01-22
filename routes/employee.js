@@ -157,8 +157,8 @@ router.get('/showdata/:id',async(req,res)=>{
       db.raw("date_format(emp_birthday, '%d-%m-%Y') as emp_birthday")
      ).where({emp_id:body.id})
      return res.render('showdata-emp',{
-      username:req.username,
-      status:true,
+      username:req.admin,
+      status:false,
       payload:getUser
      })
   } catch (error) {
