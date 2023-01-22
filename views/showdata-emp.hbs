@@ -1,3 +1,47 @@
-{{!-- <div class="container pt-5 mt-5 px-4"> --}}
-    <img src="yJk_GC9W.jpg" width="200px" height="200px">
-{{!-- </div> --}}
+<div class="container pt-5 mt-5 px-4 ">
+    <div class="row">
+        <h2>ข้อมูลพนักงาน</h2>
+    </div>
+    <hr>
+    {{#each payload}}
+    <div class="row">
+        <div class="col-3 d-flex justify-content-center">
+            <img src="/{{this.emp_img}}" width="300px" height="auto">
+        </div>
+        <div class="col">
+            <span><h4>รหัสพนักงาน : {{this.emp_id}}</h4></span>
+            <span><h4>ชื่อ-สกุล : {{this.emp_fname}} {{this.emp_lname}}</h4></span>
+            <span>
+                <h4>ตำแห่นง : {{this.emp_position}}</h4>
+            </span>
+            <span>
+                <h4>เพศ : {{this.emp_gender}}</h4>
+            </span>
+            <span>
+                <h4>เบอร์โทรศัพท์ : {{this.emp_phone}}</h4>
+            </span>
+            <span>
+                <h4>อีเมล : {{this.emp_email}}</h4>
+            </span>
+        </div>
+    </div>
+    <div class="row pt-3">
+        <div class="col">
+            <h4>ที่อยู่</h4>
+        </div>
+    </div>
+    <div class="row">
+        <textarea rows="4" disabled>
+            {{this.emp_address}}
+        </textarea>
+    </div>
+    {{/each}}
+    <hr>
+        <div class="row py-1">
+            <div class="col text-end">
+                <a class="btn btn-light" href="/employee">
+                    <i class="bi bi-arrow-bar-left"></i> กลับ
+                </a>
+            </div>
+        </div>
+</div>

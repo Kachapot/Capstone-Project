@@ -28,8 +28,20 @@ router.get("/", async (req, res) => {
       .orderBy("id", "desc")??[]
     const countdata = await db('tb_employee').count('id as count').whereRaw(where).first()
     let all_page = Math.ceil(countdata.count/limit)
-    
     let pagination = await paginate(page,all_page)
+
+    if(body.deleted){
+      return res.render("employee", {
+        payload: getEmp,
+        username: username,
+        item:getEmp.length,
+        count: countdata.count,
+        status: true,
+        pagination:pagination,
+        deleted:{deleted:true,msg:body.deleted}
+      });
+    }
+
     return res.render("employee", {
       payload: getEmp,
       username: username,
@@ -60,9 +72,12 @@ router.post('/create/insert',fileMiddle,async(req,res)=>{
     .select('*')
     .whereRaw(`username = '${body.username}'`).first()
 
-    let BannerFileName = 'uploads/image/'+req.files.profileimg.name
+    let BannerFileName = 'public/images/'+req.files.profileimg.name
     await req.files.profileimg.mv(BannerFileName,async(err)=>{})
     if(checkEmp) return res.render('create-emp',{error:true,msg:body.username+" มีผู้ใช้งานแล้ว",status:true}) 
+
+    let birthdate = body.birthdate
+    let editbirthdate = birthdate.replace(/\//g, '-');
     const insertData = await db('tb_employee').insert({
       emp_id:'emp_'+uid(3),
       username: body.username,
@@ -73,7 +88,7 @@ router.post('/create/insert',fileMiddle,async(req,res)=>{
       level: 3,
       emp_status:1,
       emp_gender : body.gender,
-      emp_birthday : body.birthdate,
+      emp_birthday :editbirthdate,
       emp_email: body.email,
       emp_address: body.address,
       emp_img :BannerFileName,
@@ -158,9 +173,31 @@ router.get('/showdata/:id',async(req,res)=>{
      ).where({emp_id:body.id})
      return res.render('showdata-emp',{
       username:req.admin,
-      status:false,
+      status:true,
       payload:getUser
      })
+  } catch (error) {
+    console.log(error);
+  }
+})
+
+router.get('/delete/:id',async(req,res)=>{
+  try {
+    const body = req.params
+    // console.log(body);
+    const getUser = await db('tb_employee').where({emp_id:body.id}).first()
+    // console.log('getUser',getUser);
+    if(!getUser){
+      let deleted = encodeURIComponent('ไม่พบยูสเซอร์')
+      return res.redirect('/employee/?deleted='+deleted)
+    }
+    if(getUser.level < 1){
+      let deleted = encodeURIComponent('ไม่สามารถลบได้')
+      return res.redirect('/employee/?deleted='+deleted)
+    }
+    const deleteUser = await db('tb_employee').where({emp_id:body.id}).del()
+    let deleted = encodeURIComponent('ลบข้อมูลสำเร็จ')
+    return res.redirect('/employee/?deleted='+deleted)
   } catch (error) {
     console.log(error);
   }
