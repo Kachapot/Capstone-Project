@@ -44,6 +44,28 @@ router.get("/", async (req, res) => {
         pagination : pagination
       })
     
+    if(body.error){
+      return res.render("buy", {
+        payload: getdata,
+        username: username,
+        count: getdata.length,
+        status: true,
+        item: getdata.length,
+        pagination : pagination,
+        error:{msg:body.error}
+      });
+    }
+    if(body.approve){
+      return res.render("buy", {
+        payload: getdata,
+        username: username,
+        count: getdata.length,
+        status: true,
+        item: getdata.length,
+        pagination : pagination,
+        approve:{msg:body.approve}
+      });
+    }
     return res.render("buy", {
       payload: getdata,
       username: username,
@@ -56,5 +78,46 @@ router.get("/", async (req, res) => {
     console.log(error);
   }
 });
+
+router.get('/showdata/:id',async(req,res)=>{
+  try {
+    const body = req.params
+    const getdata = await db('tb_order_buy_detail').select(
+      'prod_id',
+      'prod_name',
+      'prod_price',
+      'prod_amount',
+      'total',
+      'status'
+    ).where({order_buy_id:body.id})
+    if(!getdata){
+      let msg = encodeURIComponent('ไม่พบข้อมูล')
+      return res.redirect('/buy/?error='+msg)
+    }
+    return res.render('showdata-buy',{
+      status:true,
+      username:req.admin,
+      payload:getdata,
+      count:getdata.length,
+      id:body.id
+    })
+  } catch (error) {
+    console.log(error);
+  }
+})
+
+router.get('/approve/:id',async(req,res)=>{
+  try {
+    const body = req.params
+    const update = await db('tb_order_buy').update({
+      order_buy_status:true,
+      approve_date:moment().format('dd-mm-yyyy hh:mm:ss')
+    }).where({order_buy_id:body.id})
+    let msg = encodeURIComponent('อนุมัติสำเร็จ')
+    return res.redirect('/buy/?approve='+msg)
+  } catch (error) {
+    console.log(error);
+  }
+})
 
 module.exports = router;

@@ -4,7 +4,35 @@
       <h3 class="text-start">รายละเอียดการซื้อเข้า</h3>
     </div>
     <div class="col-6">
-      <h3 class="text-end">จำนวน {{count}} คน</h3>
+      <h3 class="text-end">จำนวนสินค้า {{count}} รายการ</h3>
     </div>
   </div>
+  <div class="row d-flex">
+    <div class="col"><a class="btn btn-success" href="/buy/approve/{{id}}"><i class="bi bi-check-circle-fill"></i> อนุมัติ</a></div>
+  </div>
+    <hr>
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th scope="col">รหัสสินค้า</th>
+        <th scope="col">ชื่อสินค้า</th>
+        <th scope="col">ราคาต่อหน่วย</th>
+        <th scope="col">จำนวน</th>
+        <th scope="col">ราคารวม</th>
+        <th scope="col">สถานะ</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each payload}}
+      <tr>
+        <th scope="row">{{prod_id}}</th>
+        <td>{{prod_name}}</td>
+        <td>{{prod_price}}</td>
+        <td>{{prod_amount}}</td>
+        <td>{{total}}</td>
+        <td>{{status}}</td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
 </div>
