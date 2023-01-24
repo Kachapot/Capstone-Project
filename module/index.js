@@ -7,3 +7,4 @@ module.exports.dotenv= require('dotenv')
 module.exports.useragent = require('useragent')
 module.exports.db = require('../database/connect')
 module.exports.fileUpload = require('express-fileupload');
+module.exports.escapeHtml = require('escape-html');

@@ -29,8 +29,17 @@ router.get('/map',async(req,res)=>{
 router.get('/main',authorization,async(req,res)=>{
   try {
     // console.log('main');
-    let data = {status:true,msg:"ยินดีต้อนรับ",username:req.admin}
-    res.render('index',data)
+    const body = req.query
+    // return console.log('body',body);
+      let data = {
+        status:true,
+        menu:req.menu,
+        msg:"ยินดีต้อนรับ",
+        username:req.admin
+      }
+      res.render('index',data)
+    
+    
   } catch (error) {
     console.log(error);
     return res.status(401)
@@ -47,7 +56,7 @@ router.post('/login',async (req,res)=>{
         .first()
         // console.log('getadmin',getadmin);
         if (!getadmin) {
-            let data = ({ status: 400, message: "บัญขีถูกระงับ"});
+            let data = ({ status: 400, message: "ไม่พบผู้ใช้นี้"});
             return res.redirect('/')
         }
         //   const compare = await bcrypt.compare(
@@ -67,6 +76,7 @@ router.post('/login',async (req,res)=>{
             const token = jwt.sign(
               {
                 username: getadmin.username,
+                level : getadmin.level,
                 time: time,
     
               },
@@ -91,7 +101,8 @@ router.post('/login',async (req,res)=>{
             console.log('login all passed');
             // res.setHeader('set-cookie', ['access_token=' + token + '; Domain=.magiccasino.bet; Path=/; HttpOnly',]);
             // data = ({ status: 200, message: "เข้าสู่ระบบสำเร็จ", data: getadmin.username });
-            return res.status(200).cookie("access_token", token).redirect('/main')
+            let level = encodeURIComponent(getadmin.level)
+            return res.status(200).cookie("access_token", token).redirect('/main?level='+level)
             
         //   } else {
         //     return res.json({

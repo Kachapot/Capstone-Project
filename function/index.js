@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const db = require('../database/connect')
 const fileUpload = require('express-fileupload')
+const escapeHtml = require('escape-html');
 
 exports.fileMiddle = fileUpload({
   limits: { fileSize: 5000_000 },// 5MB
@@ -29,6 +30,57 @@ module.exports.authorization = async (req,res,next)=>{
         // .json({ status: 400, message: "Token Timeout", data: {} });
     }
     // console.log('token passed!');
+    let menu
+    if(data.level == 1){
+      menu = `
+      <div class="offcanvas-body">
+        <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+          <li class="nav-item">
+            <a class="nav-link" href="/main"><h4>รายการสั่งซื้อ</h4></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/employee"><h4>รายชื่อพนักงาน</h4></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/customer"><h4>รายชื่อลูกค้า</h4></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/product"><h4>รายการคลังสินค้า</h4></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/buy"><h4>รายการใบสั่งซื้อสินค้า</h4></a>
+          </li>
+        </ul>
+      </div>
+      `
+    }else if(data.level == 2){
+
+    }else if(data.level == 3){
+
+    }else{
+      menu = `
+      <div class="offcanvas-body">
+        <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+          <li class="nav-item">
+            <a class="nav-link" href="/main"><h4>รายการสั่งซื้อ</h4></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/employee"><h4>รายชื่อพนักงาน</h4></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/customer"><h4>รายชื่อลูกค้า</h4></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/product"><h4>รายการคลังสินค้า</h4></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/buy"><h4>รายการใบสั่งซื้อสินค้า</h4></a>
+          </li>
+        </ul>
+      </div>
+      `
+    }
+    req.menu = menu
     req.admin = data.username;
     return next();
   } catch (err) {
