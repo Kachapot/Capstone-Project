@@ -25,7 +25,8 @@ router.get("/", async (req, res) => {
         'order_buy_amount',
         'order_buy_total',
         db.raw("DATE_FORMAT(order_buy_date,'%d-%m-%Y %H:%i:%s') as order_buy_date"),
-        db.raw("DATE_FORMAT(approve_date,'%d-%m-%Y %H:%i:%s') as approve_date"),
+        // db.raw("DATE_FORMAT(approve_date,'%d-%m-%Y %H:%i:%s') as approve_date"),
+        'approve_date',
         db.raw(`case when order_buy_status = 1 then 'อนุมัติ' else 'ยังไม่อนุมัติ' end as order_buy_status`)
       )
       .whereRaw(where)
@@ -109,10 +110,12 @@ router.get('/showdata/:id',async(req,res)=>{
 router.get('/approve/:id',async(req,res)=>{
   try {
     const body = req.params
-    const update = await db('tb_order_buy').update({
+    const update = await db('tb_order_buy')
+    .update({
       order_buy_status:true,
-      approve_date:moment().format('dd-mm-yyyy hh:mm:ss')
-    }).where({order_buy_id:body.id})
+      approve_date:moment().format("DD-MM-YYYY hh:mm:ss")
+    })
+    .where({order_buy_id:body.id})
     let msg = encodeURIComponent('อนุมัติสำเร็จ')
     return res.redirect('/buy/?approve='+msg)
   } catch (error) {
