@@ -46,7 +46,7 @@ router.post('/login',async (req,res)=>{
         .where({username:body.username,password:body.password})
         .first()
         // console.log('getadmin',getadmin);
-        if (!getadmin || getadmin?.emp_status != 1) {
+        if (!getadmin) {
             let data = ({ status: 400, message: "บัญขีถูกระงับ"});
             return res.redirect('/')
         }

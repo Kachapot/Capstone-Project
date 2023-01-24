@@ -19,7 +19,6 @@ router.get("/", async (req, res) => {
         'emp_fname',
         'emp_lname',
         'emp_position',
-        'emp_status',
         db.raw("DATE_FORMAT(create_date,'%d-%m-%Y %H:%i:%s') as create_date")
       )
       .whereRaw(where)
@@ -86,7 +85,6 @@ router.post('/create/insert',fileMiddle,async(req,res)=>{
       emp_lname: body.lname,
       emp_position: body.position,
       level: 3,
-      emp_status:1,
       emp_gender : body.gender,
       emp_birthday :editbirthdate,
       emp_email: body.email,
@@ -113,7 +111,6 @@ router.get('/edit/:id',async(req,res)=>{
       'password',
       'emp_position',
       'level',
-      'emp_status',
       'emp_gender',
       'emp_email',
       'emp_address',
@@ -163,7 +160,6 @@ router.get('/showdata/:id',async(req,res)=>{
       'username',
       'emp_position',
       'level',
-      'emp_status',
       'emp_gender',
       'emp_email',
       'emp_address',

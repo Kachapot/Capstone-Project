@@ -43,6 +43,18 @@ router.get("/", async (req, res) => {
         status: true,
         pagination:pagination
       })
+
+    if(body.deleted){
+      return res.render('customer',{
+        payload: getcus,
+        username: username,
+        item:getcus.length,
+        count: getcus.length,
+        status: true,
+        pagination:pagination,
+        deleted:{msg:body.deleted}
+      })
+    }
     
     return res.render("customer", {
       payload: getcus,
@@ -172,6 +184,28 @@ router.post('/edit/update',async(req,res)=>{
       postcode : body.postcode
      }
     return res.render('edit-cus',{success:true,msg:'แก้ไขสำเร็จ',status:true,payload:payload})
+  } catch (error) {
+    console.log(error);
+  }
+})
+
+router.get('/delete/:id',async(req,res)=>{
+  try {
+    const body = req.params
+    // console.log(body);
+    const getUser = await db('tb_customer').where({cus_id:body.id}).first()
+    // console.log('getUser',getUser);
+    if(!getUser){
+      let deleted = encodeURIComponent('ไม่พบยูสเซอร์')
+      return res.redirect('/customer/?deleted='+deleted)
+    }
+    if(getUser.level < 1){
+      let deleted = encodeURIComponent('ไม่สามารถลบได้')
+      return res.redirect('/customer/?deleted='+deleted)
+    }
+    const deleteUser = await db('tb_customer').where({cus_id:body.id}).del()
+    let deleted = encodeURIComponent('ลบข้อมูลสำเร็จ')
+    return res.redirect('/customer/?deleted='+deleted)
   } catch (error) {
     console.log(error);
   }
