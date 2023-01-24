@@ -2,6 +2,7 @@ const router = require('express').Router();
 const {authorization,login} = require('../function/index')
 const {useragent,moment,jwt} = require('../module/index')
 const db = require('../database/connect')
+const escapeHtml = require('escape-html');
 
 router.use('/employee',authorization,require('./employee'))
 router.use('/customer',authorization,require('./customer'))

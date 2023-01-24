@@ -19,6 +19,14 @@
   </div>
   {{/if}}
 
+  {{#if deleted}}
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>
+    {{deleted.msg}}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+  {{/if}}
+
   <div class="row d-flex flex-row">
     <div class="col-6">
       <h3 class="text-start">รายการใบสั่งซื้อสินค้า</h3>
@@ -67,7 +75,7 @@
         <td>{{order_buy_status}}</td>
         <td class="text-end">
           <a href="/buy/showdata/{{order_buy_id}}" type="button" class="btn btn-light btn-small"><i class="bi bi-eye"> ดูข้อมูล</i></a>
-          <a href="/buy/delete" type="button" class="btn btn-danger btn-small"><i class="bi bi-trash3-fill"></i> ลบ</i></a>
+          <a href="/buy/delete/{{order_buy_id}}" type="button" class="btn btn-danger btn-small"><i class="bi bi-trash3-fill"></i> ลบ</i></a>
         </td>
       </tr>
       {{/each}}

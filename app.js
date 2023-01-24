@@ -21,7 +21,6 @@ app.use(cookieParser())
 
 app.engine('hbs',exphbs.engine({extname:'.hbs'}))
 app.set('view engine','hbs');
-// app.get('/',(req,res)=>{res.render('login')})
 app.use('/',require('./routes'))
 
 

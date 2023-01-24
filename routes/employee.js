@@ -36,6 +36,7 @@ router.get("/", async (req, res) => {
         item:getEmp.length,
         count: countdata.count,
         status: true,
+        menu:req.menu,
         pagination:pagination,
         deleted:{deleted:true,msg:body.deleted}
       });
@@ -47,6 +48,7 @@ router.get("/", async (req, res) => {
       item:getEmp.length,
       count: countdata.count,
       status: true,
+      menu:req.menu,
       pagination:pagination
     });
   } catch (error) {
@@ -56,7 +58,7 @@ router.get("/", async (req, res) => {
 
 router.get("/create", async (req, res) => {
   try {
-    res.render('create-emp',{username:req.admin,status:true})
+    res.render('create-emp',{username:req.admin,status:true,menu:req.menu,})
   } catch (error) {
     console.log(error);
   }
@@ -73,7 +75,7 @@ router.post('/create/insert',fileMiddle,async(req,res)=>{
 
     let BannerFileName = 'public/images/'+req.files.profileimg.name
     await req.files.profileimg.mv(BannerFileName,async(err)=>{})
-    if(checkEmp) return res.render('create-emp',{error:true,msg:body.username+" มีผู้ใช้งานแล้ว",status:true}) 
+    if(checkEmp) return res.render('create-emp',{error:true,msg:body.username+" มีผู้ใช้งานแล้ว",status:true,menu:req.menu,}) 
 
     let birthdate = body.birthdate
     let editbirthdate = birthdate.replace(/\//g, '-');
@@ -92,8 +94,8 @@ router.post('/create/insert',fileMiddle,async(req,res)=>{
       emp_img :BannerFileName,
       emp_phone: body.phone
     })
-    if(!insertData) return render('create-emp',{error:true,msg:'เกิดข้อผิดพลาดบางอย่าง ไม่สามารถเพิ่มพนักงานได้',status:true})
-    return res.render('create-emp',{success:true,msg:'เพิ่มพนักงาน '+body.fname+' '+body.lname+' สำเร็จ',status:true})
+    if(!insertData) return render('create-emp',{error:true,msg:'เกิดข้อผิดพลาดบางอย่าง ไม่สามารถเพิ่มพนักงานได้',status:true,menu:req.menu,})
+    return res.render('create-emp',{success:true,msg:'เพิ่มพนักงาน '+body.fname+' '+body.lname+' สำเร็จ',status:true,menu:req.menu,})
   } catch (error) {
     console.log(error);
   }
@@ -118,7 +120,7 @@ router.get('/edit/:id',async(req,res)=>{
       'emp_phone',
       db.raw("date_format(emp_birthday, '%d-%m-%Y') as emp_birthday")
      ).where({emp_id:body.id})
-     return res.render('edit-emp',{payload:getUser,status:true})
+     return res.render('edit-emp',{payload:getUser,status:true,menu:req.menu,})
   } catch (error) {
     console.log(error);
   }
@@ -129,7 +131,7 @@ router.post('/edit/update',async(req,res)=>{
     const body = req.body
     // return console.log('body',body);
     const getUser = await db('tb_employee').select('*').where({emp_id : body.id}).first()
-    if(!getUser) return render('edit-emp',{error:true,msg:'ไม่พบ',status:true})
+    if(!getUser) return render('edit-emp',{error:true,msg:'ไม่พบ',status:true,menu:req.menu,})
     let update = {
       username:body.username??getUser.username,
       password:body.password??getUser.password,
@@ -141,10 +143,9 @@ router.post('/edit/update',async(req,res)=>{
       emp_email:body.email??getUser.emp_email,
       emp_birthday:body.birthdate??getUser.emp_birthday,
       emp_address:body.address??getUser.emp_address,
-      update_date:moment().format('yyyy-mm-dd')
     }
     const updateData = await db('tb_employee').update(update).where({emp_id:body.id})
-    return res.render('edit-emp',{success:true,msg:'แก้ไขสำเร็จ',status:true,payload:[update]})
+    return res.render('edit-emp',{success:true,msg:'แก้ไขสำเร็จ',status:true,menu:req.menu,payload:[update]})
   } catch (error) {
     console.log(error);
   }
@@ -170,6 +171,7 @@ router.get('/showdata/:id',async(req,res)=>{
      return res.render('showdata-emp',{
       username:req.admin,
       status:true,
+      menu:req.menu,
       payload:getUser
      })
   } catch (error) {

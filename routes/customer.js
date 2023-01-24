@@ -41,6 +41,7 @@ router.get("/", async (req, res) => {
         item:getcus.length,
         count: getcus.length,
         status: true,
+        menu:req.menu,
         pagination:pagination
       })
 
@@ -51,6 +52,7 @@ router.get("/", async (req, res) => {
         item:getcus.length,
         count: getcus.length,
         status: true,
+        menu:req.menu,
         pagination:pagination,
         deleted:{msg:body.deleted}
       })
@@ -62,6 +64,7 @@ router.get("/", async (req, res) => {
       item:getcus.length,
       count: getcus.length,
       status: true,
+      menu:req.menu,
       pagination:pagination
     });
   } catch (error) {
@@ -71,7 +74,7 @@ router.get("/", async (req, res) => {
 
 router.get("/create", async (req, res) => {
   try {
-    res.render('create-cus',{username:req.admin,status:true})
+    res.render('create-cus',{username:req.admin,status:true,menu:req.menu,})
   } catch (error) {
     console.log(error);
   }
@@ -84,7 +87,7 @@ router.post('/create/insert',async(req,res)=>{
     const checkEmp = await db('tb_customer')
     .select('*')
     .whereRaw(`cus_fname = '${body.fname}' and cus_lname = '${body.lname}'`).first()
-    if(checkEmp) return res.render('create-cus',{error:true,msg:body.fname+" "+body.lname+' มีอยู่แล้วไม่สามารถสร้างซ้ำได้',status:true}) 
+    if(checkEmp) return res.render('create-cus',{error:true,msg:body.fname+" "+body.lname+' มีอยู่แล้วไม่สามารถสร้างซ้ำได้',status:true,menu:req.menu,}) 
     let address = {
       ship_address:body.ship_address,
       address2:body.address2,
@@ -103,7 +106,7 @@ router.post('/create/insert',async(req,res)=>{
       cus_location : ''
     })
     if(!insertData) return render('create-cus',{error:true,msg:'เกิดข้อผิดพลาดบางอย่าง ไม่สามารถเพิ่มลูกค้าได้',status:true})
-    return res.render('create-cus',{success:true,msg:'เพิ่มลูกค้า '+body.fname+' '+body.lname+' สำเร็จ',status:true})
+    return res.render('create-cus',{success:true,msg:'เพิ่มลูกค้า '+body.fname+' '+body.lname+' สำเร็จ',status:true,menu:req.menu,})
   } catch (error) {
     console.log(error);
   }
@@ -139,7 +142,7 @@ router.get('/edit/:id',async(req,res)=>{
       postcode : userAddress.postcode
      }
     //  return console.log('payload',payload);
-     return res.render('edit-cus',{payload:payload,status:true})
+     return res.render('edit-cus',{payload:payload,status:true,menu:req.menu,})
   } catch (error) {
     console.log(error);
   }
@@ -151,7 +154,7 @@ router.post('/edit/update',async(req,res)=>{
     // return console.log('body',body);
     const getUser = await db('tb_customer').select('*').where({cus_id : body.id}).first()
     // console.log('getuser',getUser);
-    if(!getUser) return res.render('edit-cus',{error:true,msg:'ไม่พบ',status:true})
+    if(!getUser) return res.render('edit-cus',{error:true,msg:'ไม่พบ',status:true,menu:req.menu,})
     let address = {
       ship_address:body.ship_address,
       address2:body.address2,
@@ -183,7 +186,7 @@ router.post('/edit/update',async(req,res)=>{
       state : body.state,
       postcode : body.postcode
      }
-    return res.render('edit-cus',{success:true,msg:'แก้ไขสำเร็จ',status:true,payload:payload})
+    return res.render('edit-cus',{success:true,msg:'แก้ไขสำเร็จ',status:true,menu:req.menu,payload:payload})
   } catch (error) {
     console.log(error);
   }

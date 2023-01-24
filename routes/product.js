@@ -29,19 +29,34 @@ router.get("/", async (req, res) => {
       let all_page = Math.ceil(countdata.count/limit)
       let pagination = await paginate(page,all_page)
     if (getproduct?.length == 0) return res.render('product',{
-        payload: [],
-        username: username,
-        count: getproduct.length,
-        status: true,
-        item:countdata.count,
-        pagination:pagination
-      })
+            payload: [],
+            username: username,
+            count: getproduct.length,
+            status: true,
+            menu:req.menu,
+            item:countdata.count,
+            pagination:pagination
+        })
+
+    if(body.deleted){
+        return res.render("product", {
+            payload: getproduct,
+            username: username,
+            count: getproduct.length,
+            status: true,
+            menu:req.menu,
+            item:countdata.count,
+            pagination:pagination,
+            deleted:{msg:body.deleted}
+        });
+    }
     
     return res.render("product", {
         payload: getproduct,
         username: username,
         count: getproduct.length,
         status: true,
+        menu:req.menu,
         item:countdata.count,
         pagination:pagination
     });
@@ -56,7 +71,7 @@ router.get('/addProduct',async(req,res)=>{
         .select('*')
         .orderBy('id','asc')
         // console.log('gettype',gettype);
-        return res.render('create-prod',{type:gettype,status:true,username:req.admin})
+        return res.render('create-prod',{type:gettype,status:true,menu:req.menu,username:req.admin})
 
     } catch (error) {
         console.log(error);
@@ -81,6 +96,7 @@ router.post('/addProduct/insert',async(req,res)=>{
             error:true,
             msg:'เกิดข้อผิดพลาด ไม่สามารถเพิ่มได้',
             status:true,
+            menu:req.menu,
             username:req.admin
         })
         const gettype = await db('tb_product_type')
@@ -89,6 +105,7 @@ router.post('/addProduct/insert',async(req,res)=>{
         return res.render('create-prod',{
             success:true,
             status:true,
+            menu:req.menu,
             username:req.admin,
             msg:'สำเร็จ',
             type:gettype
@@ -109,8 +126,33 @@ router.get('/editProduct/:id',async(req,res)=>{
         //  console.log('getdata',getdata);
          return res.render('edit-prod',{
             status:true,
+            menu:req.menu,
             payload:getdata
          })
+    } catch (error) {
+        console.log(error);
+    }
+})
+
+router.post('/editProduct/update/:id',async(req,res)=>{
+    try {
+        const body = req.body
+        const id = req.params.id
+        // console.log('id',id);
+        const update = await db('tb_product').update({
+            prod_name:body.prod_name,
+            prod_price:body.prod_price,
+            prod_amount:body.prod_amount,
+            prod_detail:body.prod_detail
+        }).where({prod_id:id})
+        let getdata = {
+            prod_type_name:body.prod_type_name,
+            prod_name:body.prod_name,
+            prod_price:body.prod_price,
+            prod_amount:body.prod_amount,
+            prod_detail:body.prod_detail
+        }
+        return res.redirect('/product/editProduct/'+encodeURIComponent(id))
     } catch (error) {
         console.log(error);
     }
@@ -120,7 +162,7 @@ router.get('/buy/create',async(req,res)=>{
     try {
         const product = await db('tb_product').select('*').orderBy('id','desc')
         // console.log('product',product);
-        return res.render('create-buy',{product:product,status:true,username:req.admin})
+        return res.render('create-buy',{product:product,status:true,menu:req.menu,username:req.admin})
     } catch (error) {
         console.log(error);        
     }
@@ -166,6 +208,7 @@ router.post('/buy/insert',async(req,res)=>{
         })
         if(!insert) return res.render('create-buy',{
             status:true,
+            menu:req.menu,
             username:req.admin,
             error:true,
             msg:'เกิดข้อผิดพลาดไม่สามารถบันทึกได้'
@@ -174,6 +217,7 @@ router.post('/buy/insert',async(req,res)=>{
         
         return res.render('create-buy',{
             status:true,
+            menu:req.menu,
             username:req.admin,
             success:true,
             msg:'สำเร็จ'
@@ -182,5 +226,27 @@ router.post('/buy/insert',async(req,res)=>{
         console.log(error);
     }
 })
+
+router.get('/delete/:id',async(req,res)=>{
+    try {
+      const body = req.params
+      // console.log(body);
+      const getUser = await db('tb_product').where({prod_id:body.id}).first()
+      // console.log('getUser',getUser);
+      if(!getUser){
+        let deleted = encodeURIComponent('ไม่พบยูสเซอร์')
+        return res.redirect('/product/?deleted='+deleted)
+      }
+      if(getUser.level < 1){
+        let deleted = encodeURIComponent('ไม่สามารถลบได้')
+        return res.redirect('/product/?deleted='+deleted)
+      }
+      const deleteUser = await db('tb_product').where({prod_id:body.id}).del()
+      let deleted = encodeURIComponent('ลบข้อมูลสำเร็จ')
+      return res.redirect('/product/?deleted='+deleted)
+    } catch (error) {
+      console.log(error);
+    }
+  })
 
 module.exports = router;

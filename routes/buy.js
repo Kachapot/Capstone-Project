@@ -33,6 +33,7 @@ router.get("/", async (req, res) => {
       .limit(limit)
       .offset(offset)
       .orderBy("id", "desc")??[]
+    console.log('getdata',getdata);
     const countdata = await db('tb_order_buy').count('id as count').whereRaw(where).first()
     let all_page = Math.ceil(countdata.count/limit)
     let pagination = await paginate(page,all_page)
@@ -41,6 +42,7 @@ router.get("/", async (req, res) => {
         username: username,
         count: getdata.length,
         status: true,
+        menu:req.menu,
         item: getdata.length,
         pagination : pagination
       })
@@ -51,6 +53,7 @@ router.get("/", async (req, res) => {
         username: username,
         count: getdata.length,
         status: true,
+        menu:req.menu,
         item: getdata.length,
         pagination : pagination,
         error:{msg:body.error}
@@ -62,9 +65,23 @@ router.get("/", async (req, res) => {
         username: username,
         count: getdata.length,
         status: true,
+        menu:req.menu,
         item: getdata.length,
         pagination : pagination,
         approve:{msg:body.approve}
+      });
+    }
+
+    if(body.deleted){
+      return res.render("buy", {
+        payload: getdata,
+        username: username,
+        count: getdata.length,
+        status: true,
+        menu:req.menu,
+        item: getdata.length,
+        pagination : pagination,
+        deleted:{msg:body.deleted}
       });
     }
     return res.render("buy", {
@@ -72,6 +89,7 @@ router.get("/", async (req, res) => {
       username: username,
       count: getdata.length,
       status: true,
+      menu:req.menu,
       item: getdata.length,
       pagination : pagination
     });
@@ -89,7 +107,6 @@ router.get('/showdata/:id',async(req,res)=>{
       'prod_price',
       'prod_amount',
       'total',
-      'status'
     ).where({order_buy_id:body.id})
     if(!getdata){
       let msg = encodeURIComponent('ไม่พบข้อมูล')
@@ -97,6 +114,7 @@ router.get('/showdata/:id',async(req,res)=>{
     }
     return res.render('showdata-buy',{
       status:true,
+      menu:req.menu,
       username:req.admin,
       payload:getdata,
       count:getdata.length,
@@ -118,6 +136,29 @@ router.get('/approve/:id',async(req,res)=>{
     .where({order_buy_id:body.id})
     let msg = encodeURIComponent('อนุมัติสำเร็จ')
     return res.redirect('/buy/?approve='+msg)
+  } catch (error) {
+    console.log(error);
+  }
+})
+
+router.get('/delete/:id',async(req,res)=>{
+  try {
+    const body = req.params
+    // console.log(body);
+    const getUser = await db('tb_order_buy').where({order_buy_id:body.id}).first()
+    // console.log('getUser',getUser);
+    if(!getUser){
+      let deleted = encodeURIComponent('ไม่พบยูสเซอร์')
+      return res.redirect('/buy/?deleted='+deleted)
+    }
+    if(getUser.level < 1){
+      let deleted = encodeURIComponent('ไม่สามารถลบได้')
+      return res.redirect('/buy/?deleted='+deleted)
+    }
+    const deleteUser = await db('tb_order_buy').where({order_buy_id:body.id}).del()
+    const deleteDetail = await db('tb_order_buy_detail').where({order_buy_id:body.id}).del()
+    let deleted = encodeURIComponent('ลบข้อมูลสำเร็จ')
+    return res.redirect('/buy/?deleted='+deleted)
   } catch (error) {
     console.log(error);
   }

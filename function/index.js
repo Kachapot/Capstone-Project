@@ -30,58 +30,35 @@ module.exports.authorization = async (req,res,next)=>{
         // .json({ status: 400, message: "Token Timeout", data: {} });
     }
     // console.log('token passed!');
-    let menu
+    let menu = [{
+      sell:true,
+      emp:true,
+      cus:true,
+      prod:true,
+      buy:true
+    }]
     if(data.level == 1){
-      menu = `
-      <div class="offcanvas-body">
-        <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-          <li class="nav-item">
-            <a class="nav-link" href="/main"><h4>รายการสั่งซื้อ</h4></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/employee"><h4>รายชื่อพนักงาน</h4></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/customer"><h4>รายชื่อลูกค้า</h4></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/product"><h4>รายการคลังสินค้า</h4></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/buy"><h4>รายการใบสั่งซื้อสินค้า</h4></a>
-          </li>
-        </ul>
-      </div>
-      `
+      menu = menu
     }else if(data.level == 2){
-
+      menu = [{
+        sell:true,
+        emp:true,
+        cus:true,
+        prod:true,
+        // buy:true
+      }]
     }else if(data.level == 3){
-
-    }else{
-      menu = `
-      <div class="offcanvas-body">
-        <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-          <li class="nav-item">
-            <a class="nav-link" href="/main"><h4>รายการสั่งซื้อ</h4></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/employee"><h4>รายชื่อพนักงาน</h4></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/customer"><h4>รายชื่อลูกค้า</h4></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/product"><h4>รายการคลังสินค้า</h4></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/buy"><h4>รายการใบสั่งซื้อสินค้า</h4></a>
-          </li>
-        </ul>
-      </div>
-      `
+      menu = [{
+        sell:true,
+        // emp:true,
+        cus:true,
+        prod:true,
+        // buy:true
+      }]
     }
     req.menu = menu
     req.admin = data.username;
+    req.level = data.level
     return next();
   } catch (err) {
     console.log(err);
