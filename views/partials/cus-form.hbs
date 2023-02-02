@@ -1,5 +1,4 @@
 {{#if payload}}
-
 <form method="post" action="/customer/edit/update">
         <div class="col ">
             รหัสลูกค้า : <input readonly type="text" name="id" value="{{payload.cus_id}}" style="border: none;">
@@ -181,14 +180,7 @@
                 </div>
             {{!-- </form> --}}
             </div>
-            <div class="col d-flex align-items-center justify-content-center" style="background-color: gray;width:100%;">
-                <i class="bi bi-geo-alt-fill text-danger"></i>
-                <h3 class="text-white text-center">map</h3>
-            </div>
-    <script
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg&callback=initAutocomplete&libraries=places&v=weekly"
-      defer
-    ></script>
+            <div id="map"></div>
         </div>
         
         <hr>
@@ -204,3 +196,7 @@
         </div>
 </form>
 {{/if}}
+<script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBs2r-SZULCKhVTk2VP_v1sbKzwPqwBynk&callback=initMap&v=weekly"
+    defer
+></script>

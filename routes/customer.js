@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const { uid } = require("uid");
-const {moment} = require('../module/index')
+const {moment,dotenv} = require('../module/index')
 const {paginate,page_PN} = require('./function')
 const db = require("../database/connect");
 
@@ -74,7 +74,7 @@ router.get("/", async (req, res) => {
 
 router.get("/create", async (req, res) => {
   try {
-    res.render('create-cus',{username:req.admin,status:true,menu:req.menu,})
+    res.render('create-cus',{username:req.admin,status:true,menu:req.menu,mapkey:process.env.map_key})
   } catch (error) {
     console.log(error);
   }
