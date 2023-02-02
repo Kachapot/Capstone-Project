@@ -103,7 +103,7 @@ router.post('/create/insert',async(req,res)=>{
       cus_phone : body.phone,
       cus_email : body.email,
       cus_address : JSON.stringify(address),
-      cus_location : ''
+      cus_location : body.address
     })
     if(!insertData) return render('create-cus',{error:true,msg:'เกิดข้อผิดพลาดบางอย่าง ไม่สามารถเพิ่มลูกค้าได้',status:true})
     return res.render('create-cus',{success:true,msg:'เพิ่มลูกค้า '+body.fname+' '+body.lname+' สำเร็จ',status:true,menu:req.menu,})

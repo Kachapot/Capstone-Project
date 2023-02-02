@@ -27,8 +27,8 @@ router.get('/map',async(req,res)=>{
   }
 })
 
-router.post('/submit', function(req, res, next) {
-  console.log(req.body.address);
+router.post('/submit', function(req, res,) {
+  console.log(req.body);
   res.send('Address submitted: ' + req.body.address);
 });
 

@@ -1,37 +1,49 @@
 <h1>Google Maps Form</h1>
 <form action="/submit" method="post">
   <div id="map" style="height: 400px; width: 100%;"></div>
-  <input type="text" id="address" name="address">
-  <input type="submit" id="submit" value="Submit">
+  <input type="text" id="address" name="address"/>
+  <input type="submit" value="Submit">
 </form>
 
 <script>
-  function initMap() {
-    var map = new google.maps.Map(document.getElementById('map'), {
-      zoom: 15,
-      center: { lat: 18.809753815121315, lng: 98.95262678679745 }
+function initMap() {
+  const myLatlng = {lat:18.81032109955782,lng:98.95265579223633}
+  const map = new google.maps.Map(document.getElementById("map"), {
+    zoom: 15,
+    center: myLatlng,
+  });
+  
+  let marker = new google.maps.Marker({
+    position: myLatlng,
+    map: map,
+  });
+  
+  // Configure the click listener.
+  map.addListener("click", (mapsMouseEvent) => {
+    // Remove the old marker
+    marker.setMap(null);
+    marker = null;
+    
+    // Create a new marker
+    marker = new google.maps.Marker({
+      position: mapsMouseEvent.latLng,
+      map: map,
     });
+    
+    // Convert the latLng object into a JSON string
+    const latLngJson = JSON.stringify(mapsMouseEvent.latLng.toJSON());
+    // Set the value of the address input field to the JSON string
+    const lat = mapsMouseEvent.latLng.lat();
+    const lng = mapsMouseEvent.latLng.lng();
+    document.getElementById("address").value = JSON.stringify({ lat, lng });
+  });
+}
 
-    var geocoder = new google.maps.Geocoder();
-    document.getElementById('submit').addEventListener('click', function () {
-      geocodeAddress(geocoder, map);
-    });
-  }
+window.initMap = initMap;
 
-  function geocodeAddress(geocoder, resultsMap) {
-    var address = document.getElementById('address').value;
-    geocoder.geocode({ 'address': address }, function (results, status) {
-      if (status === 'OK') {
-        resultsMap.setCenter(results[0].geometry.location);
-        var marker = new google.maps.Marker({
-          map: resultsMap,
-          position: results[0].geometry.location
-        });
-      } else {
-        alert('Geocode was not successful for the following reason: ' + status);
-      }
-    });
-  }
-
-  google.maps.event.addDomListener(window, 'load', initMap);
 </script>
+
+<script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBs2r-SZULCKhVTk2VP_v1sbKzwPqwBynk&callback=initMap&v=weekly"
+      defer
+></script>

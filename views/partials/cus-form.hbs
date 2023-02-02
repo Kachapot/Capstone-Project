@@ -135,6 +135,10 @@
                 <label for="phone">เบอร์โทรศัพท์</label>
                 <input type="text" name="phone" class="form-control form-control-sm">
             </div>
+            <div class="col-6">
+                <label for="address">พิกัด</label>
+                <input type="text" id="address" name="address" class="form-control form-control-sm" required readonly/>  
+            </div>
         </div>
 
         {{!-- map input --}}
@@ -180,7 +184,12 @@
                 </div>
             {{!-- </form> --}}
             </div>
-            <div id="map"></div>
+            <div class="col-6">
+              <div class="row">
+                <div id="map"></div>
+              </div>
+            </div>
+            
         </div>
         
         <hr>
@@ -196,7 +205,44 @@
         </div>
 </form>
 {{/if}}
+<script>
+function initMap() {
+  const myLatlng = {lat:18.81032109955782,lng:98.95265579223633}
+  const map = new google.maps.Map(document.getElementById("map"), {
+    zoom: 15,
+    center: myLatlng,
+  });
+  
+  let marker = new google.maps.Marker({
+    position: myLatlng,
+    map: map,
+  });
+  
+  // Configure the click listener.
+  map.addListener("click", (mapsMouseEvent) => {
+    // Remove the old marker
+    marker.setMap(null);
+    marker = null;
+    
+    // Create a new marker
+    marker = new google.maps.Marker({
+      position: mapsMouseEvent.latLng,
+      map: map,
+    });
+    
+    // Convert the latLng object into a JSON string
+    const latLngJson = JSON.stringify(mapsMouseEvent.latLng.toJSON());
+    // Set the value of the address input field to the JSON string
+    const lat = mapsMouseEvent.latLng.lat();
+    const lng = mapsMouseEvent.latLng.lng();
+    document.getElementById("address").value = JSON.stringify({ lat, lng });
+  });
+}
+
+window.initMap = initMap;
+</script>
+
 <script
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBs2r-SZULCKhVTk2VP_v1sbKzwPqwBynk&callback=initMap&v=weekly"
-    defer
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBs2r-SZULCKhVTk2VP_v1sbKzwPqwBynk&callback=initMap&v=weekly"
+      defer
 ></script>
