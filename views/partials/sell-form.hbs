@@ -1,5 +1,14 @@
-
 <form method="post" action="/sell/insert">
+<div class="row pb-3">
+  <div class="col">
+    <label for="customer">ชื่อลูกค้า</label>
+    <select class="selectpicker form-select" data-live-search="true" name="cus_id">
+        {{#each customer}}
+        <option data-tokens="{{cus_id}}" value="{{cus_id}}">{{cus_fname}} {{cus_lname}}</option>
+        {{/each}}
+    </select>
+  </div>
+</div>
 <!-- HIDDEN DYNAMIC ELEMENT TO CLONE -->
 <!-- you can replace it with any other elements -->
 <div class="form-group dynamic-element" style="display:none">
@@ -65,6 +74,9 @@ $('.add-one').click(function(){
   attach_delete();
 });
 
+$(document).ready(function () {
+  $('.selectpicker').selectpicker();
+});
 
 //Attach functionality to delete buttons
 function attach_delete(){

@@ -2,7 +2,6 @@ const router = require('express').Router();
 const {authorization,login} = require('../function/index')
 const {useragent,moment,jwt} = require('../module/index')
 const db = require('../database/connect')
-const escapeHtml = require('escape-html');
 
 router.use('/employee',authorization,require('./employee'))
 router.use('/customer',authorization,require('./customer'))
@@ -21,9 +20,7 @@ router.get('/',authorization,(req,res)=>{
 
 router.get('/main',authorization,async(req,res)=>{
   try {
-    // console.log('main');
     const body = req.query
-    // return console.log('body',body);
       let data = {
         status:true,
         menu:req.menu,
@@ -42,12 +39,9 @@ router.get('/main',authorization,async(req,res)=>{
 router.post('/login',async (req,res)=>{
     try {
         const body = req.body
-        // console.log('login');
-        // console.log('body',body);
         const getadmin = await db('tb_employee').select('*')
         .where({username:body.username,password:body.password})
         .first()
-        // console.log('getadmin',getadmin);
         if (!getadmin) {
             let data = ({ status: 400, message: "ไม่พบผู้ใช้นี้"});
             return res.redirect('/')

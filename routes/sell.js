@@ -97,10 +97,58 @@ router.get("/", async (req, res) => {
 
 router.get('/create',async(req,res)=>{
     try {
-        res.render('create-sell',{username:req.admin,status:true,menu:req.menu})
+        const getprod = await db('tb_product').select('*')
+        const getcus = await db('tb_customer').select('*')
+       return res.render('create-sell',{
+        username:req.admin,
+        status:true,
+        menu:req.menu,
+        product:getprod,
+        customer:getcus
+      })
     } catch (error) {
         console.log(error);
     }
+})
+
+router.post('/insert',async(req,res)=>{
+  try {
+    const body = req.body
+    let prod_id = body.prod_id
+    let prod_amount = body.prod_amount
+    prod_id.shift()
+    prod_amount.shift()
+
+    const order_sell_total = prod_amount.reduce(function(a, b) {return a + parseInt(b)}, 0);
+    const getcus = await db('tb_customer').select('*').where({cus_id:body.cus_id})
+    const getemp = await db('tb_employee').select('*').where({username : req.admin})
+    const sell_id = 'sell_id'+uid(10)
+    const insertSell = await db('tb_order_sell').insert({
+      order_sell_id : sell_id,
+      emp_id:getemp.emp_id,
+      cus_id:getcus.cus_id,
+      cus_fname:getcus.cus_fname,
+      cus_lname:getcus.cus_lname,
+      cus_phone:getcus.cus_phone,
+      order_sell_amount:prod_id.length,
+      order_sell_total:order_sell_total,
+      order_sell_status : false
+    })
+    for (let index = 0; index < prod_id.length; index++) {
+      const id = prod_id[index];
+      const amount = prod_amount[index]
+
+      const getprod = await db('tb_product').select('*').where({prod_id:id})
+      const insertDetail = await db('tb_order_sell_detail').insert({
+        order_sell_id:sell_id,
+        prod_id:getprod.prod_id,
+        
+      })
+      
+    }
+  } catch (error) {
+    console.log(error);
+  }
 })
 
 router.get('/showdata/:id',async(req,res)=>{
