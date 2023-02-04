@@ -1,0 +1,77 @@
+
+<form method="post" action="/sell/insert">
+<!-- HIDDEN DYNAMIC ELEMENT TO CLONE -->
+<!-- you can replace it with any other elements -->
+<div class="form-group dynamic-element" style="display:none">
+  <div class="row py-1">
+  <!-- Replace these fields -->
+  <div class="col">
+    <label for="productType">สินค้า</label>
+    <select class="selectpicker form-select" data-live-search="true" name="prod_id">
+        {{#each product}}
+        <option data-tokens="{{prod_name}}" value="{{prod_id}}">{{prod_name}}</option>
+        {{/each}}
+    </select>
+
+  </div>
+  <div class="col">
+    <label for="prod_amount">จำนวน</label>
+    <input class="form-control" type="number" name="prod_amount">
+  </div>
+    <!-- End of fields-->
+    <div class="col">
+    <br>
+      <button class="delete btn btn-danger ">x</button>
+    </div>
+  </div>
+</div>
+<!-- END OF HIDDEN ELEMENT -->
+
+<form method="post" action="/sell/insert">
+  <fieldset>
+
+  <div class="dynamic-stuff">
+    <!-- Dynamic element will be cloned here -->
+    <!-- You can call clone function once if you want it to show it a first element-->
+  </div>
+  
+  <!-- Button -->
+  <div class="form-group">
+    <div class="row">
+      <div class="col-md-12">
+          <p class="add-one btn btn-success m-0">+ เพิ่มสินค้า</p>
+      </div>
+  </div>
+</fieldset>
+<hr>
+    <div class="row py-1">
+        <div class="col text-end">
+            <a class="btn btn-light" href="/sell">
+                <i class="bi bi-arrow-bar-left"></i> กลับ
+            </a>
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-save-fill"></i> บันทึก
+            </button>
+        </div>
+    </div>
+</form>
+
+
+
+<script>
+//Clone the hidden element and shows it
+$('.add-one').click(function(){
+  $('.dynamic-element').first().clone().appendTo('.dynamic-stuff').show();
+  attach_delete();
+});
+
+
+//Attach functionality to delete buttons
+function attach_delete(){
+  $('.delete').off();
+  $('.delete').click(function(){
+    console.log("click");
+    $(this).closest('.form-group').remove();
+  });
+}
+</script>

@@ -8,7 +8,7 @@ router.use('/employee',authorization,require('./employee'))
 router.use('/customer',authorization,require('./customer'))
 router.use('/product',authorization,require('./product'))
 router.use('/buy',authorization,require('./buy'))
-router.use('/sell',authorization)
+router.use('/sell',authorization,require('./sell'))
 
 router.get('/',authorization,(req,res)=>{
     // console.log('cookie',req);
@@ -18,19 +18,6 @@ router.get('/',authorization,(req,res)=>{
       res.render('login')
     }
 })
-
-router.get('/map',async(req,res)=>{
-  try {
-    return res.render('map',{status:false})
-  } catch (error) {
-    console.log(error);
-  }
-})
-
-router.post('/submit', function(req, res,) {
-  console.log(req.body);
-  res.send('Address submitted: ' + req.body.address);
-});
 
 router.get('/main',authorization,async(req,res)=>{
   try {

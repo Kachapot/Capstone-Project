@@ -49,12 +49,14 @@
               {{/if}}
               {{#if buy}}
                 <li class="nav-item">
-                <a class="nav-link" href="/buy"><h4>รายการใบสั่งซื้อสินค้า</h4></a>
+                <a class="nav-link" href="/buy"><h4>รายการคำสั่งซื้อสินค้าเข้า</h4></a>
                 </li>
               {{/if}}
-              <li class="nav-item">
-                <a class="nav-link" href="/map"><h4>map</h4></a>
+              {{#if sell}}
+                <li class="nav-item">
+                <a class="nav-link" href="/sell"><h4>รายการใบคำสั่งซื้อ</h4></a>
                 </li>
+              {{/if}}
             </ul>
             {{/each}}
         </div>

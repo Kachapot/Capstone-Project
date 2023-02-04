@@ -35,7 +35,8 @@ module.exports.authorization = async (req,res,next)=>{
       emp:true,
       cus:true,
       prod:true,
-      buy:true
+      buy:true,
+      sell:true,
     }]
     if(data.level == 1){
       menu = menu

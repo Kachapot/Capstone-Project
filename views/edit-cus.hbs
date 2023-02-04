@@ -1,48 +1,217 @@
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
   <symbol id="check-circle-fill" fill="currentColor" viewBox="0 0 16 16">
-    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+    <path
+      d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
   </symbol>
   <symbol id="info-fill" fill="currentColor" viewBox="0 0 16 16">
-    <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
+    <path
+      d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" />
   </symbol>
   <symbol id="exclamation-triangle-fill" fill="currentColor" viewBox="0 0 16 16">
-    <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+    <path
+      d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
   </symbol>
 </svg>
 
 <div class="container pt-5 mt-5 px-4">
-{{#if error}}
-<div class="alert alert-danger alert-dismissible fade show" role="alert">
-<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
-  {{msg}}
-  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-{{/if}}
+  {{#if error}}
+  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:">
+      <use xlink:href="#exclamation-triangle-fill" />
+    </svg>
+    {{msg}}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+  {{/if}}
 
-{{#if success}}
-<div class="alert alert-success alert-dismissible fade show" role="alert">
-  <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>
-  {{msg}}
-  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-{{/if}}
-    <div class="row">
-        <h2>แก้ไขข้อมูลลูกค้า</h2>
+  {{#if success}}
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:">
+      <use xlink:href="#check-circle-fill" />
+    </svg>
+    {{msg}}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+  {{/if}}
+  <div class="row">
+    <h2>แก้ไขข้อมูลลูกค้า</h2>
+  </div>
+  <hr>
+  <form method="post" action="/customer/edit/update">
+    <div class="col ">
+      รหัสลูกค้า : <input readonly type="text" name="id" value="{{payload.cus_id}}" style="border: none;">
     </div>
+    <div class="row py-1">
+      <div class="col">
+        <div class="input-group">
+          <span class="input-group-text">ชื่อ-สกุล</span>
+          <input type="text" name="fname" aria-label="First name" class="form-control form-control-sm"
+            value="{{payload.cus_fname}}">
+          <input type="text" name="lname" aria-label="Last name" class="form-control form-control-sm"
+            value="{{payload.cus_lname}}">
+        </div>
+      </div>
+    </div>
+    <div class="row py-1">
+      <div class="col">
+        <label for="gender">เพศ</label>
+        <select class="form-select form-select-sm" name="gender" id="floatingSelect"
+          aria-label="Floating label select example">
+          <option value="{{payload.cus_gender}}">{{payload.cus_gender}}</option>
+          <option value="ชาย">ชาย</option>
+          <option value="หญิง">หญิง</option>
+          <option value="เพศทางเลือกอื่นๆ">เพศทางเลือกอื่นๆ</option>
+        </select>
+      </div>
+      <div class="col">
+        <div class="form-group">
+          <label for="exampleFormControlInput1">อีเมล</label>
+          <input type="email" name="email" class="form-control form-control-sm" id="exampleFormControlInput1"
+            placeholder="name@mail.com" value="{{payload.cus_email}}">
+        </div>
+      </div>
+    </div>
+    <div class="row py-1">
+      <div class="col-6">
+        <label for="phone">เบอร์โทรศัพท์</label>
+        <input type="text" name="phone" class="form-control form-control-sm">
+      </div>
+      <div class="col-6">
+        <label for="address">พิกัด</label>
+        <input type="text" id="address" name="address" value="{{payload.location}}" class="form-control form-control-sm"
+          required readonly />
+      </div>
+    </div>
+
+    {{!-- map input --}}
+    <div class="row py-1">
+      <div class="col-6">
+        {{!-- <form id="address-form" action="" method="get" autocomplete="off"> --}}
+          <div class="row">
+            <label>
+              <!-- Avoid the word "address" in id, name, or label text to avoid browser autofill from conflicting with Place Autocomplete. Star or comment bug https://crbug.com/587466 to request Chromium to honor autocomplete="off" attribute. -->
+              <span>ส่งที่</span>
+              <input id="ship_address" class="form-control form-control-sm" name="ship_address" required
+                autocomplete="off" />
+            </label>
+          </div>
+          <div class="row">
+            <label>
+              <span>อพาร์ทเม้น,ยูนิต,ขั้น,ห้อง</span>
+              <input id="address2" name="address2" class="form-control form-control-sm" />
+            </label>
+          </div>
+          <div class="row">
+            <label>
+              <span>อำเภอ*</span>
+              <input id="locality" name="locality" class="form-control form-control-sm" required />
+            </label>
+          </div>
+          <div class="row">
+            <label>
+              <span>จังหวัด*</span>
+              <input id="state" name="state" class="form-control form-control-sm" required />
+            </label>
+          </div>
+          <div class="row">
+            <label for="postal_code">
+              <span>รหัสไปรษณี*</span>
+              <input id="postcode" name="postcode" class="form-control form-control-sm" required />
+            </label>
+          </div>
+          {{!--
+        </form> --}}
+      </div>
+      <div class="col-6">
+        <div class="row">
+          <div id="map"></div>
+        </div>
+      </div>
+
+    </div>
+
     <hr>
-    {{> cus-form}}
+    <div class="row">
+      <div class="col text-end">
+        <a class="btn btn-light" href="/customer">
+          <i class="bi bi-arrow-bar-left"></i> กลับ
+        </a>
+        <button type="submit" class="btn btn-primary">
+          <i class="bi bi-save-fill"></i> บันทึก
+        </button>
+      </div>
+    </div>
+
+  </form>
 </div>
 
 <script>
-    $('#datepicker').datepicker({
-        inline:true,
-        dateFormat: "yyyy-mm-dd"
+  $('#datepicker').datepicker({
+    inline: true,
+    dateFormat: "yyyy-mm-dd"
+  });
+
+  var myModal = document.getElementById('myModal')
+  var myInput = document.getElementById('myInput')
+
+  myModal.addEventListener('shown.bs.modal', function () {
+    myInput.focus()
+  })
+</script>
+
+<script>
+  function initMap() {
+    const location = JSON.parse(document.getElementById("address").value)
+    const myLatlng = { lat: location.lat, lng: location.lng }
+    const map = new google.maps.Map(document.getElementById("map"), {
+      zoom: 15,
+      center: myLatlng,
     });
 
-var myModal = document.getElementById('myModal')
-var myInput = document.getElementById('myInput')
+    let marker = new google.maps.Marker({
+      position: myLatlng,
+      map: map,
+    });
 
-myModal.addEventListener('shown.bs.modal', function () {
-  myInput.focus()
-})
+    marker.addListener('click', function () {
+        navigator.geolocation.getCurrentPosition((position) => {
+          let userLatlng = { lat: position.coords.latitude, lng: position.coords.longitude };
+          window.open('https://www.google.com/maps/dir/?api=1&destination=' + location.lat + ',' + location.lng + '&origin=' + userLatlng.lat + ',' + userLatlng.lng, '_blank');
+
+        });
+      });
+
+    // Configure the click listener.
+    map.addListener("click", (mapsMouseEvent) => {
+      // Remove the old marker
+      marker.setMap(null);
+      marker = null;
+
+      // Create a new marker
+      marker = new google.maps.Marker({
+        position: mapsMouseEvent.latLng,
+        map: map,
+      });
+
+      // Convert the latLng object into a JSON string
+      const latLngJson = JSON.stringify(mapsMouseEvent.latLng.toJSON());
+      // Set the value of the address input field to the JSON string
+      const lat = mapsMouseEvent.latLng.lat();
+      const lng = mapsMouseEvent.latLng.lng();
+      marker.addListener('click', function () {
+        navigator.geolocation.getCurrentPosition((position) => {
+          let userLatlng = { lat: position.coords.latitude, lng: position.coords.longitude };
+          window.open('https://www.google.com/maps/dir/?api=1&destination=' + lat + ',' + lng + '&origin=' + userLatlng.lat + ',' + userLatlng.lng, '_blank');
+
+        });
+      });
+      document.getElementById("address").value = JSON.stringify({ lat, lng });
+    });
+  }
+
+  window.initMap = initMap;
 </script>
+
+<script
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBs2r-SZULCKhVTk2VP_v1sbKzwPqwBynk&callback=initMap&v=weekly"
+  defer></script>

@@ -13,31 +13,28 @@ router.get("/", async (req, res) => {
     let username = req.admin;
     let where = ''
     if(body.search) where = `
-    order_by_id like '%${body.search}%' or 
-    emp_fname like '%${body.search}%' or 
-    emp_lname like '%${body.search}%' or
+    order_sell_id like '%${body.search}%' or 
+    cus_fname like '%${body.search}%' or 
+    cus_lname like '%${body.search}%' or
     `
-    const getdata = await db("tb_order_buy")
+    const getdata = await db("tb_order_sell")
       .select(
         'id',
-        'order_buy_id',
-        db.raw('concat(emp_fname," ",emp_lname) as emp_name'),
-        'order_buy_amount',
-        'order_buy_total',
-        db.raw("DATE_FORMAT(order_buy_date,'%d-%m-%Y %H:%i:%s') as order_buy_date"),
-        // db.raw("DATE_FORMAT(approve_date,'%d-%m-%Y %H:%i:%s') as approve_date"),
-        'approve_date',
-        db.raw(`case when order_buy_status = 1 then 'อนุมัติ' else 'ยังไม่อนุมัติ' end as order_buy_status`)
+        'order_sell_id',
+        db.raw('concat(cus_fname," ",cus_lname) as cus_name'),
+        'order_sell_amount',
+        'order_sell_total',
+        db.raw("DATE_FORMAT(order_sell_date,'%d-%m-%Y %H:%i:%s') as order_sell_date"),
+        db.raw(`case when order_sell_status = 1 then 'อนุมัติ' else 'ยังไม่อนุมัติ' end as order_sell_status`)
       )
       .whereRaw(where)
       .limit(limit)
       .offset(offset)
       .orderBy("id", "desc")??[]
-    // console.log('getdata',getdata);
-    const countdata = await db('tb_order_buy').count('id as count').whereRaw(where).first()
+    const countdata = await db('tb_order_sell').count('id as count').whereRaw(where).first()
     let all_page = Math.ceil(countdata.count/limit)
     let pagination = await paginate(page,all_page)
-    if (getdata?.length == 0) return res.render('buy',{
+    if (getdata?.length == 0) return res.render('sell',{
         payload: [],
         username: username,
         count: getdata.length,
@@ -48,7 +45,7 @@ router.get("/", async (req, res) => {
       })
     
     if(body.error){
-      return res.render("buy", {
+      return res.render("sell", {
         payload: getdata,
         username: username,
         count: getdata.length,
@@ -60,7 +57,7 @@ router.get("/", async (req, res) => {
       });
     }
     if(body.approve){
-      return res.render("buy", {
+      return res.render("sell", {
         payload: getdata,
         username: username,
         count: getdata.length,
@@ -73,7 +70,7 @@ router.get("/", async (req, res) => {
     }
 
     if(body.deleted){
-      return res.render("buy", {
+      return res.render("sell", {
         payload: getdata,
         username: username,
         count: getdata.length,
@@ -84,7 +81,7 @@ router.get("/", async (req, res) => {
         deleted:{msg:body.deleted}
       });
     }
-    return res.render("buy", {
+    return res.render("sell", {
       payload: getdata,
       username: username,
       count: getdata.length,
@@ -97,6 +94,14 @@ router.get("/", async (req, res) => {
     console.log(error);
   }
 });
+
+router.get('/create',async(req,res)=>{
+    try {
+        res.render('create-sell',{username:req.admin,status:true,menu:req.menu})
+    } catch (error) {
+        console.log(error);
+    }
+})
 
 router.get('/showdata/:id',async(req,res)=>{
   try {
