@@ -1,0 +1,116 @@
+
+<div class="container pt-5 mt-5">
+  {{#if error}}
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+  {{error.msg}}
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{{/if}}
+
+{{#if success}}
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+  <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>
+  {{success.msg}}
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{{/if}}
+    <div class="row d-flex flex-row">
+        <div class="col-6">
+            <h3 class="text-start">รายละเอียด</h3>
+        </div>
+    </div>
+    <div class="row d-flex flex-row bd-highlight">
+    <div class="col">
+        {{#if status1}}
+        <a class="btn btn-primary" href="/ship/approve/{{id}}"><i class="bi bi-truck"></i> ทำการขนส่ง</a>
+        {{/if}}
+        {{#if status2}}
+        <a class="btn btn-success" href="/ship/confirm/{{id}}"><i class="bi bi-person-check"></i> ทำการส่งทำเร็จ</a>
+        {{/if}}
+        <a class="btn btn-danger" href="/ship/cancel/{{id}}"><i class="bi bi-x-circle-fill"></i> ยกเลิก</a>
+    </div>
+    </div>
+    <hr>
+  <div class="row">
+    <div class="col fs-5">ผู้ซื้อ {{cus_name}}</div>
+  </div>
+  <div class="row">
+    <div class="col fs-5">ที่อยู่ {{ship_address}} {{address2}} {{locality}} {{state}} {{postcode}}</div>
+  </div>
+   <div class="row">
+    <label for="address">พิกัด</label>
+        <input type="text" id="address" name="address" value="{{location}}" class="form-control form-control-sm"
+          readonly />
+ </div>
+
+ <div class="row pt-2">
+    <div class="col">
+        <div class="fs-5">รายการสินค้า</div>
+    </div>
+ </div>
+ <div class="row">
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col"><p>ชื่อสินค้า</p></th>
+        <th scope="col"><p>จำนวน(ชิ้น)</p></th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each payload}}
+      <tr>
+        <td scope="row" class="border-0">{{prod_name}}</td>
+        <td class="border-0">{{prod_amount}}</td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+ </div>
+ <div class="row">
+    <div class="col">
+        <label for="map">แผนที่</label>
+        <div id="map" style="height:500px"></div>
+    </div>
+ </div>
+    <hr>
+    <div class="row">
+      <div class="col text-end">
+        <a class="btn btn-light" href="/sell">
+          <i class="bi bi-arrow-bar-left"></i> กลับ
+        </a>
+      </div>
+    </div>
+</div>
+
+<script>
+  function initMap() {
+    const location = JSON.parse(document.getElementById("address").value)
+    const myLatlng = { lat: location.lat, lng: location.lng }
+    const map = new google.maps.Map(document.getElementById("map"), {
+      zoom: 15,
+      center: myLatlng,
+    });
+
+    let marker = new google.maps.Marker({
+      position: myLatlng,
+      map: map,
+    });
+
+    marker.addListener('click', function () {
+        navigator.geolocation.getCurrentPosition((position) => {
+          let userLatlng = { lat: position.coords.latitude, lng: position.coords.longitude };
+          window.open('https://www.google.com/maps/dir/?api=1&destination=' + location.lat + ',' + location.lng + '&origin=' + userLatlng.lat + ',' + userLatlng.lng, '_blank');
+
+        });
+      });
+
+    
+  }
+
+  window.initMap = initMap;
+</script>
+
+<script
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBs2r-SZULCKhVTk2VP_v1sbKzwPqwBynk&callback=initMap&v=weekly"
+  defer></script>

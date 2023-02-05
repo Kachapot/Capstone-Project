@@ -8,11 +8,18 @@ router.use('/customer',authorization,require('./customer'))
 router.use('/product',authorization,require('./product'))
 router.use('/buy',authorization,require('./buy'))
 router.use('/sell',authorization,require('./sell'))
+router.use('/ship',authorization,require('./ship'))
 
-router.get('/',authorization,(req,res)=>{
+router.get('/',authorization,async(req,res)=>{
     // console.log('cookie',req);
     if(req.cookies?.access_token){
-      res.redirect('/main')
+      // const getEmp = await db('tb_employee').select('*').where({username:req.admin}).first()
+      if(getEmp.level < 3){
+        res.redirect('/main')
+      }else{
+        res.redirect('/sell')
+      }
+      
     }else{
       res.render('login')
     }
@@ -89,7 +96,12 @@ router.post('/login',async (req,res)=>{
             // res.setHeader('set-cookie', ['access_token=' + token + '; Domain=.magiccasino.bet; Path=/; HttpOnly',]);
             // data = ({ status: 200, message: "เข้าสู่ระบบสำเร็จ", data: getadmin.username });
             let level = encodeURIComponent(getadmin.level)
-            return res.status(200).cookie("access_token", token).redirect('/main?level='+level)
+            if(getadmin.level < 3){
+              return res.status(200).cookie("access_token", token).redirect('/main?level='+level)
+            }else{
+              return res.status(200).cookie("access_token", token).redirect('/sell')
+            }
+            
             
         //   } else {
         //     return res.json({

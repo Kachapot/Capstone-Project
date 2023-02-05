@@ -3,6 +3,7 @@ const { uid } = require("uid");
 const {moment} = require('../module/index')
 const {paginate,page_PN} = require('./function')
 const db = require("../database/connect");
+const puppeteer = require('puppeteer');
 
 router.get("/", async (req, res) => {
   try {
@@ -17,12 +18,12 @@ router.get("/", async (req, res) => {
     cus_fname like '%${body.search}%' or 
     cus_lname like '%${body.search}%' or
     `
-    const getdata = await db("tb_order_sell")
-      .select(
+    const getdata = await db("tb_order_sell").select(
         'id',
         'order_sell_id',
         db.raw('concat(cus_fname," ",cus_lname) as cus_name'),
         db.raw('(select concat(emp_fname," ",emp_lname) from tb_employee where emp_id = tb_order_sell.emp_id) as emp_name'),
+        db.raw(`(select case when emp_position = 'พนักงานขนส่ง' or level < 3 then true else false end from tb_employee where emp_id = tb_order_sell.emp_id) as ship`),
         'order_sell_amount',
         'order_sell_total',
         db.raw("DATE_FORMAT(order_sell_date,'%d-%m-%Y %H:%i:%s') as order_sell_date"),
@@ -31,14 +32,13 @@ router.get("/", async (req, res) => {
         when order_sell_status = 2 then 'กำลังจัดส่ง'
         when order_sell_status = 3 then 'สำเร็จ'
         else 'ยกเลิก' end as order_sell_status`)
-      )
-      .whereRaw(where)
-      .limit(limit)
-      .offset(offset)
-      .orderBy("id", "desc")??[]
+      ).whereRaw(where).limit(limit).offset(offset).orderBy("id", "desc")??[]
     const countdata = await db('tb_order_sell').count('id as count').whereRaw(where).first()
     let all_page = Math.ceil(countdata.count/limit)
     let pagination = await paginate(page,all_page)
+
+    const getemp = await db('tb_employee').select('*').where({username: req.admin}).first()
+    console.log('getemp',getemp);
     if (getdata?.length == 0) return res.render('sell',{
         payload: [],
         username: username,
@@ -48,45 +48,7 @@ router.get("/", async (req, res) => {
         item: getdata.length,
         pagination : pagination
       })
-    
-    if(body.error){
-      return res.render("sell", {
-        payload: getdata,
-        username: username,
-        count: getdata.length,
-        status: true,
-        menu:req.menu,
-        item: getdata.length,
-        pagination : pagination,
-        error:{msg:body.error}
-      });
-    }
-    if(body.approve){
-      return res.render("sell", {
-        payload: getdata,
-        username: username,
-        count: getdata.length,
-        status: true,
-        menu:req.menu,
-        item: getdata.length,
-        pagination : pagination,
-        approve:{msg:body.approve}
-      });
-    }
-
-    if(body.deleted){
-      return res.render("sell", {
-        payload: getdata,
-        username: username,
-        count: getdata.length,
-        status: true,
-        menu:req.menu,
-        item: getdata.length,
-        pagination : pagination,
-        deleted:{msg:body.deleted}
-      });
-    }
-    return res.render("sell", {
+    let data = {
       payload: getdata,
       username: username,
       count: getdata.length,
@@ -94,7 +56,21 @@ router.get("/", async (req, res) => {
       menu:req.menu,
       item: getdata.length,
       pagination : pagination
-    });
+    }
+    if(getemp.emp_position == 'พนักงานขนส่ง' || getemp.level < 3) data['ship'] = true
+
+    if(body.error){
+      data['error'] = {msg:body.error}
+    }
+    if(body.approve){
+      data['approve'] = {msg:body.approve}
+    }
+
+    if(body.deleted){
+      data['deleted'] = {msg:body.deleted}
+    }
+    console.log('data',data);
+    return res.render("sell",data);
   } catch (error) {
     console.log(error);
   }
@@ -163,41 +139,85 @@ router.post('/insert',async(req,res)=>{
 router.get('/showdata/:id',async(req,res)=>{
   try {
     const body = req.params
+    const getorderSell = await db('tb_order_sell').select('*').where({order_sell_id:body.id}).first()
+    const getcus = await db('tb_customer').select('*').where({cus_id:getorderSell.cus_id}).first()
+    const address = JSON.parse(getcus.cus_address)
     const getdata = await db('tb_order_sell_detail').select(
       'prod_id',
       'prod_name',
       db.raw('format(prod_price,2) as prod_price'),
       'prod_amount',
       db.raw('format(total,2) as total'),
+      'total as sum'
     ).where({order_sell_id:body.id})
     if(!getdata){
       let msg = encodeURIComponent('ไม่พบข้อมูล')
       return res.redirect('/sell/?error='+msg)
     }
-    return res.render('showdata-sell',{
+    let total = getdata.map(x=>x.sum)
+    let sum = total.reduce(function(a, b) {
+      return a + parseInt(b.replace(",", ""), 10);
+    }, 0);
+    let vat = sum*0.7
+    let totalsum = Number(sum+vat)
+    let data ={
       status:true,
       menu:req.menu,
       username:req.admin,
       payload:getdata,
       count:getdata.length,
-      id:body.id
-    })
+      id:body.id,
+      cus_name:getorderSell.cus_fname+' '+getorderSell.cus_lname,
+      ship_address:address.ship_address,
+      address2:address.address2,
+      locality:address.locality,
+      state:address.state,
+      postcode:address.postcode,
+      sum:sum.toLocaleString(),
+      vat : vat.toLocaleString(),
+      totalsum:totalsum.toLocaleString()
+    }
+    if(req.query.error){
+      data = {
+        status:true,
+        menu:req.menu,
+        username:req.admin,
+        payload:getdata,
+        count:getdata.length,
+        id:body.id,
+        cus_name:getorderSell.cus_fname+' '+getorderSell.cus_lname,
+        ship_address:address.ship_address,
+        address2:address.address2,
+        locality:address.locality,
+        state:address.state,
+        postcode:address.postcode,
+        sum:sum.toLocaleString(),
+        vat : vat.toLocaleString(),
+        totalsum:totalsum.toLocaleString(),
+        error:{msg:req.query.error}
+      }
+    }
+    return res.render('showdata-sell',data)
+
+    // const html = await res.render('showdata-sell',data);
+    // const browser = await puppeteer.launch({ headless: false ,timeout:0});
+    // const page = await browser.newPage();
+    // await page.setContent(html);
+    // await page.pdf({
+    //   path: 'invoice.pdf',
+    //   format: 'A4'
+    // });
+    // console.log('PDF created');
+
+    
   } catch (error) {
     console.log(error);
   }
 })
 
-router.get('/approve/:id',async(req,res)=>{
+router.get('/print/:id',async(req,res)=>{
   try {
-    const body = req.params
-    const update = await db('tb_order_buy')
-    .update({
-      order_buy_status:true,
-      approve_date:moment().format("DD-MM-YYYY hh:mm:ss")
-    })
-    .where({order_buy_id:body.id})
-    let msg = encodeURIComponent('อนุมัติสำเร็จ')
-    return res.redirect('/buy/?approve='+msg)
+    return res.redirect(`/sell/showdata/${req.params.id}?error=`+encodeURIComponent('ไม่พบเครื่องพิมพ์'))
   } catch (error) {
     console.log(error);
   }
@@ -206,19 +226,19 @@ router.get('/approve/:id',async(req,res)=>{
 router.get('/delete/:id',async(req,res)=>{
   try {
     const body = req.params
-    const getUser = await db('tb_order_buy').where({order_buy_id:body.id}).first()
+    const getUser = await db('tb_order_sell').where({order_sell_id:body.id}).first()
     if(!getUser){
       let deleted = encodeURIComponent('ไม่พบยูสเซอร์')
-      return res.redirect('/buy/?deleted='+deleted)
+      return res.redirect('/sell/?deleted='+deleted)
     }
-    if(getUser.level < 1){
+    if(getUser.level > 1){
       let deleted = encodeURIComponent('ไม่สามารถลบได้')
-      return res.redirect('/buy/?deleted='+deleted)
+      return res.redirect('/sell/?deleted='+deleted)
     }
-    const deleteUser = await db('tb_order_buy').where({order_buy_id:body.id}).del()
-    const deleteDetail = await db('tb_order_buy_detail').where({order_buy_id:body.id}).del()
+    const deleteUser = await db('tb_order_sell').where({order_sell_id:body.id}).del()
+    const deleteDetail = await db('tb_order_sell_detail').where({order_sell_id:body.id}).del()
     let deleted = encodeURIComponent('ลบข้อมูลสำเร็จ')
-    return res.redirect('/buy/?deleted='+deleted)
+    return res.redirect('/sell/?deleted='+deleted)
   } catch (error) {
     console.log(error);
   }

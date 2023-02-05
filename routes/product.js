@@ -138,7 +138,6 @@ router.post('/editProduct/update/:id',async(req,res)=>{
     try {
         const body = req.body
         const id = req.params.id
-        // console.log('id',id);
         const update = await db('tb_product').update({
             prod_name:body.prod_name,
             prod_price:body.prod_price,

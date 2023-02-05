@@ -199,9 +199,7 @@ router.post('/edit/update',async(req,res)=>{
 router.get('/delete/:id',async(req,res)=>{
   try {
     const body = req.params
-    // console.log(body);
     const getUser = await db('tb_customer').where({cus_id:body.id}).first()
-    // console.log('getUser',getUser);
     if(!getUser){
       let deleted = encodeURIComponent('ไม่พบยูสเซอร์')
       return res.redirect('/customer/?deleted='+deleted)
