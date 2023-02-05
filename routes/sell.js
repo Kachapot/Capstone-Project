@@ -22,10 +22,15 @@ router.get("/", async (req, res) => {
         'id',
         'order_sell_id',
         db.raw('concat(cus_fname," ",cus_lname) as cus_name'),
+        db.raw('(select concat(emp_fname," ",emp_lname) from tb_employee where emp_id = tb_order_sell.emp_id) as emp_name'),
         'order_sell_amount',
         'order_sell_total',
         db.raw("DATE_FORMAT(order_sell_date,'%d-%m-%Y %H:%i:%s') as order_sell_date"),
-        db.raw(`case when order_sell_status = 1 then 'อนุมัติ' else 'ยังไม่อนุมัติ' end as order_sell_status`)
+        db.raw(`case 
+        when order_sell_status = 1 then 'กำลังดำเนินงาน' 
+        when order_sell_status = 2 then 'กำลังจัดส่ง'
+        when order_sell_status = 3 then 'สำเร็จ'
+        else 'ยกเลิก' end as order_sell_status`)
       )
       .whereRaw(where)
       .limit(limit)
@@ -97,8 +102,8 @@ router.get("/", async (req, res) => {
 
 router.get('/create',async(req,res)=>{
     try {
-        const getprod = await db('tb_product').select('*')
-        const getcus = await db('tb_customer').select('*')
+        const getprod = await db('tb_product').select('*').orderBy('id','desc')
+        const getcus = await db('tb_customer').select('*').orderBy('id','desc')
        return res.render('create-sell',{
         username:req.admin,
         status:true,
@@ -120,8 +125,8 @@ router.post('/insert',async(req,res)=>{
     prod_amount.shift()
 
     const order_sell_total = prod_amount.reduce(function(a, b) {return a + parseInt(b)}, 0);
-    const getcus = await db('tb_customer').select('*').where({cus_id:body.cus_id})
-    const getemp = await db('tb_employee').select('*').where({username : req.admin})
+    const getcus = await db('tb_customer').select('*').where({cus_id:body.cus_id}).first()
+    const getemp = await db('tb_employee').select('*').where({username : req.admin}).first()
     const sell_id = 'sell_id'+uid(10)
     const insertSell = await db('tb_order_sell').insert({
       order_sell_id : sell_id,
@@ -132,20 +137,24 @@ router.post('/insert',async(req,res)=>{
       cus_phone:getcus.cus_phone,
       order_sell_amount:prod_id.length,
       order_sell_total:order_sell_total,
-      order_sell_status : false
+      order_sell_status : 1
     })
+    if(!insertSell) return res.redirect('/sell/?error='+encodeURIComponent('เกิดข้อผิดพลาดบางอย่าไม่สามารถเพิ่มได้'))
     for (let index = 0; index < prod_id.length; index++) {
       const id = prod_id[index];
       const amount = prod_amount[index]
-
-      const getprod = await db('tb_product').select('*').where({prod_id:id})
+      const getprod = await db('tb_product').select('*').where({prod_id:id}).first()
+      let sell_price = Number(getprod.prod_price) + (Number(getprod.prod_price)*0.15) 
       const insertDetail = await db('tb_order_sell_detail').insert({
         order_sell_id:sell_id,
         prod_id:getprod.prod_id,
-        
+        prod_name:getprod.prod_name,
+        prod_price: sell_price,
+        prod_amount:amount,
+        total:sell_price*Number(amount),
       })
-      
     }
+    return res.redirect('/sell/?approve='+encodeURIComponent('สร้างรายการสำเร็จ'))
   } catch (error) {
     console.log(error);
   }
@@ -154,18 +163,18 @@ router.post('/insert',async(req,res)=>{
 router.get('/showdata/:id',async(req,res)=>{
   try {
     const body = req.params
-    const getdata = await db('tb_order_buy_detail').select(
+    const getdata = await db('tb_order_sell_detail').select(
       'prod_id',
       'prod_name',
-      'prod_price',
+      db.raw('format(prod_price,2) as prod_price'),
       'prod_amount',
-      'total',
-    ).where({order_buy_id:body.id})
+      db.raw('format(total,2) as total'),
+    ).where({order_sell_id:body.id})
     if(!getdata){
       let msg = encodeURIComponent('ไม่พบข้อมูล')
-      return res.redirect('/buy/?error='+msg)
+      return res.redirect('/sell/?error='+msg)
     }
-    return res.render('showdata-buy',{
+    return res.render('showdata-sell',{
       status:true,
       menu:req.menu,
       username:req.admin,
@@ -197,9 +206,7 @@ router.get('/approve/:id',async(req,res)=>{
 router.get('/delete/:id',async(req,res)=>{
   try {
     const body = req.params
-    // console.log(body);
     const getUser = await db('tb_order_buy').where({order_buy_id:body.id}).first()
-    // console.log('getUser',getUser);
     if(!getUser){
       let deleted = encodeURIComponent('ไม่พบยูสเซอร์')
       return res.redirect('/buy/?deleted='+deleted)

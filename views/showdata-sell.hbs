@@ -1,0 +1,36 @@
+<div class="container pt-5 mt-5">
+    <div class="row d-flex flex-row">
+    <div class="col-6">
+      <h3 class="text-start text-danger">ตัวอย่างใบเสร็จ</h3>
+    </div>
+    <div class="col-6">
+      <h3 class="text-end">จำนวนสินค้า {{count}} รายการ</h3>
+    </div>
+  </div>
+  <div class="row d-flex">
+    <div class="col"><a class="btn btn-success" href="/sell/print/{{id}}"><i class="bi bi-check-circle-fill"></i> พิมพ์ใบเสร็จ</a></div>
+  </div>
+    <hr>
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th scope="col">รหัสสินค้า</th>
+        <th scope="col">ชื่อสินค้า</th>
+        <th scope="col">ราคาต่อหน่วย</th>
+        <th scope="col">จำนวน</th>
+        <th scope="col">ราคารวม</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each payload}}
+      <tr class="border-0">
+        <th scope="row" class="border-0">{{prod_id}}</th>
+        <td class="border-0">{{prod_name}}</td>
+        <td class="border-0">{{prod_price}}</td>
+        <td class="border-0">{{prod_amount}}</td>
+        <td class="border-0">{{total}}</td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>

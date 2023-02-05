@@ -1,7 +1,7 @@
 <form method="post" action="/sell/insert">
 <div class="row pb-3">
-  <div class="col">
-    <label for="customer">ชื่อลูกค้า</label>
+  <div class="col-6">
+    <label for="customer">รายชื่อลูกค้า</label>
     <select class="selectpicker form-select" data-live-search="true" name="cus_id">
         {{#each customer}}
         <option data-tokens="{{cus_id}}" value="{{cus_id}}">{{cus_fname}} {{cus_lname}}</option>

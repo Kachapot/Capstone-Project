@@ -38,7 +38,7 @@
 
   <div class="row d-flex">
   <div class="col">
-    <a class="btn btn-primary" href="sell/create"><i class="bi bi-plus"></i> เพิ่มรายการสั่งซื้อสินค้า</a>
+    <a class="btn btn-primary" href="/sell/create"><i class="bi bi-plus"></i> เพิ่มรายการสั่งซื้อสินค้า</a>
   </div>
     <div class="col">
       <div class="d-grid gap-2 d-md-flex justify-content-md-end ">
@@ -57,7 +57,7 @@
         <th scope="col">รหัสรายการสั่งซื้อสินค้า</th>
         <th scope="col">ชื่อผู้ทำรายการ</th>
         <th scope="col">ชื่อผู้ซื้อ</th>
-        <th scope="col">ราคารวม</th>
+        <th scope="col"><p>จำนวนรวม(ชิ้น)</p></th>
         <th scope="col">วันที่สร้างรายการ</th>
         <th scope="col">สถานะ</th>
         <th scope="col" class="text-end">action</th>
@@ -66,16 +66,15 @@
     <tbody>
       {{#each payload}}
       <tr>
-        <th scope="row">{{order_buy_id}}</th>
+        <th scope="row">{{order_sell_id}}</th>
         <td>{{emp_name}}</td>
-        <td>{{order_buy_amount}}</td>
-        <td>{{order_buy_total}}</td>
-        <td>{{order_buy_date}}</td>
-        <td>{{approve_date}}</td>
-        <td>{{order_buy_status}}</td>
+        <td>{{cus_name}}</td>
+        <td>{{order_sell_total}}</td>
+        <td>{{order_sell_date}}</td>
+        <td>{{order_sell_status}}</td>
         <td class="text-end">
-          <a href="/buy/showdata/{{order_buy_id}}" type="button" class="btn btn-light btn-small"><i class="bi bi-eye"> ดูข้อมูล</i></a>
-          <a href="/buy/delete/{{order_buy_id}}" type="button" class="btn btn-danger btn-small"><i class="bi bi-trash3-fill"></i> ลบ</i></a>
+          <a href="/sell/showdata/{{order_sell_id}}" type="button" class="btn btn-light btn-small"><i class="bi bi-eye"> ดูข้อมูล</i></a>
+          <a href="/sell/delete/{{order_sell_id}}" type="button" class="btn btn-danger btn-small"><i class="bi bi-trash3-fill"></i> ลบ</i></a>
         </td>
       </tr>
       {{/each}}
