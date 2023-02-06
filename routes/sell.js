@@ -3,7 +3,6 @@ const { uid } = require("uid");
 const {moment} = require('../module/index')
 const {paginate,page_PN} = require('./function')
 const db = require("../database/connect");
-const puppeteer = require('puppeteer');
 
 router.get("/", async (req, res) => {
   try {
