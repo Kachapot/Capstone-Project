@@ -11,7 +11,7 @@ router.get("/:id", async (req, res) => {
       .select("*")
       .where({ order_sell_id: body.id })
       .first();
-      console.log('getorderSell',getorderSell);
+      // console.log('getorderSell',getorderSell);
     const getcus = await db("tb_customer")
       .select("*")
       .where({ cus_id: getorderSell.cus_id })

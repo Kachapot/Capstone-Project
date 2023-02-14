@@ -13,7 +13,7 @@ router.use('/ship',authorization,require('./ship'))
 router.get('/',authorization,async(req,res)=>{
     // console.log('cookie',req);
     if(req.cookies?.access_token){
-      // const getEmp = await db('tb_employee').select('*').where({username:req.admin}).first()
+      const getEmp = await db('tb_employee').select('*').where({username:req.admin}).first()
       if(getEmp.level < 3){
         res.redirect('/main')
       }else{
