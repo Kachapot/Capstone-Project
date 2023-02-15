@@ -11,15 +11,15 @@
         <div class="container-fluid">
 
           <!-- Page Heading -->
-          <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800 fs-1">แดชบอร์ด</h1>
-            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary
-            shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> พิมพ์รายงาน</a>
+          <div class="d-sm-flex align-items-center justify-content-between mb-4 py-2">
+            <div class="col-10"><h1 class="h3 mb-0 text-gray-800 fs-1">แดชบอร์ด</h1></div>
+            <div class="col">เลือกวันที่ <input type="text" name="daterange" value="01/01/2015 - 01/31/2015" class="form-control" /></div>
           </div>
 
 
           <!-- Content Row -->
           <div class="row">
+            
             <hr>
             <!-- Earnings (Monthly) Card Example -->
             <div class="col-xl-3 col-md-6 mb-4 text-white">
@@ -28,7 +28,7 @@
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                       <div class="text-xs font-weight-bold text-uppercase mb-1">รายได้ (เดือนนี้)</div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800">40,000</div>
                     </div>
                     <div class="col-auto">
                       <i class="fas fa-calendar fa-2x text-gray-300"></i>
@@ -45,7 +45,7 @@
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                       <div class="text-xs font-weight-bold text-uppercase mb-1">รายได้ (วันนี้)</div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800">$215,000</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800">215,000</div>
                     </div>
                     <div class="col-auto">
                       <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
@@ -245,4 +245,10 @@
       }
     }
   })
+</script>
+
+<script type="text/javascript">
+$(function() {
+    $('input[name="daterange"]').daterangepicker();
+});
 </script>
