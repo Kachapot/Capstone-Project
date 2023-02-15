@@ -27,20 +27,21 @@ router.get('/',authorization,async(req,res)=>{
 router.get('/main',authorization,async(req,res)=>{
   try {
     const body = req.query
+    console.log('body',body);
     const today = moment().format('YYYY-MM-DD')
     const startMonth = moment().startOf('month').format('YYYY-MM-DD')
     const endMonth = moment().endOf('month').format('YYYY-MM-DD')
     const startYear = moment().startOf('year').format('YYYY-MM-DD')
     const endYear = moment().endOf('year').format('YYYY-MM-DD')
-    const totalSell = await db('tb_order_sell_detail').select(db.raw(`
-    format(sum(total),2) as total,
-    date_format(date,'%m-%y') as month
-    `)).whereRaw(`
-    date between '${startMonth}' and '${endMonth}
-    `)
-    .groupBy('month')
-    .orderBy('month')
-    console.log('totalSell',totalSell);
+    // const totalSell = await db('tb_order_sell_detail').select(db.raw(`
+    // format(sum(total),2) as total,
+    // date_format(date,'%m-%y') as month
+    // `)).whereRaw(`
+    // date >= '${startMonth}' and date <= '${endMonth}
+    // `)
+    // .groupBy('month')
+    // .orderBy('month')
+    // console.log('totalSell',totalSell);
       let data = {
         status:true,
         menu:req.menu,

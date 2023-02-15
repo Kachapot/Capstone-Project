@@ -11,10 +11,18 @@
         <div class="container-fluid">
 
           <!-- Page Heading -->
-          <div class="d-sm-flex align-items-center justify-content-between mb-4 py-2">
+          <form>
+            <div class="d-sm-flex align-items-center justify-content-between mb-4 py-2">
             <div class="col-10"><h1 class="h3 mb-0 text-gray-800 fs-1">แดชบอร์ด</h1></div>
-            <div class="col">เลือกวันที่ <input type="text" name="daterange" value="01/01/2015 - 01/31/2015" class="form-control" /></div>
+            <div class="col">
+              <input type="date" name="startDate">
+              <input type="date" name="endDate">
+              {{!-- <input type="text" name="daterange" value="01/01/2015 - 01/31/2015" class="form-control" /> --}}
+              <input type="submit" class="btn btn-success">
+            </div>
           </div>
+          </form>
+          
 
 
           <!-- Content Row -->
@@ -247,8 +255,8 @@
   })
 </script>
 
-<script type="text/javascript">
+{{!-- <script type="text/javascript">
 $(function() {
     $('input[name="daterange"]').daterangepicker();
 });
-</script>
+</script> --}}
