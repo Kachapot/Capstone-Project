@@ -30,14 +30,14 @@
         // Set up the datepicker with start-end selection
         $('#startDatePicker').datepicker({
           dateFormat: 'yy-mm-dd',
-          minDate: 0,
+          minDate: '-1y',
           onSelect: function(selectedDate) {
             $('#endDatePicker').datepicker('option', 'minDate', selectedDate);
           }
         });
         $('#endDatePicker').datepicker({
           dateFormat: 'yy-mm-dd',
-          minDate: 0
+          minDate: '-1y'
         });
       });
     </script>
