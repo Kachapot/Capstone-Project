@@ -11,24 +11,21 @@
         <div class="container-fluid">
 
           <!-- Page Heading -->
-          <form>
-            <div class="d-sm-flex align-items-center justify-content-between mb-4 py-2">
-            <div class="col-10"><h1 class="h3 mb-0 text-gray-800 fs-1">แดชบอร์ด</h1></div>
-            <div class="col">
-              <input type="date" name="startDate">
-              <input type="date" name="endDate">
-              {{!-- <input type="text" name="daterange" value="01/01/2015 - 01/31/2015" class="form-control" /> --}}
-              <input type="submit" class="btn btn-success">
+          <div class="row justify-content-between">
+            <div class="col p-0">
+              <h3>แดชบอร์ด</h3>
+            </div>
+            <div class="col p-0 text-end">
+              <form class="d-flex justify-content-end">
+                <input type="date" id="startDatePicker" name="startDate" class="form-control w-25" value="{{startDate}}">
+                <input type="date" id="endDatePicker" name="endDate" class="form-control w-25 mx-1" value="{{endDate}}">
+                <button type="submit" class="btn btn-primary">ดูข้อมูล</button>
+              </form>
             </div>
           </div>
-          </form>
-          
-
-
+  <hr>
           <!-- Content Row -->
-          <div class="row">
-            
-            <hr>
+          <div class="row d-flex justify-content-center">
             <!-- Earnings (Monthly) Card Example -->
             <div class="col-xl-3 col-md-6 mb-4 text-white">
               <div class="card border-left-primary shadow h-100 py-2" style="background-color: rgb(68,79,152,0.6);">
@@ -205,9 +202,9 @@
   });
 
   var pie = document.getElementById('pieChart');
-  var chart2 = new Chart(pie,{
-    type:'pie',
-    data:{
+  var chart2 = new Chart(pie, {
+    type: 'pie',
+    data: {
       labels: [
         'เชียงใหม่',
         'แม่ฮ่องสอน',
@@ -227,7 +224,7 @@
       ],
       datasets: [{
         label: 'ยอดขายรวมของจังหวัด',
-        data: [300, 50, 100,21,332,421,321,34,32,123,321,65,43,22,12],
+        data: [300, 50, 100, 21, 332, 421, 321, 34, 32, 123, 321, 65, 43, 22, 12],
         backgroundColor: [
           'rgb(68,79,152,0.6)',
           'rgb(110,58,139,0.6)',
@@ -255,8 +252,9 @@
   })
 </script>
 
-{{!-- <script type="text/javascript">
-$(function() {
+{{!--
+<script type="text/javascript">
+  $(function () {
     $('input[name="daterange"]').daterangepicker();
-});
+  });
 </script> --}}

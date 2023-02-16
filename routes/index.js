@@ -46,7 +46,9 @@ router.get('/main',authorization,async(req,res)=>{
         status:true,
         menu:req.menu,
         msg:"ยินดีต้อนรับ",
-        username:req.admin
+        username:req.admin,
+        startDate:today,
+        endDate:today
       }
       res.render('index',data)
     
