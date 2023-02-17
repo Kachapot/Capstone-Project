@@ -33,7 +33,7 @@
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                       <div class="text-xs font-weight-bold text-uppercase mb-1">รายได้ (เดือนนี้)</div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800">40,000</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800">{{incomeMonth}} บาท</div>
                     </div>
                     <div class="col-auto">
                       <i class="fas fa-calendar fa-2x text-gray-300"></i>
@@ -50,7 +50,7 @@
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                       <div class="text-xs font-weight-bold text-uppercase mb-1">รายได้ (วันนี้)</div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800">215,000</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800">{{incomeToday}} บาท</div>
                     </div>
                     <div class="col-auto">
                       <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
@@ -71,7 +71,7 @@
                       </div>
                       <div class="row no-gutters align-items-center">
                         <div class="col-auto">
-                          5 รายการ
+                          {{countTransporting}} รายการ
                         </div>
                       </div>
                     </div>
@@ -92,7 +92,7 @@
                       <div class="text-xs font-weight-bold
                       text-uppercase mb-1">
                         คำขอซื้อสินค้าเข้า รออนุมัติ</div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800">18 รายการ</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800">{{countBuyList}} รายการ</div>
                     </div>
                     <div class="col-auto">
                       <i class="fas fa-comments fa-2x text-gray-300"></i>
@@ -160,7 +160,7 @@
       ],
       datasets: [{
         label: 'ยอดรายเดือน',
-        data: [12, 19, 3, 5, 2, 3, 22, 34, 21, 66, 23, 9],
+        data:[{{month_value}}],
         backgroundColor: [
           'rgb(68,79,152,0.6)',
           'rgb(110,58,139,0.6)',
@@ -224,7 +224,7 @@
       ],
       datasets: [{
         label: 'ยอดขายรวมของจังหวัด',
-        data: [300, 50, 100, 21, 332, 421, 321, 34, 32, 123, 321, 65, 43, 22, 12],
+        data: [{{state_value}}],
         backgroundColor: [
           'rgb(68,79,152,0.6)',
           'rgb(110,58,139,0.6)',

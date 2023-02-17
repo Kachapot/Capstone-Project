@@ -27,75 +27,123 @@ router.get('/',authorization,async(req,res)=>{
 router.get('/main',authorization,async(req,res)=>{
   try {
     const body = req.query
-    console.log('body',body);
     let startDate = body.startDate
     let endDate = body.endDate
     if(endDate < startDate){
       startDate = body.endDate
       endDate = body.startDate
     }
+    let month_value = [0,0,0,0,0,0,0,0,0,0,0,0]
+    let state_value = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
     const today = moment().format('YYYY-MM-DD')
     const startMonth = moment().startOf('month').format('YYYY-MM-DD')
     const endMonth = moment().endOf('month').format('YYYY-MM-DD')
-    // const startYear = moment().startOf('year').format('YYYY-MM-DD')
-    // const endYear = moment().endOf('year').format('YYYY-MM-DD')
+    const startYear = moment().startOf('year').format('YYYY-MM-DD')
+    const endYear = moment().endOf('year').format('YYYY-MM-DD')
     const totalSell = await db('tb_order_sell_detail').select(
       db.raw(`
-      format(sum(total),2) as total,
+      sum(total) as total,
       date_format(date,'%m') as month`)
       )
     .whereRaw(`date between '${startMonth}' and '${endMonth}'`)
     .groupBy('month')
     .orderBy('month')
-    console.log('totalsell',totalSell);
+    // console.log('totalsell',totalSell);
+    const getState = await db.fromRaw(`
+    (
+    select
+    c.cus_address ->> "$.state" as state,
+    ifnull(sum(s.order_sell_total),0) as total
+    from tb_order_sell s
+    inner JOIN tb_customer c on c.cus_id = s.cus_id
+    where s.order_sell_date between '${startYear}' and '${endYear}'
+    GROUP BY c.cus_address ->> "$.state"
+    )as a
+    `)
+    // console.log('getState',getState);
+    const incomeToday = await db('tb_order_sell_detail')
+    .select(db.raw(`ifnull(format(sum(total),2),0) as total`))
+    .whereRaw(`date BETWEEN '${today}' and '${today}'`).first()
+    const incomeMonth = await db('tb_order_sell_detail')
+    .select(db.raw(`ifnull(format(sum(total),2),0) as total`))
+    .whereRaw(`date BETWEEN '${startMonth}' and '${endMonth}'`).first()
+    const countTransporting = await db('tb_order_sell').select(db.raw("count(id) as count"))
+    .where({order_sell_status:1}).first()
+    const countBuyList = await db('tb_order_buy').count('id as count')
+    .where({order_buy_status : 0}).first()
+    
+    // loop month value
     for (let index = 0; index < totalSell.length; index++) {
       const element = totalSell[index];
       if(element.month == '01'){
-        
+        month_value[0] = +element.total
       }
       if(element.month == '02'){
-
+        month_value[1] = +element.total
       }
       if(element.month == '03'){
-
+        month_value[2] = +element.total
       }
       if(element.month == '04'){
-
+        month_value[3] = +element.total
       }
       if(element.month == '05'){
-
+        month_value[4] = +element.total
       }
       if(element.month == '06'){
-
+        month_value[5] = +element.total
       }
       if(element.month == '07'){
-
+        month_value[6] = +element.total
       }
       if(element.month == '08'){
-
+        month_value[7] = +element.total
       }
       if(element.month == '09'){
-
+        month_value[8] = +element.total
       }
       if(element.month == '10'){
-
+        month_value[9] = +element.total
       }
       if(element.month == '11'){
-
+        month_value[10] = +element.total
       }
       if(element.month == '12'){
-
+        month_value[11] = +element.total
       }
-      
     }
 
+    for (let index = 0; index < getState.length; index++) {
+      const element = getState[index];
+      if(element.state == 'เชียงใหม่') state_value[0] = +element.total
+      if(element.state == 'แม่ฮ่องสอน') state_value[1] = +element.total
+      if(element.state == 'เชียงราย') state_value[2] = +element.total
+      if(element.state == 'ลำพูน') state_value[3] = +element.total
+      if(element.state == 'ลำปาง') state_value[4] = +element.total
+      if(element.state == 'พะเยา') state_value[5] = +element.total
+      if(element.state == 'แพร่') state_value[6] = +element.total
+      if(element.state == 'น่าน') state_value[7] = +element.total
+      if(element.state == 'อุตรดิตถ์') state_value[8] = +element.total
+      if(element.state == 'ตาก') state_value[9] = +element.total
+      if(element.state == 'สุโขทัย') state_value[10] = +element.total
+      if(element.state == 'พิษณุโลก') state_value[11] = +element.total
+      if(element.state == 'กำแพงเพรชร') state_value[12] = +element.total
+      if(element.state == 'เพชรบูรณ์') state_value[13] = +element.total
+      if(element.state == 'พิจิตร') state_value[0] = +element.total
+    }
       let data = {
         status:true,
         menu:req.menu,
         msg:"ยินดีต้อนรับ",
         username:req.admin,
         startDate:body.startDate??today,
-        endDate:body.endDate??today
+        endDate:body.endDate??today,
+        state_value:state_value,
+        month_value:month_value,
+        incomeToday:incomeToday.total,
+        incomeMonth:incomeMonth.total,
+        countTransporting:countTransporting.count,
+        countBuyList:countBuyList.count
       }
       res.render('index',data)
     
