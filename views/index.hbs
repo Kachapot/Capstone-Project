@@ -1,3 +1,8 @@
+<style>
+  a{
+    color:white;
+  }
+</style>
 <!-- Page Wrapper -->
 <div class="container py-5 my-5">
   <div id="wrapper">
@@ -15,25 +20,22 @@
             <div class="col p-0">
               <h3>แดชบอร์ด</h3>
             </div>
-            <div class="col p-0 text-end">
-              <form class="d-flex justify-content-end">
-                <input type="text" id="startDatePicker" name="startDate" class="form-control w-25" value="{{startDate}}">
-                <input type="text" id="endDatePicker" name="endDate" class="form-control w-25 mx-1" value="{{endDate}}">
-                <button type="submit" class="btn btn-primary">ดูข้อมูล</button>
-              </form>
-            </div>
+            
           </div>
           <hr>
           <!-- Content Row -->
           <div class="row d-flex justify-content-center">
             <!-- Earnings (Monthly) Card Example -->
+            
             <div class="col-xl-3 col-md-6 mb-4 text-white">
               <div class="card border-left-primary shadow h-100 py-2" style="background-color: rgb(68,79,152,0.6);">
                 <div class="card-body">
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
+                      <a class="btn text-start text-white" href="/report/income">
                       <div class="text-xs font-weight-bold text-uppercase mb-1">รายได้ (เดือนนี้)</div>
                       <div class="h5 mb-0 font-weight-bold text-gray-800">{{incomeMonth}} บาท</div>
+                      </a>
                     </div>
                     <div class="col-auto">
                       <i class="fas fa-calendar fa-2x text-gray-300"></i>

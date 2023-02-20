@@ -9,6 +9,7 @@ router.use('/product',authorization,require('./product'))
 router.use('/buy',authorization,require('./buy'))
 router.use('/sell',authorization,require('./sell'))
 router.use('/ship',authorization,require('./ship'))
+router.use('/report',authorization,require('./report'))
 
 router.get('/',authorization,async(req,res)=>{
     // console.log('cookie',req);
