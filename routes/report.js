@@ -14,8 +14,8 @@ router.get('/income',async(req,res)=>{
         .select(db.raw(`
         os.order_sell_id,
         concat(cus_fname,' ',cus_lname) cus_name,
-        ifnull(sum(osd.total),0) as total,
-        os.order_sell_date
+        ifnull(format(sum(osd.total),2),0) as total,
+        date_format(os.order_sell_date,"%d-%m-%Y") as order_sell_date
         `))
         .whereRaw(`date(os.order_sell_date) between '${startDate}' and '${endDate}'`)
         .groupBy('os.order_sell_id','os.order_sell_date')
@@ -45,6 +45,7 @@ router.get('/income',async(req,res)=>{
                 order_sell_id:element.order_sell_id,
                 cus_name:element.cus_name,
                 total :element.total,
+                order_sell_date:element.order_sell_date,
                 detail:getdetail
             })
         }
