@@ -72,6 +72,45 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get('/show/:id',async(req,res)=>{
+  try {
+     const body = req.params 
+    //  console.log('body',body);
+     const getUser = await db('tb_customer').select(
+      'cus_id',
+      'cus_fname',
+      'cus_lname',
+      'cus_gender',
+      'cus_email',
+      'cus_address',
+      'cus_phone',
+      'cus_location'
+     ).where({cus_id:body.id}).first()
+    //  console.log('getUser',getUser);
+     if(getUser.cus_address.length>0) var userAddress = JSON.parse(getUser.cus_address);
+    // console.log('userAddress',userAddress);
+      const location = getUser.cus_location?JSON.parse(getUser.cus_location):{lat:18.809753815121315,lng:98.95262678679745}
+     let payload = {
+      cus_id:getUser.cus_id,
+      cus_fname:getUser.cus_fname,
+      cus_lname: getUser.cus_lname,
+      cus_gender: getUser.cus_gender,
+      cus_email: getUser.cus_email,
+      cus_phone: getUser.cus_phone,
+      ship_address:userAddress.ship_address,
+      address2: userAddress.address2,
+      locality : userAddress.locality,
+      state : userAddress.state,
+      postcode : userAddress.postcode,
+      location: JSON.stringify(location)
+     }
+    //  return console.log('payload',payload);
+     return res.render('showdata-cus',{payload:payload,status:true,menu:req.menu,})
+  } catch (error) {
+    console.log(error);
+  }
+})
+
 router.get("/create", async (req, res) => {
   try {
     res.render('create-cus',{username:req.admin,status:true,menu:req.menu,mapkey:process.env.map_key})
@@ -128,7 +167,7 @@ router.get('/edit/:id',async(req,res)=>{
      ).where({cus_id:body.id}).first()
     //  console.log('getUser',getUser);
      if(getUser.cus_address.length>0) var userAddress = JSON.parse(getUser.cus_address);
-    //  return console.log('userAddress',userAddress);
+    // console.log('userAddress',userAddress);
       const location = getUser.cus_location?JSON.parse(getUser.cus_location):{lat:18.809753815121315,lng:98.95262678679745}
      let payload = {
       cus_id:getUser.cus_id,
@@ -144,7 +183,7 @@ router.get('/edit/:id',async(req,res)=>{
       postcode : userAddress.postcode,
       location: JSON.stringify(location)
      }
-    //  return console.log('payload',payload);
+    // console.log('payload',payload);
      return res.render('edit-cus',{payload:payload,status:true,menu:req.menu,})
   } catch (error) {
     console.log(error);

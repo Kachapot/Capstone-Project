@@ -68,9 +68,9 @@ router.get('/main',authorization,async(req,res)=>{
     const incomeMonth = await db('tb_order_sell_detail')
     .select(db.raw(`ifnull(format(sum(total),2),0) as total`))
     .whereRaw(`date BETWEEN '${startMonth}' and '${endMonth}'`).first()
-    const countTransporting = await db('tb_order_sell').select(db.raw("count(id) as count"))
+    const countTransporting = await db('tb_order_sell').select(db.raw("count(id) as count")).whereRaw("order_sell_status < 3")
     .where({order_sell_status:1}).first()
-    const countBuyList = await db('tb_order_buy').count('id as count')
+    const countBuyList = await db('tb_order_buy').count('id as count').where({order_buy_status:0})
     .where({order_buy_status : 0}).first()
     
     // loop month value

@@ -188,8 +188,7 @@ router.post('/buy/insert',async(req,res)=>{
                 prod_name:getpdName.prod_name,
                 prod_price:0,
                 prod_amount:e_amount,
-                total:0,
-                status:0
+                total:0
             })
             order_buy_total += Number(e_amount)
         }

@@ -51,8 +51,10 @@
                 <div class="card-body">
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
+                      <a class="btn text-start text-white" href="/report/income?startDate={{startDate}}&endDate={{endDate}}">
                       <div class="text-xs font-weight-bold text-uppercase mb-1">รายได้ (วันนี้)</div>
                       <div class="h5 mb-0 font-weight-bold text-gray-800">{{incomeToday}} บาท</div>
+                      </a>
                     </div>
                     <div class="col-auto">
                       <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
@@ -68,6 +70,7 @@
                 <div class="card-body">
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
+                      <a class="btn text-start text-white" href="/sell/">
                       <div class="text-xs font-weight-bold
                       text-uppercase mb-1">กำลังจัดส่ง
                       </div>
@@ -76,6 +79,7 @@
                           {{countTransporting}} รายการ
                         </div>
                       </div>
+                      </a>
                     </div>
                     <div class="col-auto">
                       <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
@@ -91,11 +95,14 @@
                 <div class="card-body">
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
+                      <a class="btn text-start text-white" href="/buy/">
                       <div class="text-xs font-weight-bold
                       text-uppercase mb-1">
                         คำขอซื้อสินค้าเข้า รออนุมัติ</div>
                       <div class="h5 mb-0 font-weight-bold text-gray-800">{{countBuyList}} รายการ</div>
+                      </a>
                     </div>
+                    
                     <div class="col-auto">
                       <i class="fas fa-comments fa-2x text-gray-300"></i>
                     </div>

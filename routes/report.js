@@ -5,6 +5,7 @@ const {moment} = require('../module')
 router.get('/income',async(req,res)=>{
     try {
         const body = req.query
+        // console.log('body',body);
         let startDate = moment().format('YYYY-MM-DD')
         let endDate = moment().format('YYYY-MM-DD')
         if(body.startDate) startDate = moment(body.startDate).format('YYYY-MM-DD') 
@@ -49,7 +50,7 @@ router.get('/income',async(req,res)=>{
                 detail:getdetail
             })
         }
-        console.log('data',data);
+        // console.log('data',data);
         return res.render('report-income',data)
     } catch (error) {
         console.log(error);

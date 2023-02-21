@@ -74,7 +74,7 @@
     <div class="row py-1">
       <div class="col-6">
         <label for="phone">เบอร์โทรศัพท์</label>
-        <input type="text" name="phone" class="form-control form-control-sm">
+        <input type="text" name="phone" class="form-control form-control-sm" value="{{payload.cus_phone}}">
       </div>
       <div class="col-6">
         <label for="address">พิกัด</label>
@@ -91,32 +91,32 @@
             <label>
               <!-- Avoid the word "address" in id, name, or label text to avoid browser autofill from conflicting with Place Autocomplete. Star or comment bug https://crbug.com/587466 to request Chromium to honor autocomplete="off" attribute. -->
               <span>ส่งที่</span>
-              <input id="ship_address" class="form-control form-control-sm" name="ship_address" required
-                autocomplete="off" />
+              <input id="ship_address" class="form-control form-control-sm" name="ship_address" value="{{payload.ship_address}}" 
+                autocomplete="off" required />
             </label>
           </div>
           <div class="row">
             <label>
               <span>อพาร์ทเม้น,ยูนิต,ขั้น,ห้อง</span>
-              <input id="address2" name="address2" class="form-control form-control-sm" />
+              <input id="address2" name="address2" class="form-control form-control-sm" value="{{payload.address2}}" />
             </label>
           </div>
           <div class="row">
             <label>
               <span>อำเภอ*</span>
-              <input id="locality" name="locality" class="form-control form-control-sm" required />
+              <input id="locality" name="locality" class="form-control form-control-sm" value="{{payload.locality}}" required />
             </label>
           </div>
           <div class="row">
             <label>
               <span>จังหวัด*</span>
-              <input id="state" name="state" class="form-control form-control-sm" required />
+              <input id="state" name="state" class="form-control form-control-sm" value="{{payload.state}}" required />
             </label>
           </div>
           <div class="row">
             <label for="postal_code">
               <span>รหัสไปรษณี*</span>
-              <input id="postcode" name="postcode" class="form-control form-control-sm" required />
+              <input id="postcode" name="postcode" class="form-control form-control-sm" value="{{payload.postcode}}" required />
             </label>
           </div>
           {{!--

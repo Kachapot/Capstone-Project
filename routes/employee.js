@@ -73,8 +73,10 @@ router.post('/create/insert',fileMiddle,async(req,res)=>{
     .select('*')
     .whereRaw(`username = '${body.username}'`).first()
 
-    let BannerFileName = 'public/images/'+req.files.profileimg.name
-    await req.files.profileimg.mv(BannerFileName,async(err)=>{})
+    // if(req.files.length > 0){
+      let BannerFileName = 'public/images/'+req.files.profileimg.name
+      await req.files.profileimg.mv(BannerFileName,async(err)=>{})
+    // }
     if(checkEmp) return res.render('create-emp',{error:true,msg:body.username+" มีผู้ใช้งานแล้ว",status:true,menu:req.menu,}) 
 
     let birthdate = body.birthdate
@@ -103,7 +105,7 @@ router.post('/create/insert',fileMiddle,async(req,res)=>{
 
 router.get('/edit/:id',async(req,res)=>{
   try {
-     const body = req.params 
+     const body = req.params
     //  console.log('body',body);
      const getUser = await db('tb_employee').select(
       'emp_id',
@@ -118,8 +120,10 @@ router.get('/edit/:id',async(req,res)=>{
       'emp_address',
       'emp_img',
       'emp_phone',
-      db.raw("date_format(emp_birthday, '%d-%m-%Y') as emp_birthday")
+      db.raw("date_format(emp_birthday, '%Y-%m-%d') as emp_birthday")
      ).where({emp_id:body.id})
+    //  console.log('getUser',getUser);
+     if(req.query.edit) return res.render('edit-emp',{payload:getUser,status:true,menu:req.menu,msg:'แก้ไขสำเร็จ',success:true})
      return res.render('edit-emp',{payload:getUser,status:true,menu:req.menu,})
   } catch (error) {
     console.log(error);
@@ -129,9 +133,23 @@ router.get('/edit/:id',async(req,res)=>{
 router.post('/edit/update',async(req,res)=>{
   try {
     const body = req.body
-    // return console.log('body',body);
-    const getUser = await db('tb_employee').select('*').where({emp_id : body.id}).first()
-    if(!getUser) return render('edit-emp',{error:true,msg:'ไม่พบ',status:true,menu:req.menu,})
+    // console.log('body',body);
+    const getUser = await db('tb_employee').select(
+      'username',
+      'password',
+      'emp_fname',
+      'emp_lname',
+      'emp_gender',
+      'emp_position',
+      'level',
+      'emp_gender',
+      'emp_email',
+      'emp_address',
+      'emp_img',
+      'emp_phone',
+      db.raw("date_format(emp_birthday, '%d-%m-%Y') as emp_birthday")
+      ).where({emp_id : body.id}).first()
+    if(!getUser) return res.render('edit-emp',{error:true,msg:'ไม่พบ',status:true,menu:req.menu,})
     let update = {
       username:body.username??getUser.username,
       password:body.password??getUser.password,
@@ -144,8 +162,9 @@ router.post('/edit/update',async(req,res)=>{
       emp_birthday:body.birthdate??getUser.emp_birthday,
       emp_address:body.address??getUser.emp_address,
     }
+    // console.log('update',update);
     const updateData = await db('tb_employee').update(update).where({emp_id:body.id})
-    return res.render('edit-emp',{success:true,msg:'แก้ไขสำเร็จ',status:true,menu:req.menu,payload:[update]})
+    return res.redirect('/employee/edit/'+body.id+"?edit="+encodeURIComponent(true))
   } catch (error) {
     console.log(error);
   }
