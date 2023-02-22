@@ -1,6 +1,9 @@
 const router = require('express').Router();
 const db = require('./../database/connect')
-const {moment} = require('../module')
+const {moment,PDFDocument} = require('../module')
+const handlebars = require('handlebars');
+const fs = require('fs');
+
 
 router.get('/income',async(req,res)=>{
     try {
@@ -52,6 +55,44 @@ router.get('/income',async(req,res)=>{
         }
         // console.log('data',data);
         return res.render('report-income',data)
+    } catch (error) {
+        console.log(error);
+    }
+})
+router.get('/income/print',async(req,res)=>{
+    try {
+        const query = req.query
+        console.log('query',query);
+// Define the data object to pass to the HBS template
+const data = {
+    title: 'My PDF Report',
+    content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
+  };
+  
+  // Load the HBS template
+  const path = 'views/report-income.hbs';
+  const template = await handlebars.render(fs.readFileSync("<h1>Hello World</h1>", 'utf8'));
+  
+  // Create a new PDF document
+  const doc = new PDFDocument();
+  
+  // Pipe the PDF document to a file
+  const stream = fs.createWriteStream('output.pdf');
+  doc.pipe(stream);
+  
+  // Set the response headers to open the file in the browser
+  res.setHeader('Content-disposition', 'inline; filename="output.pdf"');
+  res.setHeader('Content-type', 'application/pdf');
+  
+  // Render the HBS template with the data and add it to the PDF document
+  const html = template(data);
+  doc.text(html);
+  
+  // Finalize the PDF document and end the response
+  doc.end();
+  stream.on('finish', function() {
+    res.end();
+  });
     } catch (error) {
         console.log(error);
     }
