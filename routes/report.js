@@ -59,7 +59,38 @@ router.get('/income',async(req,res)=>{
 })
 router.get('/income/print',async(req,res)=>{
     try {
-        const puppeteer = require('puppeteer');
+        let htmlCode = `
+        <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Document</title>
+      <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD"
+      crossorigin="anonymous">
+      <link rel="preconnect" href="https://fonts.googleapis.com"><link
+      rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link
+      href="https://fonts.googleapis.com/css2?family=Prompt:wght@200&display=swap"
+      rel="stylesheet"> 
+</head>
+<body>
+  <H1>Hello world</H1>
+</body>
+</html>
+        `
+    await generatePDF(req,res,htmlCode)
+
+    }catch(err){
+        console.error(err);
+    }
+})
+
+async function generatePDF(req,res,htmlCode){
+    const puppeteer = require('puppeteer');
         const path = require('path');
         const fs = require('fs');
           const browser = await puppeteer.launch();
@@ -69,62 +100,7 @@ router.get('/income/print',async(req,res)=>{
           });
           await page.setViewport({ width: 1680, height: 1050 });
          // Custom HTML template
-        const html = `
-        <!DOCTYPE html>
-        <html>
-            <head>
-            <meta charset="utf-8">
-            <title>PDF Title</title>
-            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-            </head>
-            <body>
-            <table class="table">
-            {{#each payload}}
-            <thead class="table-light">
-              <tr>
-                <th scope="col">รหัสรายการสั่งซื้อสินค้า</th>
-                <th scope="col">ชื่อผู้ซื้อ</th>
-                <th scope="col">ยอดรวม</th>
-                <th scope="col">วันที่ทำรายการ</th>
-                <th scope="col"></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th scope="row">{{order_sell_id}}</th>
-                <th scope="row">{{cus_name}}</th>
-                <th scope="row">{{total}}</th>
-                <th scope="row">{{order_sell_date}}</th>
-                <th scope="row"></th>
-              </tr>
-            </tbody>
-    
-            <thead class="table-light">
-              <tr>
-                <th scope="col">รหัสสินค้า</th>
-                <th scope="col">ชื่อสินค้า</th>
-                <th scope="col">ราคาต่อหน่วย</th>
-                <th scope="col">จำนวน</th>
-                <th scope="col">ราคารวม</th>
-              </tr>
-            </thead>
-            <tbody>
-              {{#each detail}}
-              <tr>
-                <th scope="row">{{prod_id}}</th>
-                <th scope="row">{{prod_name}}</th>
-                <th scope="row">{{prod_price}}</th>
-                <th scope="row">{{prod_amount}}</th>
-                <th scope="row">{{total}}</th>
-              </tr>
-              {{/each}}
-            </tbody>
-            <hr>
-            {{/each}}
-          </table>
-            </body>
-        </html>
-        `;
+        const html = htmlCode
 
         // Set the HTML content
         await page.setContent(html);
@@ -140,23 +116,13 @@ router.get('/income/print',async(req,res)=>{
           await page.pdf({
             path: pdfPath,
             format: "A4",
+            landscape: true,
             printBackground: true,
-            displayHeaderFooter: true,
-            headerTemplate: `<div style="font-size:7px;white-space:nowrap;margin-left:38px;">
-                                ${new Date().toDateString()}
-                                <span style="margin-left: 10px;">Generated PDF</span>
-                            </div>`,
-            footerTemplate: `<div style="font-size:7px;white-space:nowrap;margin-left:38px;width:100%;">
-                                Generated PDF
-                                <span style="display:inline-block;float:right;margin-right:10px;">
-                                    <span class="pageNumber"></span> / <span class="totalPages"></span>
-                                </span>
-                            </div>`,
             margin: {
-              top: '38px',
-              right: '38px',
-              bottom: '38px',
-              left: '38px'
+              top: '20px',
+              right: '20px',
+              bottom: '20px',
+              left: '20px'
             }
           });
         
@@ -166,8 +132,5 @@ router.get('/income/print',async(req,res)=>{
             "Content-Length":page.length
           });
         return  res.status(200).sendFile(pdfPath)
-    }catch(err){
-        console.error(err);
-    }
-})
+}
 module.exports = router
