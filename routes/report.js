@@ -1,8 +1,6 @@
 const router = require('express').Router();
 const db = require('./../database/connect')
-const {moment,PDFDocument} = require('../module')
-const handlebars = require('handlebars');
-const fs = require('fs');
+const {moment} = require('../module')
 
 
 router.get('/income',async(req,res)=>{
@@ -61,40 +59,115 @@ router.get('/income',async(req,res)=>{
 })
 router.get('/income/print',async(req,res)=>{
     try {
-        const query = req.query
-        console.log('query',query);
-// Define the data object to pass to the HBS template
-const data = {
-    title: 'My PDF Report',
-    content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
-  };
-  
-  // Load the HBS template
-  const path = 'views/report-income.hbs';
-  const template = await handlebars.render(fs.readFileSync("<h1>Hello World</h1>", 'utf8'));
-  
-  // Create a new PDF document
-  const doc = new PDFDocument();
-  
-  // Pipe the PDF document to a file
-  const stream = fs.createWriteStream('output.pdf');
-  doc.pipe(stream);
-  
-  // Set the response headers to open the file in the browser
-  res.setHeader('Content-disposition', 'inline; filename="output.pdf"');
-  res.setHeader('Content-type', 'application/pdf');
-  
-  // Render the HBS template with the data and add it to the PDF document
-  const html = template(data);
-  doc.text(html);
-  
-  // Finalize the PDF document and end the response
-  doc.end();
-  stream.on('finish', function() {
-    res.end();
-  });
-    } catch (error) {
-        console.log(error);
+        const puppeteer = require('puppeteer');
+        const path = require('path');
+        const fs = require('fs');
+          const browser = await puppeteer.launch();
+          const page = await browser.newPage();
+          await page.goto("https://example.com", {
+            waitUntil: "networkidle2"
+          });
+          await page.setViewport({ width: 1680, height: 1050 });
+         // Custom HTML template
+        const html = `
+        <!DOCTYPE html>
+        <html>
+            <head>
+            <meta charset="utf-8">
+            <title>PDF Title</title>
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+            </head>
+            <body>
+            <table class="table">
+            {{#each payload}}
+            <thead class="table-light">
+              <tr>
+                <th scope="col">รหัสรายการสั่งซื้อสินค้า</th>
+                <th scope="col">ชื่อผู้ซื้อ</th>
+                <th scope="col">ยอดรวม</th>
+                <th scope="col">วันที่ทำรายการ</th>
+                <th scope="col"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">{{order_sell_id}}</th>
+                <th scope="row">{{cus_name}}</th>
+                <th scope="row">{{total}}</th>
+                <th scope="row">{{order_sell_date}}</th>
+                <th scope="row"></th>
+              </tr>
+            </tbody>
+    
+            <thead class="table-light">
+              <tr>
+                <th scope="col">รหัสสินค้า</th>
+                <th scope="col">ชื่อสินค้า</th>
+                <th scope="col">ราคาต่อหน่วย</th>
+                <th scope="col">จำนวน</th>
+                <th scope="col">ราคารวม</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{#each detail}}
+              <tr>
+                <th scope="row">{{prod_id}}</th>
+                <th scope="row">{{prod_name}}</th>
+                <th scope="row">{{prod_price}}</th>
+                <th scope="row">{{prod_amount}}</th>
+                <th scope="row">{{total}}</th>
+              </tr>
+              {{/each}}
+            </tbody>
+            <hr>
+            {{/each}}
+          </table>
+            </body>
+        </html>
+        `;
+
+        // Set the HTML content
+        await page.setContent(html);
+          const todays_date = new Date();
+          const pdfPath = path.join(__dirname, 'files', todays_date.getTime() + '.pdf');
+        
+          // Check if the 'files' directory exists and create it if it doesn't
+          const directory = path.dirname(pdfPath);
+          if (!fs.existsSync(directory)) {
+            fs.mkdirSync(directory, { recursive: true });
+          }
+        
+          await page.pdf({
+            path: pdfPath,
+            format: "A4",
+            printBackground: true,
+            displayHeaderFooter: true,
+            headerTemplate: `<div style="font-size:7px;white-space:nowrap;margin-left:38px;">
+                                ${new Date().toDateString()}
+                                <span style="margin-left: 10px;">Generated PDF</span>
+                            </div>`,
+            footerTemplate: `<div style="font-size:7px;white-space:nowrap;margin-left:38px;width:100%;">
+                                Generated PDF
+                                <span style="display:inline-block;float:right;margin-right:10px;">
+                                    <span class="pageNumber"></span> / <span class="totalPages"></span>
+                                </span>
+                            </div>`,
+            margin: {
+              top: '38px',
+              right: '38px',
+              bottom: '38px',
+              left: '38px'
+            }
+          });
+        
+          await browser.close();
+          res.set({
+            "Content-Type":"application/pdf",
+            "Content-Length":page.length
+          });
+        return  res.status(200).sendFile(pdfPath)
+    }catch(err){
+        console.error(err);
     }
 })
 module.exports = router
