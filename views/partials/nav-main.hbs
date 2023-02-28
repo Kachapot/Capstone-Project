@@ -13,48 +13,47 @@
           </a>
 
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-            <li><a class="dropdown-item" href="#">ดูข้อมูล</a></li>
             <li><a class="dropdown-item" href="/logout">ออกจากระบบ</a></li>
           </ul>
         </div>
         {{!-- <button class="btn"></button> --}}
-        <div class="offcanvas offcanvas-start" tabindex="-1"
+        <div class="offcanvas offcanvas-start bg-light-gray" tabindex="-1"
           id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
-          <div class="offcanvas-header">
+          <div class="offcanvas-header ">
             <h1 class="offcanvas-title" id="offcanvasNavbarLabel">เมนู</h1>
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
           </div>
           <div class="offcanvas-body">
             {{#each menu}}
               <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-              {{#if sell}}
+              {{#if dashboard}}
                 <li class="nav-item">
-                <a class="nav-link" href="/main"><h4>แดชบอร์ด</h4></a>
+                <a class="nav-link" href="/main"><h4> <i class="bi bi-graph-down"></i> แดชบอร์ด</h4></a>
                 </li>
               {{/if}}
               {{#if emp}}
                 <li class="nav-item">
-                <a class="nav-link" href="/employee"><h4>รายชื่อพนักงาน</h4></a>
+                <a class="nav-link" href="/employee"><h4> <i class="bi bi-person-badge-fill"></i> รายชื่อพนักงาน</h4></a>
                 </li>
               {{/if}}
               {{#if cus}}
                 <li class="nav-item">
-                <a class="nav-link" href="/customer"><h4>รายชื่อลูกค้า</h4></a>
+                <a class="nav-link" href="/customer"><h4><i class="bi bi-person"></i> รายชื่อลูกค้า</h4></a>
                 </li>
               {{/if}}
               {{#if prod}}
               <li class="nav-item">
-                <a class="nav-link" href="/product"><h4>รายการคลังสินค้า</h4></a>
+                <a class="nav-link" href="/product"><h4><i class="bi bi-boxes"></i> รายการคลังสินค้า</h4></a>
               </li>
               {{/if}}
               {{#if buy}}
                 <li class="nav-item">
-                <a class="nav-link" href="/buy"><h4>รายการคำสั่งซื้อสินค้าเข้า</h4></a>
+                <a class="nav-link" href="/buy"><h4><i class="bi bi-box-seam"></i> รายการคำสั่งซื้อสินค้าเข้า</h4></a>
                 </li>
               {{/if}}
               {{#if sell}}
                 <li class="nav-item">
-                <a class="nav-link" href="/sell"><h4>รายการสั่งซื้อสินค้า</h4></a>
+                <a class="nav-link" href="/sell"><h4><i class="bi bi-cash-coin"></i> รายการสั่งซื้อสินค้า</h4></a>
                 </li>
               {{/if}}
             </ul>

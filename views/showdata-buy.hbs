@@ -19,7 +19,6 @@
         <th scope="col">ราคาต่อหน่วย</th>
         <th scope="col">จำนวน</th>
         <th scope="col">ราคารวม</th>
-        <th scope="col">สถานะ</th>
       </tr>
     </thead>
     <tbody>
@@ -30,9 +29,20 @@
         <td>{{prod_price}}</td>
         <td>{{prod_amount}}</td>
         <td>{{total}}</td>
-        <td>{{status}}</td>
       </tr>
       {{/each}}
     </tbody>
+    
   </table>
+  <hr>
+    <div class="row text-end">
+      <p>ราคารวมทั้งหมด : {{totalPrice}}</p>
+    </div>
+  <div class="row">
+      <div class="col text-end">
+        <a class="btn btn-light" href="/buy">
+          <i class="bi bi-arrow-bar-left"></i> กลับ
+        </a>
+      </div>
+    </div>
 </div>

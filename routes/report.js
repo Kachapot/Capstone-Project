@@ -56,7 +56,6 @@ router.get('/income',async(req,res)=>{
                 })
             }
         }
-        console.log('data',data);
         return res.render('report-income',data)
     } catch (error) {
         console.log(error);
@@ -68,6 +67,7 @@ router.get('/income/print',async(req,res)=>{
         const body = req.query
         let startDate = moment().format('YYYY-MM-DD')
         let endDate = moment().format('YYYY-MM-DD')
+        let today = moment().format('YYYY-MM-DD hh:mm:ss')
         if(body.startDate) startDate = moment(body.startDate).format('YYYY-MM-DD') 
         if(body.endDate) endDate = moment(body.endDate).format('YYYY-MM-DD') 
         const getsell = await db('tb_order_sell as os')
@@ -119,28 +119,38 @@ router.get('/income/print',async(req,res)=>{
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link
+      rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link
+      href="https://fonts.googleapis.com/css2?family=Prompt:wght@200&display=swap"
+      rel="stylesheet"> 
     <style>
+      body{font-family: 'Prompt', sans-serif;}
       table,tr,th{
         border: 1px solid;
-          border-collapse: collapse;
-          text-align: left;
+        border-collapse: collapse;
+        text-align: left;
       }
     </style>
 </head>
 <body>
-    <h3>รายงานวันที่ ${startDate} ถึง ${endDate} </h3>
+<div class="text-center">
+<h3>บริษัท เชียงใหม่เหล็กหล่อ จำกัด (สำนักงานใหญ่)</h3>
+<h4>รายงานใบสั่งซื้อสินค้า</h4>
+<h5>รายงานวันที่ ${startDate} ถึง ${endDate} </h5>
+</div>
+    <p>พิมพ์วันที่ ${today}</p>
     <table>
         <thead>
-            <tr style="background-color:lightgray;">
-                <th scope="col">รหัสรายการสั่งซื้อสินค้า</th>
-                <th scope="col">ชื่อผู้ซื้อ</th>
-                <th scope="col">ยอดรวม</th>
-                <th scope="col">วันที่ทำรายการ</th>
-                <th scope="col">รหัสสินค้า</th>
-                <th scope="col">ชื่อสินค้า</th>
-                <th scope="col">ราคาต่อหน่วย</th>
-                <th scope="col">จำนวน</th>
-                <th scope="col">ราคารวม</th>
+            <tr  style="background-color:lightgray;">
+                <th scope="col" class="text-center">รหัสรายการสั่งซื้อสินค้า</th>
+                <th scope="col" class="text-center">ชื่อผู้ซื้อ</th>
+                <th scope="col" class="text-center">ยอดรวม</th>
+                <th scope="col" class="text-center">วันที่ทำรายการ</th>
+                <th scope="col" class="text-center">รหัสสินค้า</th>
+                <th scope="col" class="text-center">ชื่อสินค้า</th>
+                <th scope="col" class="text-center">ราคาต่อหน่วย</th>
+                <th scope="col" class="text-center">จำนวน</th>
+                <th scope="col" class="text-center">ราคารวม</th>
             </tr>
         </thead>
         <tbody>

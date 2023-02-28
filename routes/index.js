@@ -17,7 +17,15 @@ router.get('/',authorization,async(req,res)=>{
       if(getEmp.level < 3){
         res.redirect('/main')
       }else{
-        res.redirect('/sell')
+        if(req.position == 'พนักงานทั่วไป' || req.position == 'general'){
+          res.redirect('/product/')
+        }else if(req.position == 'พนักงานคิดเงิน' || req.position == 'cashier'){
+          res.redirect('/customer/')
+        }else if(req.position == 'พนักงานขนส่ง' || req.position == 'delivery'){
+          res.redirect('/sell/')
+        }else{
+          res.render('login')
+        }
       }
     }else{
       res.render('login')
@@ -45,7 +53,7 @@ router.get('/main',authorization,async(req,res)=>{
       sum(total) as total,
       date_format(date,'%m') as month`)
       )
-    .whereRaw(`date between '${startMonth}' and '${endMonth}'`)
+    .whereRaw(`date between '${startDate}' and '${endDate}'`)
     .groupBy('month')
     .orderBy('month')
     // console.log('totalsell',totalSell);
@@ -56,7 +64,7 @@ router.get('/main',authorization,async(req,res)=>{
     ifnull(sum(s.order_sell_total),0) as total
     from tb_order_sell s
     inner JOIN tb_customer c on c.cus_id = s.cus_id
-    where s.order_sell_date between '${startYear}' and '${endYear}'
+    where s.order_sell_date between '${startDate}' and '${endDate}'
     GROUP BY c.cus_address ->> "$.state"
     )as a
     `)
@@ -159,6 +167,7 @@ router.post('/login',async (req,res)=>{
         const getadmin = await db('tb_employee').select('*')
         .where({username:body.username,password:body.password})
         .first()
+        console.log('getadmin',getadmin);
         if (!getadmin) {
             let data = ({ status: 400, message: "ไม่พบผู้ใช้นี้"});
             return res.redirect('/')
@@ -209,7 +218,14 @@ router.post('/login',async (req,res)=>{
             if(getadmin.level < 3){
               return res.status(200).cookie("access_token", token).redirect('/main?level='+level)
             }else{
-              return res.status(200).cookie("access_token", token).redirect('/sell')
+              if(getadmin.emp_position == 'พนักงานทั่วไป' || getadmin.emp_position == 'general'){
+                return res.status(200).cookie("access_token", token).redirect('/product')
+              }else if(getadmin.emp_position == 'พนักงานคิดเงิน' || getadmin.emp_position == 'cashier'){
+                return res.status(200).cookie("access_token", token).redirect('/customer')
+              }else if(getadmin.emp_position == 'พนักงานขนส่ง' || getadmin.emp_position == 'delivery'){
+                return res.status(200).cookie("access_token", token).redirect('/sell')
+              }
+              
             }
             
             

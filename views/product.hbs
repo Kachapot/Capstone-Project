@@ -18,6 +18,13 @@
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
   </div>
   {{/if}}
+  {{#if error}}
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>
+    {{error.msg}}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+  {{/if}}
   <div class="row d-flex flex-row">
     <div class="col-6">
       <h3 class="text-start">รายการคลังสินค้า</h3>

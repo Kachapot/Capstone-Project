@@ -17,26 +17,31 @@ router.get("/", async (req, res) => {
     emp_fname like '%${body.search}%' or 
     emp_lname like '%${body.search}%' or
     `
-    const getdata = await db("tb_order_buy")
+    const getdata = await db("tb_order_buy as ob")
+    .innerJoin('tb_order_buy_detail as obd','obd.order_buy_id','ob.order_buy_id')
       .select(
-        'id',
-        'order_buy_id',
-        db.raw('concat(emp_fname," ",emp_lname) as emp_name'),
-        'order_buy_amount',
-        'order_buy_total',
-        db.raw("DATE_FORMAT(order_buy_date,'%d-%m-%Y %H:%i:%s') as order_buy_date"),
-        // db.raw("DATE_FORMAT(approve_date,'%d-%m-%Y %H:%i:%s') as approve_date"),
-        'approve_date',
-        db.raw(`case when order_buy_status = 1 then 'อนุมัติ' else 'ยังไม่อนุมัติ' end as order_buy_status`)
+        db.raw(`
+        ob.id,
+        ob.order_buy_id,
+        concat(emp_fname, " ", emp_lname) as emp_name,
+        format(sum(obd.total),2) sumprice,
+        format(sum(obd.prod_amount),0) prod_amount,
+        DATE_FORMAT(order_buy_date, '%d-%m-%Y %H:%i:%s') as order_buy_date,
+        approve_date,
+        case
+            when order_buy_status = 1 then 'อนุมัติ'
+            else 'ยังไม่อนุมัติ'
+        end as order_buy_status
+        `)
       )
       .whereRaw(where)
       .limit(limit)
       .offset(offset)
-      .orderBy("id", "desc")??[]
-    // console.log('getdata',getdata);
+      .groupBy('ob.order_buy_id')
+      .orderBy("ob.id", "desc")??[]
     const countdata = await db('tb_order_buy').count('id as count').whereRaw(where).first()
     let all_page = Math.ceil(countdata.count/limit)
-    let pagination = await paginate(page,all_page)
+    let pagination = paginate(page,all_page)
     if (getdata?.length == 0) return res.render('buy',{
         payload: [],
         username: username,
@@ -104,19 +109,23 @@ router.get('/showdata/:id',async(req,res)=>{
     const getdata = await db('tb_order_buy_detail').select(
       'prod_id',
       'prod_name',
-      'prod_price',
+      db.raw("format(prod_price,2) as prod_price"),
       'prod_amount',
-      'total',
+      db.raw("format(total,2) as total"),
     ).where({order_buy_id:body.id})
     if(!getdata){
       let msg = encodeURIComponent('ไม่พบข้อมูล')
       return res.redirect('/buy/?error='+msg)
     }
+    const total = await db('tb_order_buy_detail')
+    .select(db.raw('format(sum(total),2) as total'))
+    .where({order_buy_id:body.id}).first()
     return res.render('showdata-buy',{
       status:true,
       menu:req.menu,
       username:req.admin,
       payload:getdata,
+      totalPrice:total.total,
       count:getdata.length,
       id:body.id
     })

@@ -43,10 +43,10 @@ router.get("/:id", async (req, res) => {
       cus_name: getorderSell.cus_fname + " " + getorderSell.cus_lname,
       location: JSON.stringify(location),
       ship_address: address.ship_address,
-      address2: address.address2,
-      locality: address.locality,
-      state: address.state,
-      postcode: address.postcode,
+      address2: 'ต.'+address.address2,
+      locality: 'อ.'+address.locality,
+      state: 'จ.'+address.state,
+      postcode: 'รหัสไปรษณีย์ '+address.postcode,
     };
     if (getorderSell.order_sell_status == 1) {
       data["status1"] = true;
@@ -59,7 +59,6 @@ router.get("/:id", async (req, res) => {
     if(req.query.success){
     data["success"] = { msg: req.query.success };
     }
-    // console.log('data',data);
     return res.render("showdata-ship", data);
   } catch (error) {
     console.log(error);

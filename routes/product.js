@@ -50,6 +50,18 @@ router.get("/", async (req, res) => {
             deleted:{msg:body.deleted}
         });
     }
+    if(req.query.error){
+        return res.render("product", {
+            payload: getproduct,
+            username: username,
+            count: getproduct.length,
+            status: true,
+            menu:req.menu,
+            item:countdata.count,
+            pagination:pagination,
+            error:{msg:req.query.error},
+        });
+    }
     
     return res.render("product", {
         payload: getproduct,
@@ -70,7 +82,6 @@ router.get('/addProduct',async(req,res)=>{
         const gettype = await db('tb_product_type')
         .select('*')
         .orderBy('id','asc')
-        // console.log('gettype',gettype);
         return res.render('create-prod',{type:gettype,status:true,menu:req.menu,username:req.admin})
 
     } catch (error) {
@@ -81,14 +92,13 @@ router.get('/addProduct',async(req,res)=>{
 router.post('/addProduct/insert',async(req,res)=>{
     try {
         const body = req.body
-        // console.log('body',body);
         let datainsert = {
             prod_id : 'prod_'+uid(3),
             prod_type_id :body.prod_type_id,
             prod_name:body.prod_name,
             prod_detail:body.prod_detail,
             prod_price:body.prod_price,
-            prod_img:body.prod_img,
+            // prod_img:body.prod_img,
             prod_amount:body.prod_amount
         }
         const insert = await db('tb_product').insert(datainsert)
@@ -117,21 +127,18 @@ router.post('/addProduct/insert',async(req,res)=>{
 
 router.get('/editProduct/:id',async(req,res)=>{
     try {
-        // console.log('eidtProduct');
+        if(req.level > 2) return res.redirect('/product?error='+encodeURIComponent('ไม่สามารถใช้งานได้'))
          const body = req.params
          const getdata = await db("tb_product").select(
             '*',
             db.raw("(select prod_type_name from tb_product_type where prod_type_id = tb_product.prod_type_id) as prod_type_name")
          ).where({prod_id:body.id}).first()
-        //  console.log('getdata',getdata);
         let data = {
             status:true,
             menu:req.menu,
             payload:getdata
          }
-         console.log('req.query',req.query);
          if(req.query.success){ data['success'] = true,data['msg'] = req.query.success}
-         console.log('data',data);
          return res.render('edit-prod',data)
     } catch (error) {
         console.log(error);
@@ -174,8 +181,6 @@ router.get('/buy/create',async(req,res)=>{
 router.post('/buy/insert',async(req,res)=>{
     try {
         const body = req.body
-        // console.log('buy insertdata');
-        // console.log('body',body);
         let dataInsert = []
         let product_id = body.prod_id
         let product_amount = body.prod_amount
@@ -185,14 +190,15 @@ router.post('/buy/insert',async(req,res)=>{
         for (let index = 1; index < product_id.length; index++) {
             const e_id = product_id[index];
             const e_amount = product_amount[index];
-            const getpdName = await db('tb_product').select('prod_name').where({prod_id:e_id}).first()
+            const getpd = await db('tb_product').select('*').where({prod_id:e_id}).first()
+
             dataInsert.push({
                 order_buy_id:order_buy_id,
                 prod_id : e_id,
-                prod_name:getpdName.prod_name,
-                prod_price:0,
+                prod_name:getpd.prod_name,
+                prod_price:getpd.prod_price,
                 prod_amount:e_amount,
-                total:0
+                total:Number(+getpd.prod_price)*Number(+e_amount)
             })
             order_buy_total += Number(e_amount)
         }
@@ -204,7 +210,7 @@ router.post('/buy/insert',async(req,res)=>{
             emp_id:getemp.emp_id,
             emp_fname:getemp.emp_fname,
             emp_lname : getemp.emp_lname,
-            order_buy_amount : product_id.length,
+            order_buy_amount : +product_id.length-1,
             order_buy_total: order_buy_total,
             order_buy_status:0
         })
@@ -232,9 +238,7 @@ router.post('/buy/insert',async(req,res)=>{
 router.get('/delete/:id',async(req,res)=>{
     try {
       const body = req.params
-      // console.log(body);
       const getUser = await db('tb_product').where({prod_id:body.id}).first()
-      // console.log('getUser',getUser);
       if(!getUser){
         let deleted = encodeURIComponent('ไม่พบยูสเซอร์')
         return res.redirect('/product/?deleted='+deleted)
