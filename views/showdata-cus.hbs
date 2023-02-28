@@ -10,13 +10,12 @@
     <p>สกุล: {{payload.cus_lname}}</p>
     <p>เพศ: {{payload.cus_gender}}</p>
     <p>อีเมล : {{payload.cus_email}}</p>
-    <p>ที่อยู่ : {{payload.cus_address}}</p>
     <p>เบอร์โทรศัพท์ : {{payload.cus_phone}}</p>
     <p>ที่อยู่ : {{payload.ship_address}} 
-      {{payload.address2}} 
-      {{payload.locality}} 
-      {{payload.state}} 
-      {{payload.postcode}}</p>
+      ต.{{payload.address2}} 
+      อ.{{payload.locality}} 
+      จ.{{payload.state}} 
+      รหัสไปรษณี {{payload.postcode}}</p>
   <hr>
     <div class="row">
       <div class="col text-end">

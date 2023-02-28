@@ -43,11 +43,15 @@
         </div>
         <div class="row py-1">
             <div class="col">
-                <div class="input-group">
-                <span class="input-group-text">ชื่อ-สกุล</span>
+                {{!-- <div class="input-group"> --}}
+                {{!-- <span class="input-group-text">ชื่อ-สกุล</span> --}}
+                <label for="fname">ชื่อ</label>
                 <input type="text" name="fname" aria-label="First name" class="form-control form-control-sm"  >
+                {{!-- </div> --}}
+            </div>
+            <div class="col">
+                <label for="lname">สกุล</label>
                 <input type="text" name="lname" aria-label="Last name" class="form-control form-control-sm">
-                </div>
             </div>
         </div>
         <div class="row py-1">
@@ -62,7 +66,7 @@
             </div>
             <div class="col">
                 <div class="col">
-                <label for="position">ตำแห่นง</label>
+                <label for="position">ตำแหน่ง</label>
                 <select class="form-select form-select-sm" name="position" id="floatingSelect" aria-label="Floating label select example">
                     <option value="พนักงานทั่วไป" selected>พนักงานทั่วไป</option>
                     <option value="พนักงานขนส่ง">พนักงานขนส่ง</option>
@@ -98,7 +102,7 @@
             <div class="col-6">
                 <div class="mb-5">
                 <label for="Image" class="form-label">รูปภาพพนักงาน</label>
-                <input class="form-control" name="profileimg" type="file" id="formFile" onchange="preview()">
+                <input class="form-control" name="profileimg" type="file" id="formFile" onchange="preview()" required>
                 </div>
             </div>
             <div class="col">

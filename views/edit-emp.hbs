@@ -47,11 +47,15 @@
         </div>
         <div class="row py-1">
             <div class="col">
-                <div class="input-group">
-                <span class="input-group-text">ชื่อ-สกุล</span>
+                {{!-- <div class="input-group">
+                <span class="input-group-text">ชื่อ-สกุล</span> --}}
+                <label for="fname">ชื่อ</label>
                 <input type="text" name="fname" aria-label="First name" class="form-control form-control-sm" value="{{emp_fname}}">
+                {{!-- </div> --}}
+            </div>
+            <div class="col">
+                <label for="lname">สกุล</label>
                 <input type="text" name="lname" aria-label="Last name" class="form-control form-control-sm" value="{{emp_lname}}">
-                </div>
             </div>
         </div>
         <div class="row py-1">
@@ -66,7 +70,7 @@
             </div>
             <div class="col">
                 <div class="col">
-                <label for="position">ตำแห่นง</label>
+                <label for="position">ตำแหน่ง</label>
                 <select class="form-select form-select-sm" name="position" id="floatingSelect" aria-label="Floating label select example">
                     <option>{{emp_position}}</option>
                     <option value="พนักงานทั่วไป">พนักงานทั่วไป</option>

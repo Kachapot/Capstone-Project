@@ -73,10 +73,8 @@ router.post('/create/insert',fileMiddle,async(req,res)=>{
     .select('*')
     .whereRaw(`username = '${body.username}'`).first()
 
-    // if(req.files.length > 0){
       let BannerFileName = 'public/images/'+req.files.profileimg.name
       await req.files.profileimg.mv(BannerFileName,async(err)=>{})
-    // }
     if(checkEmp) return res.render('create-emp',{error:true,msg:body.username+" มีผู้ใช้งานแล้ว",status:true,menu:req.menu,}) 
 
     let birthdate = body.birthdate

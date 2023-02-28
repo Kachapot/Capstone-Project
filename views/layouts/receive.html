@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>receive</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <style>
+      table,tr,th{
+        border:1px solid;
+        border-collapse: collapse;
+
+      }
+      #reveive{
+        width: 100%;
+      }
+    </style>
+</head>
+<body>
+    <div class="container">
+      <div id="receive">
+        <div class="row d-flex justify-center alight-center text-center">
+    <p >ใบกำกับภาษี/บิลเงินสด</p>
+    </div>
+    <div class="row text-center">
+    <h2><p>บริษัท เชียงใหม่เหล็กหล่อ จำกัด (สำนักงานใหญ่)</p></h2>
+    </div>
+    <div class="row">
+    <div class="col fs-4">ผู้ซื้อ {{cus_name}}</div>
+    </div>
+    <div class="row">
+    <div class="col fs-5">ที่อยู่ {{ship_address}} {{address2}} {{locality}} {{state}} {{postcode}}</div>
+    </div>
+    <table class="table">
+    <thead>
+      <tr>
+        <th scope="col"><p>ชื่อสินค้า</p></th>
+        <th scope="col"><p>ราคาต่อหน่วย(บาท)</p></th>
+        <th scope="col"><p>จำนวน(ชิ้น)</p></th>
+        <th scope="col" style="text-align: end;"><p>ราคารวม(บาท)</p></th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each payload}}
+      <tr>
+        <td scope="row" class="border-0">{{prod_name}}</td>
+        <td class="border-0">{{prod_price}}</td>
+        <td class="border-0">{{prod_amount}}</td>
+        <td class="border-0" style="text-align:end">{{total}}</td>
+      </tr>
+      {{/each}}
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td class="text-end"><p>รวมเงิน {{sum}}</p></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td class="text-end"><p>ภาษีมูลค่าเพิ่ม 7% {{vat}}</p></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td class="text-end"><p>รวมทั้งสิ้น {{totalsum}}</p></td>
+      </tr>
+    </tbody>
+    </table>
+    <div class="row text-center">
+    <div class="col">
+      <p class="fs-4">ลงชื่อผู้รับเงิน.................................................ผู้รับเงิน</p>
+    </div>
+    </div>
+    </div>
+    </div>
+</body>
+</html>

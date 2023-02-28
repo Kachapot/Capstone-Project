@@ -2,11 +2,9 @@ const router = require('express').Router();
 const db = require('./../database/connect')
 const {moment} = require('../module')
 
-
 router.get('/income',async(req,res)=>{
     try {
         const body = req.query
-        // console.log('body',body);
         let startDate = moment().format('YYYY-MM-DD')
         let endDate = moment().format('YYYY-MM-DD')
         if(body.startDate) startDate = moment(body.startDate).format('YYYY-MM-DD') 
@@ -34,7 +32,7 @@ router.get('/income',async(req,res)=>{
         if(!getsell) return res.render('report-income',data)
         for (let index = 0; index < getsell.length; index++) {
             const element = getsell[index];
-            const getdetail = await db('tb_order_sell_detail')
+            const getOSD = await db('tb_order_sell_detail')
             .select(db.raw(`
             prod_id,
             prod_name,
@@ -43,42 +41,113 @@ router.get('/income',async(req,res)=>{
             format(total,2) as total
             `))
             .where({order_sell_id:element.order_sell_id})
-            payload.push({
-                order_sell_id:element.order_sell_id,
-                cus_name:element.cus_name,
-                total :element.total,
-                order_sell_date:element.order_sell_date,
-                detail:getdetail
-            })
+            for (let ii = 0; ii < getOSD.length; ii++) {
+                const ee = getOSD[ii];
+                payload.push({
+                    order_sell_id:ii==0?element.order_sell_id:'',
+                    cus_name:ii==0?element.cus_name:'',
+                    total:ii==0?element.total:'',
+                    order_sell_date : ii==0?element.order_sell_date:'',
+                    prod_id : ee.prod_id,
+                    prod_name : ee.prod_name,
+                    prod_price : ee.prod_price,
+                    prod_amount:ee.prod_amount,
+                    prod_total : ee.total
+                })
+            }
         }
-        // console.log('data',data);
+        console.log('data',data);
         return res.render('report-income',data)
     } catch (error) {
         console.log(error);
     }
 })
+
 router.get('/income/print',async(req,res)=>{
     try {
+        const body = req.query
+        let startDate = moment().format('YYYY-MM-DD')
+        let endDate = moment().format('YYYY-MM-DD')
+        if(body.startDate) startDate = moment(body.startDate).format('YYYY-MM-DD') 
+        if(body.endDate) endDate = moment(body.endDate).format('YYYY-MM-DD') 
+        const getsell = await db('tb_order_sell as os')
+            .innerJoin('tb_order_sell_detail as osd', 'osd.order_sell_id', 'os.order_sell_id')
+            .select(db.raw(`
+            os.order_sell_id,
+            concat(cus_fname,' ',cus_lname) cus_name,
+            ifnull(format(sum(osd.total),2),0) as total,
+            date_format(os.order_sell_date,"%d-%m-%Y") as order_sell_date
+            `))
+            .whereRaw(`date(os.order_sell_date) between '${startDate}' and '${endDate}'`)
+            .groupBy('os.order_sell_id','os.order_sell_date')
+        let tr = ''
+        for (let index = 0; index < getsell.length; index++) {
+            const element = getsell[index];
+            const getOSD = await db('tb_order_sell_detail')
+                .select(db.raw(`
+                prod_id,
+                prod_name,
+                format(prod_price,2) as prod_price,
+                format(prod_amount,0) as prod_amount,
+                format(total,2) as total
+                `))
+                .where({order_sell_id:element.order_sell_id})
+            for (let ii = 0; ii < getOSD.length; ii++) {
+                const ee = getOSD[ii];
+                tr += `
+                <tr>
+                    <th scope="row">${ii<1?element.order_sell_id:''}</th>
+                    <th scope="row">${ii<1?element.cus_name:''}</th>
+                    <th scope="row" style="text-align: right;">${ii<1?element.total:''}</th>
+                    <th scope="row" style="text-align: center;">${ii<1?element.order_sell_date:''}</th>
+                    <th scope="row">${ee.prod_id}</th>
+                    <th scope="row">${ee.prod_name}</th>
+                    <th scope="row" style="text-align: right;">${ee.prod_price}</th>
+                    <th scope="row" style="text-align: right;">${ee.prod_amount}</th>
+                    <th scope="row" style="text-align: right;">${ee.total}</th>
+                </tr>
+                `
+            }
+            
+        }
         let htmlCode = `
-        <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Document</title>
-      <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD"
-      crossorigin="anonymous">
-      <link rel="preconnect" href="https://fonts.googleapis.com"><link
-      rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link
-      href="https://fonts.googleapis.com/css2?family=Prompt:wght@200&display=swap"
-      rel="stylesheet"> 
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <style>
+      table,tr,th{
+        border: 1px solid;
+          border-collapse: collapse;
+          text-align: left;
+      }
+    </style>
 </head>
 <body>
-  <H1>Hello world</H1>
+    <h3>รายงานวันที่ ${startDate} ถึง ${endDate} </h3>
+    <table>
+        <thead>
+            <tr style="background-color:lightgray;">
+                <th scope="col">รหัสรายการสั่งซื้อสินค้า</th>
+                <th scope="col">ชื่อผู้ซื้อ</th>
+                <th scope="col">ยอดรวม</th>
+                <th scope="col">วันที่ทำรายการ</th>
+                <th scope="col">รหัสสินค้า</th>
+                <th scope="col">ชื่อสินค้า</th>
+                <th scope="col">ราคาต่อหน่วย</th>
+                <th scope="col">จำนวน</th>
+                <th scope="col">ราคารวม</th>
+            </tr>
+        </thead>
+        <tbody>
+           ${tr}
+        </tbody>
+
+    </table>
 </body>
 </html>
         `
@@ -86,6 +155,117 @@ router.get('/income/print',async(req,res)=>{
 
     }catch(err){
         console.error(err);
+    }
+})
+
+router.get('/receive/print',async(req,res)=>{
+    try {
+        const body = req.query
+        const getorderSell = await db('tb_order_sell').select('*').where({order_sell_id:body.id}).first()
+        const getcus = await db('tb_customer').select('*').where({cus_id:getorderSell.cus_id}).first()
+        const address = JSON.parse(getcus.cus_address)
+        const getdata = await db('tb_order_sell_detail').select(
+        'prod_id',
+        'prod_name',
+        db.raw('format(prod_price,2) as prod_price'),
+        'prod_amount',
+        db.raw('format(total,2) as total'),
+        'total as sum'
+        ).where({order_sell_id:body.id})
+        let tr = ''
+        for (let index = 0; index < getdata.length; index++) {
+            const element = getdata[index];
+            tr+=`
+            <tr>
+                <td scope="row" class="border-0">${element.prod_name}</td>
+                <td class="border-0">${element.prod_price}</td>
+                <td class="border-0">${element.prod_amount}</td>
+                <td class="border-0" style="text-align:end">${element.total}</td>
+            </tr>
+            `
+        }
+        let total = getdata.map(x=>x.sum)
+        let sum = total.reduce(function(a, b) {
+        return a + parseInt(b.replace(",", ""), 10);
+        }, 0);
+        let vat = sum*0.7
+        let totalsum = Number(sum+vat)
+        let htmlCode = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>receive</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <style>
+      table,tr,th{
+        border:1px solid;
+        border-collapse: collapse;
+      }
+      #receive{
+        width:100%;
+      }
+    </style>
+</head>
+<body>
+    <div id="receive">
+        <div class="row d-flex justify-center alight-center text-center">
+    <p >ใบกำกับภาษี/บิลเงินสด</p>
+    </div>
+    <div class="row text-center">
+    <h2><p>บริษัท เชียงใหม่เหล็กหล่อ จำกัด (สำนักงานใหญ่)</p></h2>
+    </div>
+    <div class="row">
+    <div class="col fs-4">ผู้ซื้อ ${getorderSell.cus_fname} ${getorderSell.cus_lname}</div>
+    </div>
+    <div class="row">
+    <div class="col fs-5">ที่อยู่ ${address.ship_address??''} ต.${address.address2??''} อ.${address.locality??''} จ.${address.state??''} รหัสไปรษณีย์ ${address.postcode??''}</div>
+    </div>
+    <table class="table">
+    <thead>
+      <tr>
+        <th scope="col"><p>ชื่อสินค้า</p></th>
+        <th scope="col"><p>ราคาต่อหน่วย(บาท)</p></th>
+        <th scope="col"><p>จำนวน(ชิ้น)</p></th>
+        <th scope="col" style="text-align: end;"><p>ราคารวม(บาท)</p></th>
+      </tr>
+    </thead>
+    <tbody>
+      ${tr}
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td class="text-end"><p>รวมเงิน ${sum.toLocaleString()}</p></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td class="text-end"><p>ภาษีมูลค่าเพิ่ม 7% ${vat.toLocaleString()}</p></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td class="text-end"><p>รวมทั้งสิ้น ${totalsum.toLocaleString()}</p></td>
+      </tr>
+    </tbody>
+    </table>
+    <div class="row text-center">
+    <div class="col">
+      <h3><p>ลงชื่อผู้รับเงิน.................................................ผู้รับเงิน</p></h3>
+    </div>
+    </div>
+    </div>
+</body>
+</html>
+        `
+        await generatePDF(req,res,htmlCode)
+    } catch (error) {
+        console.error(error);
     }
 })
 

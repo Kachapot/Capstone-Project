@@ -14,22 +14,22 @@
 </svg>
 
 <div class="container pt-5 mt-5">
-    {{#if approve}}
+    {{#if success}}
     <div class="alert alert-success alert-dismissible fade show" role="alert">
         <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:">
             <use xlink:href="#check-circle-fill" />
         </svg>
-        {{approve.msg}}
+        {{success.msg}}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
     {{/if}}
 
-    {{#if deleted}}
+    {{#if error}}
     <div class="alert alert-success alert-dismissible fade show" role="alert">
         <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:">
             <use xlink:href="#check-circle-fill" />
         </svg>
-        {{deleted.msg}}
+        {{error.msg}}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
     {{/if}}
@@ -55,34 +55,18 @@
             </div>
         </div>
         <div class="col text-end">
-            <a href="/report/income/print?startDate={{startDate}}&endDate={{endDate}}" class="btn btn-primary text-white">พิมพ์รายงาน</a>
+            <a href="/report/income/print?startDate={{startDate}}&endDate={{endDate}}" class="btn btn-primary text-white" target="_blank">พิมพ์รายงาน</a>
         </div>
     </div>
 
     <hr>
-    <table class="table table-hover">
-        {{#each payload}}
+    <table class="table">
         <thead>
-            <tr style="background-color:aliceblue;">
+            <tr style="background-color:lightgray;">
                 <th scope="col">รหัสรายการสั่งซื้อสินค้า</th>
                 <th scope="col">ชื่อผู้ซื้อ</th>
-                <th scope="col">ยอดรวม</th>
+                <th scope="col" >ยอดรวม</th>
                 <th scope="col">วันที่ทำรายการ</th>
-                <th scope="col"></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <th scope="row">{{order_sell_id}}</th>
-                <th scope="row">{{cus_name}}</th>
-                <th scope="row">{{total}}</th>
-                <th scope="row">{{order_sell_date}}</th>
-                <th scope="row"></th>
-            </tr>
-        </tbody>
-
-        <thead>
-            <tr>
                 <th scope="col">รหัสสินค้า</th>
                 <th scope="col">ชื่อสินค้า</th>
                 <th scope="col">ราคาต่อหน่วย</th>
@@ -91,17 +75,20 @@
             </tr>
         </thead>
         <tbody>
-        {{#each detail}}
+            {{#each payload}}
             <tr>
+                <th scope="row">{{order_sell_id}}</th>
+                <th scope="row">{{cus_name}}</th>
+                <th scope="row">{{total}}</th>
+                <th scope="row">{{order_sell_date}}</th>
                 <th scope="row">{{prod_id}}</th>
                 <th scope="row">{{prod_name}}</th>
                 <th scope="row">{{prod_price}}</th>
                 <th scope="row">{{prod_amount}}</th>
-                <th scope="row">{{total}}</th>
+                <th scope="row">{{prod_total}}</th>
             </tr>
-        {{/each}}
+            {{/each}}
         </tbody>
-        {{/each}}
     </table>
 
 </div>

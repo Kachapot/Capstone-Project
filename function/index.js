@@ -1,7 +1,6 @@
 const jwt = require("jsonwebtoken");
 const db = require('../database/connect')
 const fileUpload = require('express-fileupload')
-const escapeHtml = require('escape-html');
 
 exports.fileMiddle = fileUpload({
   limits: { fileSize: 5000_000 },// 5MB

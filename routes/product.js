@@ -124,11 +124,15 @@ router.get('/editProduct/:id',async(req,res)=>{
             db.raw("(select prod_type_name from tb_product_type where prod_type_id = tb_product.prod_type_id) as prod_type_name")
          ).where({prod_id:body.id}).first()
         //  console.log('getdata',getdata);
-         return res.render('edit-prod',{
+        let data = {
             status:true,
             menu:req.menu,
             payload:getdata
-         })
+         }
+         console.log('req.query',req.query);
+         if(req.query.success){ data['success'] = true,data['msg'] = req.query.success}
+         console.log('data',data);
+         return res.render('edit-prod',data)
     } catch (error) {
         console.log(error);
     }
@@ -151,7 +155,7 @@ router.post('/editProduct/update/:id',async(req,res)=>{
             prod_amount:body.prod_amount,
             prod_detail:body.prod_detail
         }
-        return res.redirect('/product/editProduct/'+encodeURIComponent(id))
+        return res.redirect('/product/editProduct/'+encodeURIComponent(id)+"?success="+encodeURIComponent('บันทึกสำเร็จ'))
     } catch (error) {
         console.log(error);
     }

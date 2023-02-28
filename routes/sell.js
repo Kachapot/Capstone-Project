@@ -167,11 +167,11 @@ router.get('/showdata/:id',async(req,res)=>{
       count:getdata.length,
       id:body.id,
       cus_name:getorderSell.cus_fname+' '+getorderSell.cus_lname,
-      ship_address:address.ship_address,
-      address2:address.address2,
-      locality:address.locality,
-      state:address.state,
-      postcode:address.postcode,
+      ship_address:address.ship_address??'',
+      address2:'ต.'+address.address2??'',
+      locality:'อ.'+address.locality??'',
+      state:'จ.'+address.state??'',
+      postcode:'รหัสไปรษณีย์ '+address.postcode??'',
       sum:sum.toLocaleString(),
       vat : vat.toLocaleString(),
       totalsum:totalsum.toLocaleString()
@@ -197,17 +197,6 @@ router.get('/showdata/:id',async(req,res)=>{
       }
     }
     return res.render('showdata-sell',data)
-
-    // const html = await res.render('showdata-sell',data);
-    // const browser = await puppeteer.launch({ headless: false ,timeout:0});
-    // const page = await browser.newPage();
-    // await page.setContent(html);
-    // await page.pdf({
-    //   path: 'invoice.pdf',
-    //   format: 'A4'
-    // });
-    // console.log('PDF created');
-
     
   } catch (error) {
     console.log(error);

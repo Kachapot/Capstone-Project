@@ -33,11 +33,12 @@
     <form method="post" action="/customer/create/insert">
         <div class="row py-1">
             <div class="col">
-                <div class="input-group">
-                <span class="input-group-text">ชื่อ-สกุล</span>
-                <input type="text" name="fname" aria-label="First name" class="form-control form-control-sm" >
-                <input type="text" name="lname" aria-label="Last name" class="form-control form-control-sm">
-                </div>
+                <label for="fname">ชื่อ</label>
+                <input type="text" name="fname" aria-label="First name" class="form-control form-control-sm" required>
+            </div>
+            <div class="col">
+              <label for="lname">สกุล</label>
+                <input type="text" name="lname" aria-label="Last name" class="form-control form-control-sm" required>
             </div>
         </div>
         <div class="row py-1">
@@ -87,8 +88,8 @@
                 </div>
                <div class="row">
                  <label >
-                    <span>อพาร์ทเม้น,ยูนิต,ขั้น,ห้อง</span>
-                    <input id="address2" name="address2" class="form-control form-control-sm" />
+                    <span>ตำบล*</span>
+                    <input id="address2" name="address2" class="form-control form-control-sm" required/>
                 </label>
                </div>
                 <div class="row">

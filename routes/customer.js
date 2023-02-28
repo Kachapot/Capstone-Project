@@ -86,7 +86,6 @@ router.get('/show/:id',async(req,res)=>{
       'cus_phone',
       'cus_location'
      ).where({cus_id:body.id}).first()
-    //  console.log('getUser',getUser);
      if(getUser.cus_address.length>0) var userAddress = JSON.parse(getUser.cus_address);
     // console.log('userAddress',userAddress);
       const location = getUser.cus_location?JSON.parse(getUser.cus_location):{lat:18.809753815121315,lng:98.95262678679745}
