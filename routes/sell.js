@@ -68,7 +68,6 @@ router.get("/", async (req, res) => {
     if(body.deleted){
       data['deleted'] = {msg:body.deleted}
     }
-    console.log('data',data);
     return res.render("sell",data);
   } catch (error) {
     console.log(error);
@@ -112,6 +111,7 @@ router.post('/insert',async(req,res)=>{
       cus_phone:getcus.cus_phone,
       order_sell_amount:prod_id.length,
       order_sell_total:order_sell_total,
+      order_sell_date:moment().format('YYYY-MM-DD hh:mm:ss'),
       order_sell_status : 1
     })
     if(!insertSell) return res.redirect('/sell/?error='+encodeURIComponent('เกิดข้อผิดพลาดบางอย่าไม่สามารถเพิ่มได้'))
@@ -127,6 +127,7 @@ router.post('/insert',async(req,res)=>{
         prod_price: sell_price,
         prod_amount:amount,
         total:sell_price*Number(amount),
+        date:moment().format('YYYY-MM-DD hh:mm:ss'),
       })
     }
     return res.redirect('/sell/?approve='+encodeURIComponent('สร้างรายการสำเร็จ'))

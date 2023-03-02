@@ -35,8 +35,8 @@ router.get('/',authorization,async(req,res)=>{
 router.get('/main',authorization,async(req,res)=>{
   try {
     const body = req.query
-    let startDate = body.startDate
-    let endDate = body.endDate
+    let startDate = body.startDate??moment().format('YYYY-MM-DD')
+    let endDate = body.endDate??moment().format('YYYY-MM-DD')
     if(endDate < startDate){
       startDate = body.endDate
       endDate = body.startDate
@@ -53,10 +53,9 @@ router.get('/main',authorization,async(req,res)=>{
       sum(total) as total,
       date_format(date,'%m') as month`)
       )
-    .whereRaw(`date between '${startDate}' and '${endDate}'`)
+    .whereRaw(`date(date) between '${startDate}' and '${endDate}'`)
     .groupBy('month')
     .orderBy('month')
-    // console.log('totalsell',totalSell);
     const getState = await db.fromRaw(`
     (
     select
@@ -64,17 +63,16 @@ router.get('/main',authorization,async(req,res)=>{
     ifnull(sum(s.order_sell_total),0) as total
     from tb_order_sell s
     inner JOIN tb_customer c on c.cus_id = s.cus_id
-    where s.order_sell_date between '${startDate}' and '${endDate}'
+    where date(s.order_sell_date) between '${startDate}' and '${endDate}'
     GROUP BY c.cus_address ->> "$.state"
     )as a
     `)
-    // console.log('getState',getState);
     const incomeToday = await db('tb_order_sell_detail')
     .select(db.raw(`ifnull(format(sum(total),2),0) as total`))
-    .whereRaw(`date BETWEEN '${today}' and '${today}'`).first()
+    .whereRaw(`date(date) BETWEEN '${today}' and '${today}'`).first()
     const incomeMonth = await db('tb_order_sell_detail')
     .select(db.raw(`ifnull(format(sum(total),2),0) as total`))
-    .whereRaw(`date BETWEEN '${startMonth}' and '${endMonth}'`).first()
+    .whereRaw(`date(date) BETWEEN '${startMonth}' and '${endMonth}'`).first()
     const countTransporting = await db('tb_order_sell').select(db.raw("count(id) as count")).whereRaw("order_sell_status < 3")
     .where({order_sell_status:1}).first()
     const countBuyList = await db('tb_order_buy').count('id as count').where({order_buy_status:0})
@@ -120,7 +118,7 @@ router.get('/main',authorization,async(req,res)=>{
         month_value[11] = +element.total
       }
     }
-
+    
     for (let index = 0; index < getState.length; index++) {
       const element = getState[index];
       if(element.state == 'เชียงใหม่') state_value[0] = +element.total
