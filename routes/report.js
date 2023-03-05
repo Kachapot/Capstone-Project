@@ -188,8 +188,8 @@ router.get('/receive/print',async(req,res)=>{
             tr+=`
             <tr>
                 <td scope="row" class="border-0">${element.prod_name}</td>
-                <td class="border-0">${element.prod_price}</td>
-                <td class="border-0">${element.prod_amount}</td>
+                <td class="border-0" style="text-align:end">${element.prod_price}</td>
+                <td class="border-0" style="text-align:end">${element.prod_amount}</td>
                 <td class="border-0" style="text-align:end">${element.total}</td>
             </tr>
             `
@@ -198,8 +198,13 @@ router.get('/receive/print',async(req,res)=>{
         let sum = total.reduce(function(a, b) {
         return a + parseInt(b.replace(",", ""), 10);
         }, 0);
-        let vat = sum*0.7
+        let vat = Number(sum*0.07)
         let totalsum = Number(sum+vat)
+        totalsum = Number(totalsum).toLocaleString('en-US', {minimumFractionDigits: 2});
+        sum = Number(sum).toLocaleString('en-US', {minimumFractionDigits: 2});
+        vat = Number(vat).toLocaleString('en-US', {minimumFractionDigits: 2});
+        const today = moment().format('YYYY-MM-DD hh:mm:ss')
+
         let htmlCode = `
 <!DOCTYPE html>
 <html lang="en">
@@ -233,12 +238,18 @@ router.get('/receive/print',async(req,res)=>{
     <div class="row">
     <div class="col fs-5">ที่อยู่ ${address.ship_address??''} ต.${address.address2??''} อ.${address.locality??''} จ.${address.state??''} รหัสไปรษณีย์ ${address.postcode??''}</div>
     </div>
+    <div class="row">
+    <div class="col fs-5">เลขประจำตัวผู้เสียภาษีอากร ${getcus.tax_id}</div>
+    </div>
+    <div class="row">
+    <div class="col text-end"><h6>วันที่ออกใบเสร็จ ${today}</h6></div>
+    </div>
     <table class="table">
     <thead>
-      <tr>
-        <th scope="col"><p>ชื่อสินค้า</p></th>
-        <th scope="col"><p>ราคาต่อหน่วย(บาท)</p></th>
-        <th scope="col"><p>จำนวน(ชิ้น)</p></th>
+      <tr> 
+        <th scope="col" style="text-align:center"><p>ชื่อสินค้า</p></th>
+        <th scope="col" style="text-align:end"><p>ราคาต่อหน่วย(บาท)</p></th>
+        <th scope="col" style="text-align:end"><p>จำนวน(ชิ้น)</p></th>
         <th scope="col" style="text-align: end;"><p>ราคารวม(บาท)</p></th>
       </tr>
     </thead>

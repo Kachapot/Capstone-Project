@@ -67,14 +67,12 @@ router.get("/create", async (req, res) => {
 router.post('/create/insert',fileMiddle,async(req,res)=>{
   try {
     const body = req.body
-    // console.log('body',body)
-    // console.log('file',req?.files?.profileimg);
     const checkEmp = await db('tb_employee')
     .select('*')
     .whereRaw(`username = '${body.username}'`).first()
 
-      let BannerFileName = 'public/images/'+req.files.profileimg.name
-      await req.files.profileimg.mv(BannerFileName,async(err)=>{})
+    let BannerFileName = 'public/images/'+req.files.profileimg.name
+    await req.files.profileimg.mv(BannerFileName,async(err)=>{})
     if(checkEmp) return res.render('create-emp',{error:true,msg:body.username+" มีผู้ใช้งานแล้ว",status:true,menu:req.menu,}) 
 
     let birthdate = body.birthdate
@@ -104,7 +102,6 @@ router.post('/create/insert',fileMiddle,async(req,res)=>{
 router.get('/edit/:id',async(req,res)=>{
   try {
      const body = req.params
-    //  console.log('body',body);
      const getUser = await db('tb_employee').select(
       'emp_id',
       'emp_fname',
@@ -120,7 +117,6 @@ router.get('/edit/:id',async(req,res)=>{
       'emp_phone',
       db.raw("date_format(emp_birthday, '%Y-%m-%d') as emp_birthday")
      ).where({emp_id:body.id})
-    //  console.log('getUser',getUser);
      if(req.query.edit) return res.render('edit-emp',{payload:getUser,status:true,menu:req.menu,msg:'แก้ไขสำเร็จ',success:true})
      return res.render('edit-emp',{payload:getUser,status:true,menu:req.menu,})
   } catch (error) {

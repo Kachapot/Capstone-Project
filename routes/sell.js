@@ -158,8 +158,13 @@ router.get('/showdata/:id',async(req,res)=>{
     let sum = total.reduce(function(a, b) {
       return a + parseInt(b.replace(",", ""), 10);
     }, 0);
-    let vat = sum*0.7
+    let vat = sum*0.07
     let totalsum = Number(sum+vat)
+
+    totalsum = Number(totalsum).toLocaleString('en-US', {minimumFractionDigits: 2});
+    sum = Number(sum).toLocaleString('en-US', {minimumFractionDigits: 2});
+    vat = Number(vat).toLocaleString('en-US', {minimumFractionDigits: 2});
+    const today = moment().format('YYYY-MM-DD hh:mm:ss')
     let data ={
       status:true,
       menu:req.menu,
@@ -167,15 +172,17 @@ router.get('/showdata/:id',async(req,res)=>{
       payload:getdata,
       count:getdata.length,
       id:body.id,
+      tax_id:getcus.tax_id,
       cus_name:getorderSell.cus_fname+' '+getorderSell.cus_lname,
       ship_address:address.ship_address??'',
       address2:'ต.'+address.address2??'',
       locality:'อ.'+address.locality??'',
       state:'จ.'+address.state??'',
       postcode:'รหัสไปรษณีย์ '+address.postcode??'',
-      sum:sum.toLocaleString(),
-      vat : vat.toLocaleString(),
-      totalsum:totalsum.toLocaleString()
+      sum:sum,
+      vat : vat,
+      totalsum:totalsum,
+      today:today
     }
     if(req.query.error){
       data = {
@@ -194,7 +201,8 @@ router.get('/showdata/:id',async(req,res)=>{
         sum:sum.toLocaleString(),
         vat : vat.toLocaleString(),
         totalsum:totalsum.toLocaleString(),
-        error:{msg:req.query.error}
+        error:{msg:req.query.error},
+        today:today
       }
     }
     return res.render('showdata-sell',data)

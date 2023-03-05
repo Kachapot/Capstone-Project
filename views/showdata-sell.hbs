@@ -33,18 +33,25 @@
   <div class="row text-center">
     <h2><p>บริษัท เชียงใหม่เหล็กหล่อ จำกัด (สำนักงานใหญ่)</p></h2>
   </div>
+  
   <div class="row">
     <div class="col fs-4">ผู้ซื้อ {{cus_name}}</div>
   </div>
   <div class="row">
     <div class="col fs-5">ที่อยู่ {{ship_address}} {{address2}} {{locality}} {{state}} {{postcode}}</div>
   </div>
+  <div class="row">
+    <div class="col fs-5">เลขประจำตัวผู้เสียภาษีอากร {{tax_id}}</div>
+  </div>
+  <div class="row">
+    <div class="col text-end"><h6>วันที่ออกใบเสร็จ {{today}}</h6></div>
+  </div>
   <table class="table">
     <thead>
       <tr>
-        <th scope="col"><p>ชื่อสินค้า</p></th>
-        <th scope="col"><p>ราคาต่อหน่วย(บาท)</p></th>
-        <th scope="col"><p>จำนวน(ชิ้น)</p></th>
+        <th scope="col" class="text-center"><p>ชื่อสินค้า</p></th>
+        <th scope="col" class="text-end"><p>ราคาต่อหน่วย(บาท)</p></th>
+        <th scope="col" class="text-end"><p>จำนวน(ชิ้น)</p></th>
         <th scope="col" class="text-end"><p>ราคารวม(บาท)</p></th>
       </tr>
     </thead>
@@ -52,8 +59,8 @@
       {{#each payload}}
       <tr>
         <td scope="row" class="border-0">{{prod_name}}</td>
-        <td class="border-0">{{prod_price}}</td>
-        <td class="border-0">{{prod_amount}}</td>
+        <td class="border-0 text-end">{{prod_price}}</td>
+        <td class="border-0 text-end">{{prod_amount}}</td>
         <td class="border-0 text-end">{{total}}</td>
       </tr>
       {{/each}}

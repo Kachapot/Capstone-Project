@@ -72,11 +72,15 @@
       </div>
     </div>
     <div class="row py-1">
-      <div class="col-6">
+      <div class="col">
         <label for="phone">เบอร์โทรศัพท์</label>
         <input type="text" name="phone" class="form-control form-control-sm" value="{{payload.cus_phone}}">
       </div>
-      <div class="col-6">
+      <div class="col">
+              <label for="tax_id">เลขประจำตัวผู้เสียภาษี</label>
+              <input type="text" name="tax_id" class="form-control form-control-sm" value="{{payload.tax_id}}"> 
+            </div>
+      <div class="col">
         <label for="address">พิกัด</label>
         <input type="text" id="address" name="address" value="{{payload.location}}" class="form-control form-control-sm"
           readonly />

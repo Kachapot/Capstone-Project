@@ -75,7 +75,6 @@ router.get("/", async (req, res) => {
 router.get('/show/:id',async(req,res)=>{
   try {
      const body = req.params 
-    //  console.log('body',body);
      const getUser = await db('tb_customer').select(
       'cus_id',
       'cus_fname',
@@ -84,7 +83,8 @@ router.get('/show/:id',async(req,res)=>{
       'cus_email',
       'cus_address',
       'cus_phone',
-      'cus_location'
+      'cus_location',
+      'tax_id'
      ).where({cus_id:body.id}).first()
      if(getUser.cus_address.length>0) var userAddress = JSON.parse(getUser.cus_address);
     // console.log('userAddress',userAddress);
@@ -96,6 +96,7 @@ router.get('/show/:id',async(req,res)=>{
       cus_gender: getUser.cus_gender,
       cus_email: getUser.cus_email,
       cus_phone: getUser.cus_phone,
+      tax_id:getUser.tax_id,
       ship_address:userAddress.ship_address,
       address2: userAddress.address2,
       locality : userAddress.locality,
@@ -103,7 +104,6 @@ router.get('/show/:id',async(req,res)=>{
       postcode : userAddress.postcode,
       location: JSON.stringify(location)
      }
-    //  return console.log('payload',payload);
      return res.render('showdata-cus',{payload:payload,status:true,menu:req.menu,})
   } catch (error) {
     console.log(error);
@@ -141,7 +141,8 @@ router.post('/create/insert',async(req,res)=>{
       cus_phone : body.phone,
       cus_email : body.email,
       cus_address : JSON.stringify(address),
-      cus_location : body.address
+      cus_location : body.address,
+      tax_id:body.tax_id
     })
     if(!insertData) return render('create-cus',{error:true,msg:'เกิดข้อผิดพลาดบางอย่าง ไม่สามารถเพิ่มลูกค้าได้',status:true})
     return res.render('create-cus',{success:true,msg:'เพิ่มลูกค้า '+body.fname+' '+body.lname+' สำเร็จ',status:true,menu:req.menu,})
@@ -153,7 +154,6 @@ router.post('/create/insert',async(req,res)=>{
 router.get('/edit/:id',async(req,res)=>{
   try {
      const body = req.params 
-    //  console.log('body',body);
      const getUser = await db('tb_customer').select(
       'cus_id',
       'cus_fname',
@@ -162,11 +162,10 @@ router.get('/edit/:id',async(req,res)=>{
       'cus_email',
       'cus_address',
       'cus_phone',
-      'cus_location'
+      'cus_location',
+      'tax_id',
      ).where({cus_id:body.id}).first()
-    //  console.log('getUser',getUser);
      if(getUser.cus_address.length>0) var userAddress = JSON.parse(getUser.cus_address);
-    // console.log('userAddress',userAddress);
       const location = getUser.cus_location?JSON.parse(getUser.cus_location):{lat:18.809753815121315,lng:98.95262678679745}
      let payload = {
       cus_id:getUser.cus_id,
@@ -175,6 +174,7 @@ router.get('/edit/:id',async(req,res)=>{
       cus_gender: getUser.cus_gender,
       cus_email: getUser.cus_email,
       cus_phone: getUser.cus_phone,
+      tax_id:getUser.tax_id,
       ship_address:userAddress.ship_address,
       address2: userAddress.address2,
       locality : userAddress.locality,
@@ -182,7 +182,6 @@ router.get('/edit/:id',async(req,res)=>{
       postcode : userAddress.postcode,
       location: JSON.stringify(location)
      }
-    // console.log('payload',payload);
      return res.render('edit-cus',{payload:payload,status:true,menu:req.menu,})
   } catch (error) {
     console.log(error);
@@ -192,9 +191,7 @@ router.get('/edit/:id',async(req,res)=>{
 router.post('/edit/update',async(req,res)=>{
   try {
     const body = req.body
-    // return console.log('body',body);
     const getUser = await db('tb_customer').select('*').where({cus_id : body.id}).first()
-    // console.log('getuser',getUser);
     if(!getUser) return res.render('edit-cus',{error:true,msg:'ไม่พบ',status:true,menu:req.menu,})
     let address = {
       ship_address:body.ship_address,
@@ -211,7 +208,8 @@ router.post('/edit/update',async(req,res)=>{
       cus_phone : body.phone,
       cus_email : body.email,
       cus_address : JSON.stringify(address),
-      cus_location : body.address
+      cus_location : body.address,
+      tax_id:body.tax_id
     }
     const updateData = await db('tb_customer').update(update).where({cus_id:body.id})
     let payload = {
@@ -226,7 +224,8 @@ router.post('/edit/update',async(req,res)=>{
       locality : body.locality,
       state : body.state,
       postcode : body.postcode,
-      location : body.address
+      location : body.address,
+      tax_id:body.tax_id
      }
     return res.render('edit-cus',{success:true,msg:'แก้ไขสำเร็จ',status:true,menu:req.menu,payload:payload})
   } catch (error) {

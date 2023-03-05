@@ -165,7 +165,6 @@ router.post('/login',async (req,res)=>{
         const getadmin = await db('tb_employee').select('*')
         .where({username:body.username,password:body.password})
         .first()
-        console.log('getadmin',getadmin);
         if (!getadmin) {
             let data = ({ status: 400, message: "ไม่พบผู้ใช้นี้"});
             return res.redirect('/')
