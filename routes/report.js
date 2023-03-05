@@ -230,7 +230,13 @@ router.get('/receive/print',async(req,res)=>{
     <p >ใบกำกับภาษี/บิลเงินสด</p>
     </div>
     <div class="row text-center">
-    <h2><p>บริษัท เชียงใหม่เหล็กหล่อ จำกัด (สำนักงานใหญ่)</p></h2>
+    <h2><p class="p-0 m-0">บริษัท เชียงใหม่เหล็กหล่อ จำกัด (สำนักงานใหญ่)</p></h2>
+    </div>
+    <div class="row text-center">
+    <h6>เลขที่ 186 หมู่ 1 บ้านทุ่งยาว ต.สันทราย อ.สันทราย จ.เชียงใหม่ 50210 </h6>
+    </div>
+    <div class="row text-center">
+    <h6>เลขประจำตัวผู้เสียภาษีอากร 0 5055 65002 02 3</h6>
     </div>
     <div class="row">
     <div class="col fs-4">ผู้ซื้อ ${getorderSell.cus_fname} ${getorderSell.cus_lname}</div>

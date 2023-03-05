@@ -15,7 +15,7 @@ router.get("/", async (req, res) => {
     if(body.search) where = `
     order_sell_id like '%${body.search}%' or 
     cus_fname like '%${body.search}%' or 
-    cus_lname like '%${body.search}%' or
+    cus_lname like '%${body.search}%'
     `
     const getdata = await db("tb_order_sell").select(
         'id',
@@ -31,13 +31,12 @@ router.get("/", async (req, res) => {
         when order_sell_status = 2 then 'กำลังจัดส่ง'
         when order_sell_status = 3 then 'สำเร็จ'
         else 'ยกเลิก' end as order_sell_status`)
-      ).whereRaw(where).limit(limit).offset(offset).orderBy("id", "desc")??[]
+      ).whereRaw(where).orderBy("id", "desc").limit(limit).offset(offset)??[]
     const countdata = await db('tb_order_sell').count('id as count').whereRaw(where).first()
     let all_page = Math.ceil(countdata.count/limit)
-    let pagination = await paginate(page,all_page)
+    let pagination = paginate(page,all_page)
 
     const getemp = await db('tb_employee').select('*').where({username: req.admin}).first()
-    console.log('getemp',getemp);
     if (getdata?.length == 0) return res.render('sell',{
         payload: [],
         username: username,

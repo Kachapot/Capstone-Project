@@ -13,9 +13,9 @@ router.get("/", async (req, res) => {
     let username = req.admin;
     let where = ''
     if(body.search) where = `
-    order_by_id like '%${body.search}%' or 
+    ob.order_buy_id like '%${body.search}%' or 
     emp_fname like '%${body.search}%' or 
-    emp_lname like '%${body.search}%' or
+    emp_lname like '%${body.search}%'
     `
     const getdata = await db("tb_order_buy as ob")
     .innerJoin('tb_order_buy_detail as obd','obd.order_buy_id','ob.order_buy_id')
@@ -35,11 +35,12 @@ router.get("/", async (req, res) => {
         `)
       )
       .whereRaw(where)
+      .groupBy('ob.order_buy_id')
+      .orderBy("ob.id", "desc")
       .limit(limit)
       .offset(offset)
-      .groupBy('ob.order_buy_id')
-      .orderBy("ob.id", "desc")??[]
-    const countdata = await db('tb_order_buy').count('id as count').whereRaw(where).first()
+      ??[]
+    const countdata = await db('tb_order_buy as ob').count('id as count').whereRaw(where).first()
     let all_page = Math.ceil(countdata.count/limit)
     let pagination = paginate(page,all_page)
     if (getdata?.length == 0) return res.render('buy',{
