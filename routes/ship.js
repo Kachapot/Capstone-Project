@@ -90,9 +90,9 @@ router.get("/confirm/:id", async (req, res) => {
     } catch (error) {
       console.log(error);
     }
-  });
+});
 
-  router.get("/cancel/:id", async (req, res) => {
+router.get("/cancel/:id", async (req, res) => {
     try {
       const body = req.params
       const updateStatus = await db("tb_order_sell").update({order_sell_status: 4}).where({order_sell_id:body.id});
@@ -103,7 +103,7 @@ router.get("/confirm/:id", async (req, res) => {
     } catch (error) {
       console.log(error);
     }
-  });
+});
 
 router.get("/delete/:id", async (req, res) => {
   try {
