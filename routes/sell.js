@@ -32,6 +32,7 @@ router.get("/", async (req, res) => {
         when order_sell_status = 3 then 'สำเร็จ'
         else 'ยกเลิก' end as order_sell_status`)
       ).whereRaw(where).orderBy("id", "desc").limit(limit).offset(offset)??[]
+    console.log('getdata',getdata);
     const countdata = await db('tb_order_sell').count('id as count').whereRaw(where).first()
     let all_page = Math.ceil(countdata.count/limit)
     let pagination = paginate(page,all_page)
