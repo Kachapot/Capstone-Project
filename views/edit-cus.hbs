@@ -42,16 +42,15 @@
       รหัสลูกค้า : <input readonly type="text" name="id" value="{{payload.cus_id}}" style="border: none;">
     </div>
     <div class="row py-1">
-      <div class="col">
-        <div class="input-group">
-          <span class="input-group-text">ชื่อ-สกุล</span>
-          <input type="text" name="fname" aria-label="First name" class="form-control form-control-sm"
-            value="{{payload.cus_fname}}">
-          <input type="text" name="lname" aria-label="Last name" class="form-control form-control-sm"
-            value="{{payload.cus_lname}}">
+            <div class="col">
+                <label for="fname">ชื่อ</label>
+                <input type="text" name="fname" aria-label="First name" class="form-control form-control-sm" value="{{payload.cus_fname}}" required>
+            </div>
+            <div class="col">
+              <label for="lname">สกุล</label>
+                <input type="text" name="lname" aria-label="Last name" class="form-control form-control-sm" value="{{payload.cus_lname}}" required>
+            </div>
         </div>
-      </div>
-    </div>
     <div class="row py-1">
       <div class="col">
         <label for="gender">เพศ</label>

@@ -17,6 +17,17 @@ router.get("/", async (req, res) => {
     cus_fname like '%${body.search}%' or 
     cus_lname like '%${body.search}%'
     `
+    if(body.filter == 'all'){
+      where+= ''
+    }else if(body.filter == 'wait'){
+      where+= where.length>1?' and order_sell_status = 1':'order_sell_status = 1'
+    }else if(body.filter == 'shiping'){
+      where+= where.length>1?' and order_sell_status = 1':'order_sell_status = 2'
+    }else if(body.filter == 'done'){
+      where+= where.length>1?' and order_sell_status = 1':'order_sell_status = 3'
+    }else if(body.filter == 'cancel'){
+      where+= where.length>1?' and order_sell_status = 1':'order_sell_status = 4'
+    }
     const getdata = await db("tb_order_sell").select(
         'id',
         'order_sell_id',
