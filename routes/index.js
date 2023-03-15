@@ -11,6 +11,31 @@ router.use('/sell',authorization,require('./sell'))
 router.use('/ship',authorization,require('./ship'))
 router.use('/report',authorization,require('./report'))
 
+router.get('/editProfile/:id',authorization,async(reqr,res)=>{
+  try {
+    const body = req.params
+    const getUser = await db('tb_employee').select(
+     'emp_id',
+     'emp_fname',
+     'emp_lname',
+     'username',
+     'password',
+     'emp_position',
+     'level',
+     'emp_gender',
+     'emp_email',
+     'emp_address',
+     'emp_img',
+     'emp_phone',
+     db.raw("date_format(emp_birthday, '%Y-%m-%d') as emp_birthday")
+    ).where({emp_id:body.id})
+    if(req.query.edit) return res.render('edit-emp',{payload:getUser,status:true,menu:req.menu,msg:'แก้ไขสำเร็จ',success:true})
+    return res.render('edit-emp',{payload:getUser,status:true,menu:req.menu,})
+ } catch (error) {
+   console.log(error);
+ }
+})
+
 router.get('/',authorization,async(req,res)=>{
     if(req.cookies?.access_token){
       const getEmp = await db('tb_employee').select('*').where({username:req.admin}).first()
