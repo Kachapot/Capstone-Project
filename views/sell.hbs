@@ -38,7 +38,7 @@
 
   <div class="row d-flex">
   <div class="col">
-    <a class="btn btn-primary" href="/sell/create"><i class="bi bi-plus"></i> เพิ่มรายการสั่งซื้อสินค้า</a>
+    {{#if func}}<a class="btn btn-primary" href="/sell/create"><i class="bi bi-plus"></i> เพิ่มรายการสั่งซื้อสินค้า</a>{{/if}}
   </div>
     <div class="col">
       <div class="d-grid gap-2 d-md-flex justify-content-md-end ">
@@ -71,7 +71,8 @@
         <th scope="col" class="text-end">action</th>
       </tr>
     </thead>
-    <tbody>
+    {{#if func}}
+      <tbody>
       {{#each payload}}
       <tr>
         <th scope="row">{{order_sell_id}}</th>
@@ -81,15 +82,30 @@
         <td>{{order_sell_date}}</td>
         <td>{{order_sell_status}}</td>
         <td class="text-end">
-          {{#if ship}}
           <a href="/ship/{{order_sell_id}}" type="button" class="btn btn-light btn-small"><i class="bi bi-truck"></i> ข้อมูลขนส่ง</i></a>
-          {{/if}}
           <a href="/sell/showdata/{{order_sell_id}}" type="button" class="btn btn-light btn-small"><i class="bi bi-eye"> ดูใบเสร็จ</i></a>
           <a href="/sell/delete/{{order_sell_id}}" type="button" class="btn btn-danger btn-small"><i class="bi bi-trash3-fill"></i> ลบ</i></a>
         </td>
       </tr>
       {{/each}}
     </tbody>
+    {{else}}
+      <tbody>
+      {{#each payload}}
+      <tr>
+        <th scope="row">{{order_sell_id}}</th>
+        <td>{{emp_name}}</td>
+        <td>{{cus_name}}</td>
+        <td>{{order_sell_total}}</td>
+        <td>{{order_sell_date}}</td>
+        <td>{{order_sell_status}}</td>
+        <td class="text-end">
+          <a href="/ship/{{order_sell_id}}" type="button" class="btn btn-light btn-small"><i class="bi bi-truck"></i> ข้อมูลขนส่ง</i></a>
+        </td>
+      </tr>
+      {{/each}}
+    </tbody>
+    {{/if}}
   </table>
 
 {{!-- Pagination --}}

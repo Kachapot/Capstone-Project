@@ -55,7 +55,7 @@ module.exports.authorization = async (req,res,next)=>{
         }]
       }else if(getadmin.position == 'พนักงานคิดเงิน' || getadmin.position == 'cashier'){
         menu = [{
-          // sell:true,
+          sell:true,
           // emp:true,
           cus:true,
           prod:true,

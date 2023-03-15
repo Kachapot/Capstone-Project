@@ -11,9 +11,10 @@ router.use('/sell',authorization,require('./sell'))
 router.use('/ship',authorization,require('./ship'))
 router.use('/report',authorization,require('./report'))
 
-router.get('/editProfile/:id',authorization,async(reqr,res)=>{
+router.get('/editProfile',authorization,async(req,res)=>{
   try {
     const body = req.params
+    // console.log('req.admin',req.admin);
     const getUser = await db('tb_employee').select(
      'emp_id',
      'emp_fname',
@@ -28,12 +29,50 @@ router.get('/editProfile/:id',authorization,async(reqr,res)=>{
      'emp_img',
      'emp_phone',
      db.raw("date_format(emp_birthday, '%Y-%m-%d') as emp_birthday")
-    ).where({emp_id:body.id})
-    if(req.query.edit) return res.render('edit-emp',{payload:getUser,status:true,menu:req.menu,msg:'แก้ไขสำเร็จ',success:true})
-    return res.render('edit-emp',{payload:getUser,status:true,menu:req.menu,})
+    ).where({username:req.admin})
+    if(req.query.edit) return res.render('editProfile',{payload:getUser,status:true,menu:req.menu,msg:'แก้ไขสำเร็จ',success:true})
+    return res.render('editProfile',{payload:getUser,status:true,menu:req.menu,})
  } catch (error) {
    console.log(error);
  }
+})
+
+router.post('/editProfile/update',authorization,async(req,res)=>{
+  try {
+    const body = req.body
+    const getUser = await db('tb_employee').select(
+      'username',
+      'password',
+      'emp_fname',
+      'emp_lname',
+      'emp_gender',
+      'emp_position',
+      'level',
+      'emp_gender',
+      'emp_email',
+      'emp_address',
+      'emp_img',
+      'emp_phone',
+      db.raw("date_format(emp_birthday, '%d-%m-%Y') as emp_birthday")
+      ).where({username:req.admin}).first()
+    if(!getUser) return res.render('editProfile',{error:true,msg:'ไม่พบ',status:true,menu:req.menu,})
+    let update = {
+      username:body.username??getUser.username,
+      password:body.password??getUser.password,
+      emp_fname:body.fname??getUser.emp_fname,
+      emp_lname:body.lname??getUser.emp_lname,
+      emp_gender:body.gender??getUser.emp_gender,
+      emp_position:body.position??getUser.emp_position,
+      emp_phone : body.phone??getUser.emp_phone,
+      emp_email:body.email??getUser.emp_email,
+      emp_birthday:body.birthdate??getUser.emp_birthday,
+      emp_address:body.address??getUser.emp_address,
+    }
+    const updateData = await db('tb_employee').update(update).where({username:req.admin})
+    return res.redirect('/editProfile'+"?edit="+encodeURIComponent(true))
+  } catch (error) {
+    console.log(error);
+  }
 })
 
 router.get('/',authorization,async(req,res)=>{

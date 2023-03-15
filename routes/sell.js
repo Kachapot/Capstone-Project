@@ -28,6 +28,8 @@ router.get("/", async (req, res) => {
     }else if(body.filter == 'cancel'){
       where+= where.length>1?' and order_sell_status = 1':'order_sell_status = 4'
     }
+
+    
     const getdata = await db("tb_order_sell").select(
         'id',
         'order_sell_id',
@@ -41,13 +43,18 @@ router.get("/", async (req, res) => {
         when order_sell_status = 1 then 'กำลังดำเนินงาน' 
         when order_sell_status = 2 then 'กำลังจัดส่ง'
         when order_sell_status = 3 then 'สำเร็จ'
-        else 'ยกเลิก' end as order_sell_status`)
+        else 'ยกเลิก' end as order_sell_status
+        `)
       ).whereRaw(where).orderBy("id", "desc").limit(limit).offset(offset)??[]
     const countdata = await db('tb_order_sell').count('id as count').whereRaw(where).first()
     let all_page = Math.ceil(countdata.count/limit)
     let pagination = paginate(page,all_page)
 
     const getemp = await db('tb_employee').select('*').where({username: req.admin}).first()
+    let func = true
+    if(req.position == 'พนักงานขนส่ง' || req.position == 'delivery'){
+      func = false
+    }
     if (getdata?.length == 0) return res.render('sell',{
         payload: [],
         username: username,
@@ -55,7 +62,8 @@ router.get("/", async (req, res) => {
         status: true,
         menu:req.menu,
         item: getdata.length,
-        pagination : pagination
+        pagination : pagination,
+        func:func
       })
     let data = {
       payload: getdata,
@@ -64,8 +72,10 @@ router.get("/", async (req, res) => {
       status: true,
       menu:req.menu,
       item: getdata.length,
-      pagination : pagination
+      pagination : pagination,
+      func:func
     }
+    
     if(getemp.emp_position == 'พนักงานขนส่ง' || getemp.level < 3) data['ship'] = true
 
     if(body.error){
@@ -175,6 +185,10 @@ router.get('/showdata/:id',async(req,res)=>{
     sum = Number(sum).toLocaleString('en-US', {minimumFractionDigits: 2});
     vat = Number(vat).toLocaleString('en-US', {minimumFractionDigits: 2});
     const today = moment().format('YYYY-MM-DD hh:mm:ss')
+    let func = true
+    // if(req.position == 'พนักงานขนส่ง' || req.position == 'delivery'){
+    //   func = false
+    // }
     let data ={
       status:true,
       menu:req.menu,
@@ -192,7 +206,8 @@ router.get('/showdata/:id',async(req,res)=>{
       sum:sum,
       vat : vat,
       totalsum:totalsum,
-      today:today
+      today:today,
+      func:func
     }
     if(req.query.error){
       data = {
@@ -212,7 +227,8 @@ router.get('/showdata/:id',async(req,res)=>{
         vat : vat.toLocaleString(),
         totalsum:totalsum.toLocaleString(),
         error:{msg:req.query.error},
-        today:today
+        today:today,
+        func:func,
       }
     }
     return res.render('showdata-sell',data)

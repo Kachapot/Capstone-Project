@@ -27,7 +27,11 @@ router.get("/", async (req, res) => {
       .orderBy("id", "asc")??[]
       const countdata = await db('tb_product').count('id as count').whereRaw(where).first()
       let all_page = Math.ceil(countdata.count/limit)
-      let pagination = await paginate(page,all_page)
+      let pagination = paginate(page,all_page)
+      let func = true
+    if(req.position == 'พนักงานคิดเงิน' || req.position == 'cashier'){
+        func = false
+      }
     if (getproduct?.length == 0) return res.render('product',{
             payload: [],
             username: username,
@@ -35,43 +39,49 @@ router.get("/", async (req, res) => {
             status: true,
             menu:req.menu,
             item:countdata.count,
-            pagination:pagination
+            pagination:pagination,
+            func:func
         })
-
-    if(body.deleted){
-        return res.render("product", {
-            payload: getproduct,
-            username: username,
-            count: getproduct.length,
-            status: true,
-            menu:req.menu,
-            item:countdata.count,
-            pagination:pagination,
-            deleted:{msg:body.deleted}
-        });
-    }
-    if(req.query.error){
-        return res.render("product", {
-            payload: getproduct,
-            username: username,
-            count: getproduct.length,
-            status: true,
-            menu:req.menu,
-            item:countdata.count,
-            pagination:pagination,
-            error:{msg:req.query.error},
-        });
-    }
     
-    return res.render("product", {
+    
+    let data = {
         payload: getproduct,
         username: username,
         count: getproduct.length,
         status: true,
         menu:req.menu,
         item:countdata.count,
-        pagination:pagination
-    });
+        pagination:pagination,
+        func:func
+    }
+    if(body.deleted){
+        data['deleted'] = {msg:body.deleted}
+        // return res.render("product", {
+        //     payload: getproduct,
+        //     username: username,
+        //     count: getproduct.length,
+        //     status: true,
+        //     menu:req.menu,
+        //     item:countdata.count,
+        //     pagination:pagination,
+        //     deleted:{msg:body.deleted}
+        // });
+    }
+    if(req.query.error){
+        data['error'] = {msg:req.query.error}
+        // return res.render("product", {
+        //     payload: getproduct,
+        //     username: username,
+        //     count: getproduct.length,
+        //     status: true,
+        //     menu:req.menu,
+        //     item:countdata.count,
+        //     pagination:pagination,
+        //     error:{msg:req.query.error},
+        // });
+    }
+    
+    return res.render("product", data);
   } catch (error) {
     console.log(error);
   }

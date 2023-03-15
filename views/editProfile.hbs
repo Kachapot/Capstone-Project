@@ -27,14 +27,18 @@
 </div>
 {{/if}}
     <div class="row">
-        <h2>เพิ่มพนักงาน</h2>
+        <h2>แก้ไขข้อมูลพนักงาน</h2>
     </div>
     <hr>
-    <form method="post" enctype="multipart/form-data" action="/employee/create/insert">
+{{#each payload}}
+    <form method="post" action="/editProfile/update">
+        <div class="col ">
+            รหัสพนักงาน : <input readonly type="text" name="id" value="{{emp_id}}" style="border: none;">
+        </div>
         <div class="row py-1">
             <div class="col">
                 <label for="username">username</label>
-                <input type="text" name="username" class="form-control form-control-sm" autofocus>
+                <input type="text" name="username" class="form-control form-control-sm" value="{{username}}" >
             </div>
             <div class="col">
                 <label for="password">password</label>
@@ -55,7 +59,7 @@
             <div class="col">
                 <label for="gender">เพศ</label>
                 <select class="form-select form-select-sm" name="gender" id="floatingSelect" aria-label="Floating label select example">
-                    <option selected>เลือกเพศ</option>
+                    <option selected>{{emp_gender}}</option>
                     <option value="ชาย">ชาย</option>
                     <option value="หญิง">หญิง</option>
                     <option value="เพศทางเลือกอื่นๆ">เพศทางเลือกอื่นๆ</option>
@@ -65,7 +69,8 @@
                 <div class="col">
                 <label for="position">ตำแหน่ง</label>
                 <select class="form-select form-select-sm" name="position" id="floatingSelect" aria-label="Floating label select example">
-                    <option value="พนักงานทั่วไป" selected>พนักงานทั่วไป</option>
+                    <option>{{emp_position}}</option>
+                    <option value="พนักงานทั่วไป">พนักงานทั่วไป</option>
                     <option value="พนักงานขนส่ง">พนักงานขนส่ง</option>
                     <option value="พนักงานคิดเงิน">พนักงานคิดเงิน</option>
                 </select>
@@ -74,51 +79,50 @@
             <div class="col">
                 <div class="form-group">
                     <label for="exampleFormControlInput1">อีเมล</label>
-                    <input type="email" name="email" class="form-control form-control-sm" id="exampleFormControlInput1" placeholder="name@mail.com">
+                    <input type="email" name="email" class="form-control form-control-sm" id="exampleFormControlInput1" placeholder="name@mail.com" value="{{emp_email}}">
                 </div>
             </div>
         </div>
         <div class="row py-1">
             <div class="col-6">
                 <label for="phone">เบอร์โทรศัพท์</label>
-                <input type="text" name="phone" class="form-control form-control-sm">
+                <input type="text" name="phone" class="form-control form-control-sm" value="{{emp_phone}}">
             </div>
             <div class="col-6">
                 <label for="datepicker">วันเกิด</label>
-                <input type="text" id="startDatePicker" name="birthdate" class="form-control form-control-sm text-primary" value="" required></input>
+                <input  type="text" id="startDatePicker" name="birthdate" class="form-control form-control-sm text-primary" value="{{emp_birthday}}"></input>
             </div>
             
         </div>
         <div class="row">
             <div class="form-group">
             <label for="exampleFormControlTextarea1">ที่อยู่</label>
-            <textarea class="form-control " name="address" id="exampleFormControlTextarea1" rows="5"></textarea>
+            <textarea class="form-control " name="address" id="exampleFormControlTextarea1" rows="5" >{{emp_address}}</textarea>
         </div>
         </div>
-        <div class="row py-5">
-            <div class="col-6">
-                <div class="mb-5">
-                <label for="Image" class="form-label">รูปภาพพนักงาน</label>
-                <input class="form-control" name="profileimg" type="file" id="formFile" onchange="preview()" required>
-                </div>
-            </div>
-            <div class="col">
-                <div class="d-flex justify-content-md-center">
-                    <img id="frame" src="" class="img-fluid" />
-                </div>
-            </div>
-        </div>
+        
         <hr>
-        <div class="row py-5">
+        <div class="row">          
             <div class="col text-end">
-                <a class="btn btn-light" href="/employee">
-                    <i class="bi bi-arrow-bar-left"></i> กลับ
-                </a>
                 <button type="submit" class="btn btn-primary">
                     <i class="bi bi-save-fill"></i> บันทึก
                 </button>
             </div>
         </div>
     </form>
+{{/each}}
 </div>
 
+<script>
+    $('#datepicker').datepicker({
+        inline:true,
+        dateFormat: "yyyy-mm-dd"
+    });
+
+var myModal = document.getElementById('myModal')
+var myInput = document.getElementById('myInput')
+
+myModal.addEventListener('shown.bs.modal', function () {
+  myInput.focus()
+})
+</script>

@@ -61,22 +61,37 @@
         <th scope="col" class="text-end">action</th>
       </tr>
     </thead>
+    {{#if func}}
     <tbody>
       {{#each payload}}
       <tr>
         <th scope="row">{{prod_id}}</th>
         <td>{{prod_name}}</td>
         <td>{{prod_price}}</td>
-        {{!-- <td>{{prod_img}}</td> --}}
         <td>{{prod_amount}}</td>
         <td class="text-end">
-          {{!-- <a href="#" type="button" class="btn btn-light btn-small"><i class="bi bi-eye"> ดูข้อมูล</i></a> --}}
           <a href="/product/editProduct/{{prod_id}}" type="button" class="btn btn-light btn-small"><i class="bi bi-pencil"> แก้ไข</i></a>
           <a href="/product/delete/{{prod_id}}" type="button" class="btn btn-danger btn-small"><i class="bi bi-trash3-fill"></i> ลบ</i></a>
         </td>
       </tr>
       {{/each}}
     </tbody>
+    {{else}}
+    <tbody>
+      {{#each payload}}
+      <tr>
+        <th scope="row">{{prod_id}}</th>
+        <td>{{prod_name}}</td>
+        <td>{{prod_price}}</td>
+        <td>{{prod_amount}}</td>
+        <td class="text-end">
+          <a href="#" type="button" class="btn btn-light btn-small disable" ><i class="bi bi-pencil"> แก้ไข</i></a>
+          <a href="#" type="button" class="btn btn-danger btn-small disable" ><i class="bi bi-trash3-fill"></i> ลบ</i></a>
+        </td>
+      </tr>
+      {{/each}}
+    </tbody>
+    {{/if}}
   </table>
 
 {{!-- Pagination --}}
